@@ -21,7 +21,7 @@ let webConfig = {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: 'css-loader'
+          use: 'css-loader!stylus-loader'
         })
       },
       {
@@ -42,7 +42,8 @@ let webConfig = {
             extractCSS: true,
             loaders: {
               sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader'
+              scss: 'vue-style-loader!css-loader!sass-loader',
+              stylus: 'vue-style-loader!css-loader!stylus-loader'
             }
           }
         }
@@ -66,6 +67,10 @@ let webConfig = {
             name: 'fonts/[name].[ext]'
           }
         }
+      },
+      {
+        test: /\.styl$/,
+        loaders: ['stylus-loader', 'css-loader','style-loader']
       }
     ]
   },

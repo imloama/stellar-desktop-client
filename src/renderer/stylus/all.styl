@@ -1,0 +1,159 @@
+@require './main'
+@require './app'
+
+.app {
+  background-color: $primarycolor.gray;
+}
+
+.bg-hide {
+  background: none;
+  background-color: transparent;
+}
+
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $primarycolor.green;
+  opacity: 0.8;
+  z-index: 99;
+  display: block;
+  text-align: center;
+  vertical-align: center;
+
+  img {
+    margin-top: 60%;
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.app-pin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  // height: 100%
+  background: $primarycolor.gray;
+  z-index: 9999;
+
+  .pin-bar {
+    height: 56px;
+    line-height: 56px;
+    font-size: 20px;
+    display: flex;
+    color: $primarycolor.font;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    background: $primarycolor.green;
+
+    .pin-bar-icon {
+      flex: 1;
+      text-align: center;
+      justify-content: center;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      height: 56px;
+      line-height: 56px;
+
+      .material-icons {
+        font-size: 32px;
+        height: 56px;
+        line-height: 56px;
+      }
+    }
+
+    .pin-bar-title {
+      flex: 6;
+      text-align: center;
+    }
+  }
+}
+.fuzzy-view
+  position: fixed
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  z-index: 9999
+.fuzzy-app
+  -webkit-filter: blur(5px)
+  filter: blur(5px)
+  -webkit-backdrop-filter: blur(5px)
+  backdrop-filter: blur(5px)
+  -webkit-filter: blur(5px)
+  margin: -2px
+  background-size: cover
+  /*平铺*/
+  background-attachment: fixed
+// .ios-app
+//   .page
+//     padding-top: .2rem!important
+.contentx
+  padding-top: 0px
+  padding-top: constant(safe-area-inset-top)
+  padding-top: env(safe-area-inset-top)
+
+
+.a-card-content
+  padding: 20px 10px
+  background: $secondarycolor.gray
+.a-t1
+  font-size: 20px
+  padding-top: 5px
+  padding-bottom: 5px
+.a-red
+  color: $primarycolor.red
+.a-btns
+  font-size: 16px
+
+.upDlg
+  z-index: 999  
+
+@css {
+  html{
+    background: none;
+    background-color: transparent;
+  }
+  .white-input:not(.input-group--focused)> .input-group__input{
+    border-bottom: 1px solid #FFF;
+  }
+  .application--light .input-group:not(.input-group--error) label{
+    color:#FFF;
+  }
+  .application--light .input-group:not(.input-group--error) label:after{
+    color:#f35530;
+  }
+  .app.application.theme--dark{
+    background: #212122;
+  }
+  .app.application.theme--dark.bg-hide{
+    background: none;
+    background-color:transparent;
+  }
+  .application{
+    font-family:  "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  }
+  .application--light .input-group:not(.input-group--error):not(.input-group--focused):not(.input-group--disabled) .input-group__input .input-group__append-icon{
+    color:#FFF;
+  }
+  .application--light .input-group input{
+    color:#FFF;
+  }
+  .amount-slider.input-group.input-group--slider .input-group__input .slider .slider__track__container .slider__track-fill,
+.amount-slider.input-group.input-group--slider .input-group__input .slider .slider__thumb-container .slider__thumb{
+    background: #f35833;
+  }
+  @supports (bottom: constant(safe-area-inset-bottom)) {
+    .footer {
+      margin-bottom: constant(safe-area-inset-bottom);
+    }
+  }
+}

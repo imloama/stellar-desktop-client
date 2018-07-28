@@ -2,7 +2,6 @@
 import Vue from 'vue'
 //import Vuetify from 'vuetify'
 import 'babel-polyfill'
-import './stylus/main.styl'
 import App from './App'
 import router from './router'
 import store from './store'

@@ -1,11 +1,11 @@
-@import '../assets/css/material-icons.css'
-@import '../assets/css/iconfont.css'
+@require '../assets/css/material-icons.css'
+@require '../assets/css/iconfont.css'
 
-@require '../../node_modules/vuetify/src/stylus/settings/_colors'
+@require '../../../node_modules/vuetify/src/stylus/settings/_colors'
 
-@require './color.styl'
+@require './color'
 
-@require('../../node_modules/swiper/dist/css/swiper.css')
+@require '../../../node_modules/swiper/dist/css/swiper.css'
 
 $theme := {
   primary: $primarycolor.green
@@ -17,5 +17,5 @@ $theme := {
   success: $secondarycolor.green
 }
  
-@import '../../node_modules/vuetify/src/stylus/main.styl'
+@require '../../../node_modules/vuetify/src/stylus/main'
 //@require '../../node_modules/vuetify/src/stylus/app'

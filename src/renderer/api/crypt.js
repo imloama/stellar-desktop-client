@@ -17,3 +17,11 @@ export function encryptToBase64(password,data){
 export function decryptByBase64(password, data){
   return decrypt(password, Base64.decode(data))
 }
+
+
+export default {
+  encrypt,
+  decrypt,
+  encryptToBase64,
+  decryptByBase64
+}

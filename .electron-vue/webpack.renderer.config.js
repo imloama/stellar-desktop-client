@@ -20,21 +20,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
  */
 let whiteListedModules = ['vue']
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
-}
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js')
-  },
-  resolve: {
-    extensions: ['.js', '.vue', '.json'],
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
-    },
-    symlinks: false
   },
   externals: [
     ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
@@ -45,7 +34,7 @@ let rendererConfig = {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: 'css-loade r'
+          use: 'css-loader!stylus-loader'
         })
       },
       {
@@ -74,7 +63,7 @@ let rendererConfig = {
             loaders: {
               sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
               scss: 'vue-style-loader!css-loader!sass-loader',
-              styl: 'vue-style-loader!css-loader!stylus-loader'
+              stylus: 'vue-style-loader!css-loader!stylus-loader'
             }
           }
         }
@@ -106,12 +95,10 @@ let rendererConfig = {
             name: 'fonts/[name]--[folder].[ext]'
           }
         }
-      }
-    ],
-    loaders: [
+      },
       {
         test: /\.styl$/,
-        loaders: ['style-loader', 'stylus-loader', { loader: 'css-loader', options: { minimize: true } }]
+        loaders: ['stylus-loader', 'css-loader','style-loader']
       }
     ]
   },

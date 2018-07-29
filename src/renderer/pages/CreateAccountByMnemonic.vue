@@ -2,14 +2,14 @@
  * 创建账户页面
  */
 <template>
+
+
+
+<m-layout>
 <div class="page">
   <div class="create-account-page">
-    <toolbar :title="$t(title)" :showbackicon="showbackicon">
-      <v-btn icon style="visibility: hidden;" slot="left-tool">
-          <v-icon class="back-icon"/>
-        </v-btn>
-    </toolbar>
-    <div class="content">
+    <div class="headline mt-5 textcenter primarycolor">{{$t(title)}}</div>
+    <div class="content mt-4">
       <v-text-field
               dark
               name="name"
@@ -40,7 +40,7 @@
             ></v-text-field>
       <div class="hint">{{$t('Account.CreateAccountHint')}}</div>
     </div>
-    <div class="footer">
+    <div class="textcenter mt-4">
       <v-layout row wrap v-if="working">
         <v-flex xs12 class="text-center">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -48,15 +48,16 @@
       </v-layout>
       <v-layout row wrap v-else>
         <v-flex xs6 @click="goback">
-          <span>{{$t('Return')}}</span>
+          <v-btn block  color="info">{{$t('Return')}}</v-btn>
         </v-flex>
         <v-flex xs6 @click="nextStep">
-          <span :class="nextStepClass">{{$t('NextStep')}}</span>
+          <v-btn block :disabled="btnDisabled" color="primary">{{$t('NextStep')}}</v-btn>
         </v-flex>
        </v-layout>  
     </div>
   </div>
 </div>
+</m-layout>
 </template>
 
 <script>
@@ -66,6 +67,7 @@ import { random,randomByMnemonic, fromMnemonic } from '../api/account'
 import { RandomPlanetsCount, RandomColorsCount } from '../locales/index'
 import { EN, ZH_CN,ZH_HK,ZH_TW } from '@/locales/index'
 const TITLE = 'CreateAccount'
+import MLayout from '@/components/MLayout'
 export default {
   data(){
     return {
@@ -86,6 +88,12 @@ export default {
       isCreateAccount: state => state.isCreateAccount,
       locale: state => state.app.locale,
     }),
+    btnDisabled(){
+       if(this.name && this.password && this.repassword && this.password === this.repassword){
+         return false
+       }
+       return true
+    },
     nextStepClass(){
       if(this.name && this.password && this.repassword && this.password === this.repassword){
         return 'btn-available'
@@ -140,7 +148,8 @@ export default {
     },
   },
   components: {
-    Toolbar
+    Toolbar,
+    MLayout,
   }
 }
 </script>
@@ -149,19 +158,9 @@ export default {
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
 .content
-  position: fixed
-  top: 48px
-  top: calc(48px+ constant(safe-area-inset-top))
-  top: calc(48px + env(safe-area-inset-top))
-  left: 0
-  right: 0
-  bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
   padding: 20px 20px
   background: $secondarycolor.gray
   border-radius:5px
-  margin:5px 5px 50px 5px
 .footer
   position:fixed
   bottom:0

@@ -2,13 +2,15 @@
  * 准备创建钱包
  */
 <template>
+<m-layout>
 <div class="page">
 
-    <toolbar :title="$t(title)" :showbackicon="showbackicon"  v-if="!seedInputDlgShow">
+    <!-- <toolbar :title="$t(title)" :showbackicon="showbackicon"  v-if="!seedInputDlgShow">
       <v-btn icon style="visibility: hidden;" slot="left-tool">
         <v-icon class="back-icon"/>
       </v-btn>
-    </toolbar>
+    </toolbar> -->
+    <div class="headline mt-5 textcenter primarycolor">{{$t(title)}}</div>
     
     <div class="content">
       <div class="label">{{$t('Account.AccountName')}}</div>
@@ -27,13 +29,13 @@
       </div>
       <div class="hint">{{$t('Account.CreateAccountReadyHint')}}</div>
     </div>
-    <div class="footer" v-if="!seedInputDlgShow">
+    <div  v-if="!seedInputDlgShow">
       <v-layout row wrap>
         <v-flex xs6 @click="goback">
-          <span>{{$t('Return')}}</span>
+          <v-btn block  color="info">{{$t('Return')}}</v-btn>
         </v-flex>
         <v-flex xs6 @click="save">
-          <span>{{$t('BackedUp')}}</span>
+          <v-btn block  color="primary">{{$t('BackedUp')}}</v-btn>
         </v-flex>
        </v-layout>
     </div>
@@ -164,6 +166,7 @@
       :title="loadingTitle" :msg="loadingMsg" :closeable="dealfail" @close="hiddenLoadingView"/>
 
 </div>
+</m-layout>
 </template>
 
 <script>
@@ -177,6 +180,7 @@ import Loading from '@/components/Loading'
 import SecretKeyInput from '@/components/SecretKeyInput'
 //import StellarHDWallet from 'stellar-hd-wallet'
 import  defaultsDeep  from 'lodash/defaultsDeep'
+import MLayout from '@/components/MLayout'
 export default {
   data(){
     return {
@@ -422,6 +426,7 @@ export default {
     Loading,
     SecretKeyInput,
     Card,
+    MLayout,
   }
 }
 </script>
@@ -430,16 +435,7 @@ export default {
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
 .content
-  position: fixed
   overflow-y: auto
-  top: 48px
-  top: calc(48px+ constant(safe-area-inset-top))
-  top: calc(48px + env(safe-area-inset-top))
-  left: 0
-  right: 0
-  bottom: 0
-  bottom:  constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
   padding: 20px 20px
   background: $secondarycolor.gray
   border-radius:10px
@@ -483,7 +479,7 @@ export default {
   font-size: 15px
 .headline
   color: $primarycolor.green
-  font-size: 16px !important 
+  font-size: 24px !important 
   padding-bottom: 10px
 .notice
   font-size:14px

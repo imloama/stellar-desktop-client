@@ -6,6 +6,7 @@ var moment = require('moment')
 import { Decimal } from 'decimal.js'
 var parseString = require('xml2js').parseString
 import { CORS_PROXY } from './gateways'
+import { ajaxGet } from './ajax'
 
 
 const host = 'https://api.fchain.io/v2'
@@ -74,39 +75,28 @@ export function getAllEffectOffers(account,start_time,end_time){
 const FCHAIN_FEED_URL = 'https://fchain.io/feed/'
 
 export function getFchainRss(){
-  return new Promise((resolve,reject) => {
-    if(!cordova.plugin.http){
-      reject('error')
-      return
-    }
     let t = new Date().getTime()
-    let url = FCHAIN_FEED_URL +'?r='+t
-    if(cordova.platformId === 'browser'){
-      url = CORS_PROXY+FCHAIN_FEED_URL
-    }
-    cordova.plugin.http.get(url, {},  {}, (response) => {
-      let data = response.data
-      parseString(data, (err,result)=>{
-        let channel = result.rss.channel
-        if(channel && channel.length > 0){
-          //主要字段： title（数组）,pubDate数组，link（数组）,content:encoded(数组)
-          resolve(channel[0].item.map(d=>{
-            return {
-              'title': d.title[0], 
-              'date': moment(d.pubDate[0]).format('YYYY-MM-DD HH:mm:ss'), 
-              'link': d.link[0],
-              'content': d['content:encoded'][0] 
+    let url = CORS_PROXY +FCHAIN_FEED_URL +'?r='+t
+    return axios.get(url)
+      .then(response=>{
+        let data = response.data
+        return new Promise((resolve,reject)=>{
+          parseString(data, (err,result)=>{
+            let channel = result.rss.channel
+            if(channel && channel.length > 0){
+              //主要字段： title（数组）,pubDate数组，link（数组）,content:encoded(数组)
+              resolve(channel[0].item.map(d=>{
+                return {
+                  'title': d.title[0], 
+                  'date': moment(d.pubDate[0]).format('YYYY-MM-DD HH:mm:ss'), 
+                  'link': d.link[0],
+                  'content': d['content:encoded'][0] 
+                }
+              }))
+            }else{
+              resolve([])
             }
-          }))
-        }else{
-          resolve([])
-        }
-
-      })
-
-    }, (response) => {
-        reject(response.error)
-    });
-
+          })  
+        })
   })
 }

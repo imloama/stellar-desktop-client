@@ -10,24 +10,6 @@
       </v-content>
       <tab-bar v-if="tabBarShow"/>
 
-    <v-dialog v-model="updateConfirmDlg" max-width="95%" persistent class="upDlg">
-      <div>
-        <div class="a-card-content">
-          <div class="avatar-div textcenter">
-            <v-avatar>
-              <img src="./assets/img/logo-red.png" />
-            </v-avatar>
-          </div>
-          <div class="a-t1 a-red textcenter" v-if="updating">{{$t('UpdateHint')}}</div>
-          <div class="a-t1 a-red textcenter" v-if="!updating">{{$t('FindNewVersion',[latestVersion])}}</div>
-          <div class="a-btns flex-row" v-if="!updating">
-            <div class="flex1 a-red textcenter" @click="doUpdate">{{$t('Update')}}</div>
-            <div class="flex1 a-red textcenter" @click="updateConfirmDlg = false">{{$t('Button.Cancel')}}</div>
-          </div>
-        </div>
-      </div>
-    </v-dialog>
-   
 
 
   </v-app>
@@ -50,7 +32,6 @@ import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage, ZH_CN } from "@/locales";
 import  TabBar from '@/components/TabBar'
 import { getFchainRss } from '@/api/fchain'
-import updateMixin from '@/mixins/update'
 import { PLATFORM_IS_IOS } from '@/store/modules/AppSettingStore'
 import { FCHAIN_HORIZON } from '@/api/horizon'
 
@@ -99,7 +80,6 @@ export default {
       isFull: state => state.isFull,
     }),
   },
-  mixins: [updateMixin],
   beforeMount() {
     console.log('-----------------------------1:'+this.$route.name)
     if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
@@ -154,14 +134,7 @@ export default {
           console.log(err);
           
           this.saveAppSetting({ locale: this.devicelang||ZH_CN });
-          
-          //保存默认的设置数据
-          // this.$router.push({name: 'Wallet'})
-          if (window.localStorage.getItem("login_flag") == 1) {
-            this.$router.push({ name: "Wallet" });
-          } else {
-            this.$router.push({ name: "Picklanguage" });
-          }
+          this.$router.push({ name: "Wallet" });
         });
   },
   mounted() {

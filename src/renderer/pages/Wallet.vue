@@ -10,13 +10,13 @@
     <div class="logo">
       <img src="../assets/img/logo-blank.png" alt="firefly" class="logo-img"/>
     </div>
-    <div class="footer">
+    <div class="mt-5 textcenter">
        <v-layout row wrap>
-        <v-flex xs6 @click="importAccount">
-          <span>{{$t('ImportAccount')}}</span>
+        <v-flex xs12 @click="importAccount">
+          <v-btn  class="width30">{{$t('ImportAccount')}}</v-btn>
         </v-flex>
-        <v-flex xs6  @click="createAccount">
-          <span>{{$t('CreateAccount')}}</span>
+        <v-flex xs12  @click="createAccount">
+          <v-btn color="info"  class="width30">{{$t('CreateAccount')}}</v-btn>
         </v-flex>
        </v-layout>  
     </div>  
@@ -64,7 +64,7 @@ export default {
 .create-account-page
   background: $primarycolor.green
   color: $primarycolor.font
-  padding-top: 40%
+  padding-top: 20%
   height: 100vh
   .logo
     display: block
@@ -98,6 +98,7 @@ export default {
     padding-bottom: 8px
     padding-bottom: constant(safe-area-inset-bottom)
     padding-bottom: env(safe-area-inset-bottom)
-
+.width30
+  width: 30%
 
 </style>

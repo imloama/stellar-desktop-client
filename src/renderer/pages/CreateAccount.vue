@@ -9,7 +9,7 @@
           <v-icon class="back-icon"/>
         </v-btn>
     </toolbar>
-    <div class="content">
+    <div class="content econtent">
       <v-text-field
               dark
               name="name"

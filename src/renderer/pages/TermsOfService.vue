@@ -2,31 +2,35 @@
  * 服务条款界面
  */
 <template>
+<m-layout>
   <div class="terms-service-page">
-    <v-toolbar class="tbar primary" dark  :flat="false" dense :clipped-left='true' app>
+    <!-- <v-toolbar class="tbar primary" dark  :flat="false" dense :clipped-left='true' app>
       <v-btn icon v-show="showbackicon" @click="goback" class="white--text">
             <i class="material-icons font28">&#xE5CB;</i>
       </v-btn>
       <v-toolbar-title class="white--text title">{{$t('TermsOfServiceTitle')}}</v-toolbar-title>
       <v-spacer></v-spacer>
-    </v-toolbar>
-    <div :class="'page-content ' + (showbackicon ? 'page-content-showback': '')" v-html="$t('TermsOfService')">
+    </v-toolbar> -->
+    <div class="headline mt-5 textcenter primarycolor">{{$t('TermsOfServiceTitle')}}</div>
+    <div class="page-content" v-html="$t('TermsOfService')">
     </div>
-    <div class="footer" v-if="!showbackicon">
+    <div class="textcenter mt-5" v-if="!showbackicon">
        <v-layout row wrap>
         <v-flex xs6 @click="goback">
-          <span>{{$t('Return')}}</span>
+          <v-btn block  color="info">{{$t('Return')}}</v-btn>
         </v-flex>
         <v-flex xs6 @click="wallet">
-          <span>{{$t('Agree')}}</span>
+          <v-btn block  color="primary">{{$t('Agree')}}</v-btn>
         </v-flex>
        </v-layout>  
     </div>  
   </div>
+  </m-layout>
 </template>
 
 <script>
 import { mapState,mapActions} from 'vuex'
+import MLayout from '@/components/MLayout.vue'
 export default {
   data(){
     return {
@@ -62,6 +66,9 @@ export default {
       }
       this.$router.push({name: 'CreateAccount'})
     }
+  },
+  components: {
+    MLayout,
   }
 }
 </script>
@@ -73,15 +80,6 @@ export default {
 .tbar
   z-index: 99
 .page-content
-  position: fixed
-  top: 52px
-  top: calc(42px + constant(safe-area-inset-top))
-  top: calc(42px + env(safe-area-inset-top))
-  left: 0
-  right: 0
-  bottom: 56px
-  bottom: calc(56px + constant(safe-area-inset-bottom))
-  bottom: calc(56px + env(safe-area-inset-bottom))
   color: $secondarycolor.font
   overflow-y:auto
   font-size: 14px

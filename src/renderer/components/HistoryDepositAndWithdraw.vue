@@ -197,10 +197,8 @@ const TYPE_WITHDRAW = 'withdraw'
         })
       },
       copy(value){
-        if(cordova.plugins.clipboard){
-          cordova.plugins.clipboard.copy(value)
-          this.$toasted.show(this.$t('CopySuccess')+":"+value)
-        }
+        this.$electron.clipboard.writeText(value)
+        this.$toasted.show(this.$t('CopySuccess')+":"+value)
       },
       toTX(item){
         this.$router.push({

@@ -1,10 +1,10 @@
 <template>
   <v-layout row wrap class="mlayout">
-    <v-flex xs2>&nbsp;</v-flex>
-    <v-flex xs8>
+    <v-flex xs1>&nbsp;</v-flex>
+    <v-flex xs10>
       <slot></slot>
     </v-flex>
-    <v-flex xs2>&nbsp;</v-flex>
+    <v-flex xs1>&nbsp;</v-flex>
 
   </v-layout>
 </template>

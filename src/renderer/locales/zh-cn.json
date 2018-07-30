@@ -522,7 +522,9 @@
   "fund_free_title":"激活说明",
   "fund_used_up":"免费激活名额已经用完，您可向朋友收取1XLM完成账户激活。",
   "tickets":"工单",
-  "autofund_hint":"请稍等，正在进行激活操作！"
+  "autofund_hint":"请稍等，正在进行激活操作！",
+  "Lock":"锁屏",
+  "refresh":"刷新"
 
  
  

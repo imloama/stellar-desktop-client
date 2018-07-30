@@ -2,8 +2,9 @@
  * 导入钱包界面
  */
 <template>
+<m-layout>
 <div class="page" v-bind:class="{hidebackground: showScanner}">
-    <toolbar :title="$t(title)" :showbackicon="showbackicon">
+    <!-- <toolbar :title="$t(title)" :showbackicon="showbackicon">
       <v-btn icon style="visibility: hidden;" slot="left-tool">
           <v-icon class="back-icon"/>
         </v-btn>
@@ -13,13 +14,10 @@
           <i v-else class="iconfont icon-erweima1 font28"></i>
         </span>
       </div>
-    </toolbar>
+    </toolbar> -->
+    <div class="headline mt-5 textcenter primarycolor">{{$t(title)}}</div>
 
-    <q-r-scan 
-      @finish="qrfinish" 
-      @close="qrclose" 
-      :validator="qrvalidator" 
-      v-if="showScanner"></q-r-scan>
+
 
     <div class="content" v-if="!showScanner">
       <div class="tabs pt-1 pb-1">
@@ -63,6 +61,7 @@
        </v-layout>  
     </div>
 </div>
+</m-layout>
 </template>
 
 <script>
@@ -249,17 +248,8 @@ export default {
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
 .content
-  position:fixed
-  top: 48px
-  top: calc(48px +  constant(safe-area-inset-top))
-  top: calc(48px +  env(safe-area-inset-top))
-  left: 0
-  right: 0
-  bottom: 0
-  bottom:  constant(safe-area-inset-bottom)
-  bottom:  env(safe-area-inset-bottom)
   padding: 20px 20px
-  background: $primarycolor.gray
+  background: $secondarycolor.gray
 .right
   .toolbar-ico
     .iconfont
@@ -269,12 +259,6 @@ export default {
       font-size: 24px
       color: $primarycolor.font
 .footer
-  position: fixed
-  bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
-  left: 0
-  right: 0
   z-index: 99
   background: $secondarycolor.gray
   height: 42px

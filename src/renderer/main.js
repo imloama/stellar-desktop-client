@@ -14,13 +14,16 @@ import { setVuexStore } from './streams'
 import { AXIOS_DEFAULT_TIMEOUT } from './api/gateways'
 import axios from 'axios'
 require('./api/utils') 
-
+import electron from 'electron'
 // animate.css
 // import 'animate.css'
 Vue.directive('image-wrapper', imageHW)
 
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 Vue.use(VueAwesomeSwiper)
+
+import MLayout from './components/MLayout.vue'
+Vue.component('m-layout', MLayout)
 
 import Toasted from 'vue-toasted';
 Vue.use(Toasted,{ 
@@ -32,6 +35,8 @@ Vue.use(Toasted,{
 import '@/libs/pkgs/initVuetify'
 
 Vue.config.productionTip = false
+
+Vue.prototype.$electron = electron
 
 
 axios.defaults.timeout = AXIOS_DEFAULT_TIMEOUT

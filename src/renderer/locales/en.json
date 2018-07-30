@@ -530,7 +530,9 @@
   "fund_free_title":"funding summary",
   "fund_used_up":"there is no free funding, may ask for help from your friends",
   "tickets":"tickets",
-  "autofund_hint":"please wait, autofund is working..."
+  "autofund_hint":"please wait, autofund is working...",
+  "Lock":"lock screen",
+  "refresh":"refresh"
 
   
 

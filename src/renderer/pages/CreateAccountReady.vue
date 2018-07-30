@@ -10,9 +10,9 @@
         <v-icon class="back-icon"/>
       </v-btn>
     </toolbar> -->
-    <div class="headline mt-5 textcenter primarycolor">{{$t(title)}}</div>
+    <div class="headline mt-5 textcenter primarycolor" v-if="!seedInputDlgShow">{{$t(title)}}</div>
     
-    <div class="content">
+    <div class="content"  v-if="!seedInputDlgShow">
       <div class="label">{{$t('Account.AccountName')}}</div>
       <div class="value" >{{name}}</div>
       <div class="label">{{$t('Account.Password')}}</div>
@@ -40,7 +40,7 @@
        </v-layout>
     </div>
 
-    <v-dialog v-model="coveringDlg" persistent max-width="95%">
+    <v-dialog v-model="coveringDlg" persistent max-width="460px">
       <v-card>
         <v-card-title class="headline">{{$t('Account.WhetherCoverAccount')}}</v-card-title>
         <v-card-actions>
@@ -53,54 +53,37 @@
 
     <!-- 密钥输入窗口 不再使用dialog  -->
     <div class="si-dlg" v-if="seedInputDlgShow">
-      <toolbar :title="$t(title)" :showbackicon="showbackicon">
+      <!-- <toolbar :title="$t(title)" :showbackicon="showbackicon">
         <div class="si-text" slot="right-tool"  @click="showSkipDlg = true">
           {{$t('Account.Skip')}}
         </div>
-      </toolbar>
+      </toolbar> -->
+
+      <!-- <div class="primarycolor pa-4" style="float:right;" @click="showSkipDlg = true">{{$t('Account.Skip')}}</div> -->
       
-      <div class="si-bg">
+      <div class="si-bg mt-5">
         <div class="si-card mnemonic-validat-card">
           <div class="headline textcenter">{{$t('validateMnemonic')}}</div>
-          <v-layout wrap>
-            <v-flex xs12 sm6 md4>
-               <v-text-field 
-                required
-                :label="$t('mnemonicIndex',[randoms[0]+1])"
-                v-model="w0"
-                @focus="focusInput($event)"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
-              <v-text-field 
-                required
-                :label="$t('mnemonicIndex',[randoms[1]+1])"
-                v-model="w1"
-                @focus="focusInput($event)"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
-               <v-text-field 
-                required
-                :label="$t('mnemonicIndex',[randoms[2]+1])"
-                v-model="w2"
-                @focus="focusInput($event)"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
-              <v-text-field 
-                required
-                :label="$t('mnemonicIndex',[randoms[3]+1])"
-                v-model="w3"
-                @focus="focusInput($event)"
-                ></v-text-field>
-            </v-flex>
-          </v-layout>
+
+          <v-card class="pa-2 ml-2 mr-2" style="height: 200px;">
+            <v-chip label color="grey" class="white--text" style="cursor:pointer;"
+              v-for="(item,index) in mnemonicSelectedItems" :key="index" 
+              @click="clickSelectedMnemonic(item,index)">{{item}}</v-chip>
+          </v-card>
+
+          <div class="mt-2 pa-2 ml-2 mr-2">
+            <v-chip label color="grey"  class="white--text" style="cursor:pointer;"
+              v-for="(item,index) in mnemonicSourceItems" :key="index" 
+              @click="clickSourceMnemonic(item,index)">{{item}}</v-chip>
+          </div>
         </div>
 
         <div class="btn-group flex-row textcenter">
-          <div class="flex1 btn-cancel" @click="seedInputDlgShow = false">{{$t('Return')}}</div>
-          <div class="flex1 btn-ok" @click="btnOKSeedInput">{{$t('Validate')}}</div>
+          <div class="flex1 btn-cancel">
+            <v-btn block class="error" @click="showSkipDlg = true">{{$t('Account.Skip')}}</v-btn>
+            </div>
+          <div class="flex1 btn-ok">
+            <v-btn block class="primary"  @click="btnOKSeedInput">{{$t('Validate')}}</v-btn></div>
         </div>
       </div>
 
@@ -108,7 +91,7 @@
   
 
     <!-- 是否跳过验证窗口 -->
-    <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
+    <v-dialog v-model="showSkipDlg" max-width="460px" persistent>
       <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
@@ -127,7 +110,7 @@
     </v-dialog>
 
     <!-- 验证通过窗口 -->
-    <v-dialog v-model="showSeedValidDlg" max-width="95%" persistent>
+    <v-dialog v-model="showSeedValidDlg" max-width="460px" persistent>
       <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
@@ -145,7 +128,7 @@
     </v-dialog>
 
     <!-- 验证失败窗口 -->
-    <v-dialog v-model="showSeedInValidDlg" max-width="95%" persistent>
+    <v-dialog v-model="showSeedInValidDlg" max-width="460px" persistent>
       <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
@@ -209,6 +192,10 @@ export default {
       showSeedValidDlg: false,
       showSeedInValidDlg: false,
 
+
+      mnemonicSourceItems:[],
+      mnemonicSelectedItems:[],
+
       //校验助记词
       randoms:[],//需要检查哪几个单词
       w0: null,
@@ -232,8 +219,11 @@ export default {
       isCreateAccount: state => state.isCreateAccount,
     }),
     mnemonicItems(){
+      if(this.mnemonic){
         return this.mnemonic.split(' ');
-      },
+      }
+      return []
+    },
     address(){
       if(this.seed){
         return genAddress(this.seed)
@@ -248,17 +238,14 @@ export default {
   
   },
   beforeMount () {
-    window.localStorage.setItem('login_flag','1')
-    console.log(window.localStorage.getItem('login_flag'))
-
-    //生成6个助记词校验位
-    this.genRadomInt();
-    this.genRadomInt();
-    this.genRadomInt();
-    this.genRadomInt();
-    //对助记词进知排序
-    this.randoms = this.randoms.sort((a,b)=> a-b)
-
+    
+    for(let i=0,n=this.mnemonicItems.length;i<n;i++){
+      this.genRadomInt()
+    }
+    this.randoms.forEach(index=>{
+      this.mnemonicSourceItems.push(this.mnemonicItems[index])
+    })
+    
   },
   mounted(){
     this.dialog = true;
@@ -279,10 +266,8 @@ export default {
       //this.$router.push({name:'CreateAccount'})
     },
     copy(value){
-      if(cordova.plugins.clipboard){
-        cordova.plugins.clipboard.copy(value)
-        this.$toasted.show(this.$t('CopySuccess'))
-      }
+      this.$electron.clipboard.writeText(value)
+      this.$toasted.show(this.$t('CopySuccess'))
     },
     swipe(direction){
       if(direction==='Left'  && this.guide <3){
@@ -293,15 +278,12 @@ export default {
       }
     },
     btnOKSeedInput(){
-      if(this.w0 && this.w0 === this.mnemonicItems[this.randoms[0]] &&
-           this.w1 && this.w1 === this.mnemonicItems[this.randoms[1]] &&
-           this.w2 && this.w2 === this.mnemonicItems[this.randoms[2]] &&
-           this.w3 && this.w3 === this.mnemonicItems[this.randoms[3]]
-          ){
+      let t1 = this.mnemonicItems.join(' ')
+      let t2 = this.mnemonicSelectedItems.join(' ')
+      if(t1 === t2){
         this.seedInputDlgShow = false
         this.doSave();            
       }else{
-
         this.showSeedInValidDlg = true
         return;
       }
@@ -416,6 +398,14 @@ export default {
       setTimeout(()=>{
         dom.scrollIntoView()
       },200)
+    },
+    clickSourceMnemonic(item,index){
+      this.mnemonicSelectedItems.push(item)
+      this.mnemonicSourceItems.splice(index,1)
+    },
+    clickSelectedMnemonic(item,index){
+      this.mnemonicSelectedItems.splice(index,1)
+      this.mnemonicSourceItems.push(item)
     }
 
   },
@@ -439,7 +429,6 @@ export default {
   padding: 20px 20px
   background: $secondarycolor.gray
   border-radius:10px
-  margin:7px 7px 50px 7px
   .label
     font-size: 14px
     color: $primarycolor.green
@@ -502,15 +491,6 @@ export default {
 .si-text
   font-size: 14px
 .si-bg
-  position: absolute
-  top: 48px
-  top: calc(48px+ constant(safe-area-inset-top))
-  top: calc(48px+ env(safe-area-inset-top))
-  left: 0
-  right: 0
-  bottom: 0
-  bottom:  constant(safe-area-inset-bottom)
-  bottom:  env(safe-area-inset-bottom)
   background: $primarycolor.gray
   padding: 10px 10px
   padding-bottom: 0px
@@ -523,12 +503,6 @@ export default {
 
   // height: 30%
 .btn-group
-  position: fixed
-  left: 0
-  right: 0
-  bottom: 10px
-  bottom: calc(10px + constant(safe-area-inset-bottom))
-  bottom: calc(10px + env(safe-area-inset-bottom))
   .btn-cancel
   .btn-ok
     font-size: 16px
@@ -551,15 +525,6 @@ export default {
   background: $secondarycolor.gray
 
 .si-dlg
-  position: fixed
-  top: 0px
-  top:  constant(safe-area-inset-top)
-  top: env(safe-area-inset-top)
-  bottom: 0px
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
-  left: 0px
-  right: 0px
   background: $primarycolor.gray
   .btn-group
     z-index: 999

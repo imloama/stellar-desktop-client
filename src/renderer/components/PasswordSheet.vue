@@ -1,6 +1,7 @@
 <template>
     <!--显示密码输入界面-->
-    <v-bottom-sheet :persistent="persistent" v-model="showPwdSheet" v-if="showPwdSheet" dark>
+    <v-dialog :persistent="persistent" v-model="showPwdSheet" 
+        v-if="showPwdSheet" dark max-width="460px">
       <div class="sheet-content">
         <div class="sheet-title textcenter" v-if="title">
           <div class="title">{{title}}</div>
@@ -25,7 +26,7 @@
           <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
         </div>
       </div>
-    </v-bottom-sheet>
+    </v-dialog>
 </template>
 
 <script>

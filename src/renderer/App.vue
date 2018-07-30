@@ -2,15 +2,14 @@
 <div>
 
   <v-app :class="'app ' + (showFuzzyView?'fuzzy-app':'') " dark>
-      <v-system-bar status :color="iosstatusbarcolor" v-if="isios && !isFull" app>
-        <v-spacer></v-spacer>
-      </v-system-bar>
       <v-content class="contentx">
         <router-view />
       </v-content>
-      <tab-bar v-if="tabBarShow"/>
-
-
+      <v-footer class="footright pa-3">
+        <div>{{version}}</div>
+        <v-spacer></v-spacer>
+        <div>&copy; fchain.io</div>
+      </v-footer>
 
   </v-app>
 
@@ -26,7 +25,7 @@
 import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import PinCode from "@/components/PinCode";
-import { defaultTradePairsAPI,initFundConfig } from "@/api/gateways";
+import { defaultTradePairsAPI,initFundConfig,APP_VERSION } from "@/api/gateways";
 import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage, ZH_CN } from "@/locales";
@@ -51,6 +50,7 @@ export default {
       latestVersion: null,
       updating: false,
       // items:Store.fetch(),
+      version: APP_VERSION,
     };
   },
   watch: {

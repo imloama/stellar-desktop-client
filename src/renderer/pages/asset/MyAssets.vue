@@ -2,6 +2,7 @@
  * 
  */
 <template>
+
   <div class="page">
     <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
@@ -22,94 +23,95 @@
     </toolbar>
     <accounts-nav :show="showaccountsview" @close="closeView"/>
      <!--=======================================================-->
-<div class="accountandtotalasset">
-  <scroll :refresh="reload">
-    <div class="accountnameaddress"><!-- 试着改动的地方wdp-->
-      <div class="flex-row">
-        <div class="flex2 textcenter">
-            <div class="avatar-wrapper">
-                <span class="avatar-back" @click="toNameCard"><i class="iconfont icon-erweima avatar"></i></span>
-            </div>
-        </div>
-        <div class="flex4">
-            <div class="title">{{account.name}}</div>
-            <div class="address">{{account.address | shortaddress}}</div>
-        </div>
-      </div>
-    </div>
-    <div id="TotalSum" class="myassets_totalSum" >
+<m-layout>
+
+
+
+<div class="accountandtotalasset flex-row  pt-2 pb-2 mt-4">
+    <div id="TotalSum" class="myassets_totalSum flex4" >
       <span class="myassets_TotalSumWord" >{{$t('TotalAssets')}}≈</span>
       <span>{{TotalSum.toFixed(7)}}</span><!-- 要改成资产数组数据的累加的和-->
       <span>XCN</span>
     </div>
-  </scroll>
+    <div class="textright flex1 pt-2 pr-3 primarycolor" style="cursor:pointer;"
+      @click="toAddAsset">
+     {{$t('AddAsset')}}
+    </div>
+    <div class="textcenter flex1 pt-2 primarycolor" style="cursor:pointer;"
+      @click="doRefresh" v-if="!reloading">
+      {{$t('refresh')}}
+    </div>
+    <div class="textcenter flex1 pt-2 primarycolor" v-else><v-progress-circular
+      indeterminate size=24
+      color="primary"
+    ></v-progress-circular></div>
 </div>
 
-    <div class="flex-row">
-      <div class="flex2">&nbsp;</div>
-      <div class="flex1">
-        <v-btn depressed flat color="primary" @click="hiddenMyAssets">
-          <span class="no-upper">{{is_Flag === 'filter_zero'? $t('ShowZeroAsset'): $t('HideZeroAsset')}}</span>
-        </v-btn>
-      </div>
-      <div class="flex1">
-         <v-menu offset-y>
-          <v-btn depressed flat color="primary" slot="activator">
-            <span class="no-upper">{{$t(selectedSortItem.label)}}</span>
-          </v-btn>
-          <v-list>
-            <v-list-tile v-for="item in sortItems" :key="item.key">
-              <v-list-tile-title @click="chgSortItem(item)">{{ $t(item.label) }}</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu> 
-      </div>
-    </div>
 
-    <scroll :refresh="refresh">
    
-   <div class="content assets-xcontent"> 
+   <div class="assets-xcontent mt-2"> 
       <card padding="0px 0px" margin="0px 0px" class="myassets_infocard_thirdassets full-width">
         <div class="assets full-width" slot="card-content">
-          <div class="assets-row" v-for="(item,index) in assets" :key="item.issuer+item.code" 
-              v-touch="{
-                left: () => selectedItem = index,
-                right: () => selectedItem = null
-              }"
-            >
-            <v-layout class="myassets-li third-li" row wrap v-swiper=2.2 @click.stop="toAsset(item)">
-              <v-flex xs2 class="myassets-wrapper">
-                <div class="icon-wrapper">
+          
+          <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code" >
+
+            <v-layout class="myassets-li third-li" row wrap >
+              <v-flex xs1 class="myassets-wrapper ">
+                <div class="icon-wrapper textright">
                   <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
                 </div>
               </v-flex>
             <v-flex xs3 class="myassets-wrapper">
               <div class="myassets">
-                <div class="myassets-name">{{item.code}}</div>
-                <div class="myassets-issuer" v-if="item.home_domain">{{item.home_domain}}</div>
-                <div class="myassets-issuer" v-else-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
-                <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
+                <div class="myassets-name">{{item.code}}
+                  <span class="myassets-issuer" v-if="item.home_domain">{{item.home_domain}}</span>
+                  <span class="myassets-issuer" v-else-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</span>
+                  <span class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</span>
+                </div>
+                <div class="myassets-issuer">{{item.issuer | shortaddress}}</div>
               </div>
             </v-flex>
-            <v-flex xs7 class="myassets-wrapper">
+            <v-flex xs4 class="myassets-wrapper">
               <div class="myassets-balance third">
+                 
                  <span class="balance">{{item.balanceStr}}</span>
                  <span class="label">{{$t('Total')}}</span> 
+                 <span v-if="nativeAsset(item)" class="pl-2">({{$t('Reserve')}}:{{reserve}})</span>
                  <br/>
-                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;XCN</span>
+                 <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;XCN</span>
+                 
+                  
+              </div>
+            </v-flex>
+            <v-flex xs4 class="myassets-wrapper">
+              <div class="myassets-operate-box">
+                <div  v-if="nativeAsset(item)" class="del cursorpinter">&nbsp;</div>
+                <div v-else class="del cursorpinter" @click.stop="del(item)">{{$t('Delete')}}</div>
+
+                <div class="send cursorpinter" @click.stop="send(item)">{{$t('Send')}}</div>
+                <div class="receive cursorpinter" @click.stop="receive(item)">{{$t('Receive')}}</div>
               </div>
             </v-flex>
           </v-layout>
-          <div class="myassets-operate-box">
-            <div class="del" @click.stop="del(item)">{{$t('Delete')}}</div>
-            <div class="send" @click.stop="send(item)">{{$t('Send')}}</div>
-            <div class="receive" @click.stop="receive(item)">{{$t('Receive')}}</div>
-          </div>
+          
           </div>
         </div>
       </card>
     </div>
-  </scroll>
+
+    <v-tabs v-model="activeHistory" dark>
+      <v-tab ripple @click="switchComponent('transaction')">{{$t('History.Transaction')}}</v-tab>
+      <v-tab ripple @click="switchComponent('trade')">{{$t('History.Trade')}}</v-tab>
+      <v-tab ripple @click="switchComponent('offer')">{{$t('History.Offer')}}</v-tab>
+      <v-tab ripple @click="switchComponent('depositAndWithdraw')">{{$t('History.DepositAndWithdraw')}}</v-tab>
+      <v-tab ripple @click="switchComponent('effects')">{{$t('History.Effects')}}</v-tab>
+      <v-tab ripple @click="switchComponent('transactions')">{{$t('History.Transactions')}}</v-tab>
+    </v-tabs>
+
+    <component v-bind:is="show.component"></component>
+
+
+  </m-layout>
 
 <!--   
   <tab-bar />
@@ -161,6 +163,12 @@ const SORT_NAME = "name";
 const SORT_BANLANCE = "balance";
 const SORT_DEFAULT = "none";
 import UnFundNotice from '@/components/UnFundNotice'
+import HistoryDepositAndWithdraw from '@/components/HistoryDepositAndWithdraw'
+import HistoryEffects from '@/components/HistoryEffects'
+import HistoryOffer from '@/components/HistoryOffer'
+import HistoryTrade from '@/components/HistoryTrade'
+import HistoryTransaction from '@/components/HistoryTransaction'
+import HistoryTransactions from '@/components/HistoryTransactions'
 
 export default {
   data(){
@@ -170,12 +178,31 @@ export default {
       showmenuicon: true,
       noticeText: '',  
       notice: false,
+      
 
       showaccountsview: false,
 
       working:false,
       delok: false,
       delerror: false,
+
+      reloading: false,
+      paymentReloading: false,
+      paymentLoadmoring: false,
+      activeHistory: null,
+      components: {
+        offer: HistoryOffer,
+        transaction: HistoryTransaction,
+        trade: HistoryTrade,
+        depositAndWithdraw: HistoryDepositAndWithdraw,
+        effects: HistoryEffects,
+        transactions: HistoryTransactions
+      },
+      show: {
+        name: null,
+        component: null
+      },
+      currentHistoryComponent: 'transaction',
 
       needpwd: false,
       is_Flag: FLAG_DEFAULT,
@@ -205,6 +232,27 @@ export default {
     ...mapState({
       priceState: state => state.app.price,
     }),
+     ...mapGetters([
+      'balances',
+      'paymentsRecords',
+      'reserve',
+      
+    ]),
+    history(){
+      let data = []
+      if(!this.paymentsRecords){
+        return data;
+      }
+      return this.paymentsRecords.map(item=>{
+        let ele = Object.assign({}, item)
+        if(ele.type==='payment' || ele.type==='path_payment'){
+            ele.flag = ele.isInbound ? 'Receive' : 'Send'
+          }else{
+            ele.flag = ele.type
+          }
+        return ele
+      })
+    },
  /**
      * 尝试修改的资产总和
      */
@@ -294,6 +342,9 @@ export default {
       }
     }
   },
+  created() {
+      this.switchComponent(this.currentHistoryComponent)
+    },
   beforeMount () {
     this.price = this.priceState
   },
@@ -327,8 +378,20 @@ export default {
     ...mapActions([
       'getAccountInfo',
       'cleanAccount',
-      'updateAccount'
+      'updateAccount',
+      'getPayments',
+      'loadmorePayments',
+      'selectPayment',
       ]),
+      
+    switchComponent(name) {
+      if (name == this.show.name) return
+      this.show.name = name
+      this.show.component = this.components[name]
+    },
+    nativeAsset(item){
+      return isNativeAsset(item)
+    },
     reload(){
       return this.getAccountInfo(this.account.address)
     },
@@ -457,6 +520,38 @@ export default {
     refresh(){
       return this.load()
     },
+    doRefresh(){
+      if(this.reloading)return
+      this.reloading = true
+      this.load().then(response=>{
+        this.reloading = false
+      })
+      .catch(err=>{
+        this.reloading = false
+      })
+    },
+    doPaymentRefresh(){
+      //刷新
+      if(this.paymentReloading)return
+      this.paymentReloading = true
+      this.getPayments(this.account.address).then(response=>{
+        this.paymentReloading = false
+      })
+      .catch(err=>{
+        this.paymentReloading = false
+      })
+    },
+    doPaymentMore(){//查询更多的数据
+      if(this.paymentLoadmoring)return
+      if(this.paymentReloading)return
+      this.paymentLoadmoring = true
+      this.loadmorePayments(this.account.address).then(response=>{
+        this.paymentLoadmoring = false
+      })
+      .catch(err=>{
+        this.paymentLoadmoring = false
+      })
+    },
     assetIcon(code,issuer){
       return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
     },
@@ -483,6 +578,10 @@ export default {
     },
     closeView(){
         this.showaccountsview = false
+    },    
+    toTranscation(item){
+      this.selectPayment(item)
+      this.$router.push({name: 'Transaction'})
     },
    
   },
@@ -495,6 +594,12 @@ export default {
     'loading': Loading,
     AccountsNav,
     UnFundNotice,
+    'hdaw':HistoryDepositAndWithdraw,
+    HistoryEffects,
+    HistoryOffer,
+    HistoryTrade,
+    HistoryTransaction,
+    HistoryTransactions,
   }
 }
 

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-25 11:21:44
+ * @Last Modified time: 2018-07-30 10:43:53
  * @License MIT 
  */
  <template>
@@ -26,12 +26,12 @@
       :append-icon-cb="keyboardIconClick"
       ></v-text-field>
     
-    <secret-keyboard v-show="!hideKeyboard"
+    <!-- <secret-keyboard v-show="!hideKeyboard"
       ref="keyboard"
       :onChange="keyBoardChange"
       :onDone="keyBoardDone"
       :onBack="keyBoardBack"
-      />
+      /> -->
    </div>
 
  </template>

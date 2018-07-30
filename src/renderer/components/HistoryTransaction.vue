@@ -1,7 +1,7 @@
 <template>
   <div>
     <scroll :refresh="onRefresh">
-      <div class="content">
+      <div class="mt-2 mb-2">
         <card padding="10px 10px" class="infocard">
           <div class="history" slot="card-content">
             <v-layout class="history-li" row wrap v-for="item in history" :key="item.id" @click.stop="toTranscation(item)">

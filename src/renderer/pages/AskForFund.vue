@@ -98,10 +98,8 @@ export default {
       this.$router.back()
     },
     copy(value){
-      if(cordova.plugins.clipboard){
-        cordova.plugins.clipboard.copy(value)
-        this.$toasted.show(this.$t('CopySuccess'))
-      }
+      this.$electron.clipboard.writeText(value)
+      this.$toasted.show(this.$t('CopySuccess'))
     },
     share(){
       if(window.plugins && window.plugins.socialsharing){

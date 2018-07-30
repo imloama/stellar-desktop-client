@@ -63,7 +63,6 @@
     "decimal.js": ">=9.0.1",
     "echarts": ">=4.0.1",
     "ed25519": ">=0.0.4",
-    "instabug-cordova": "^1.9.1",
     "js-nacl": "^1.2.2",
     "lodash": ">=4.17.4",
     "moment": ">=2.20.1",

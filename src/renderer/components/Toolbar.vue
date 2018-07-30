@@ -4,7 +4,7 @@
 <template>
   <div class="cp-toolbar">
 
-    <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true' app>
+    <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true'>
       <v-btn icon v-if="showbackicon" @click="back" class="white--text">
             <v-icon class="back-icon font28">&#xE5CB;</v-icon>
       </v-btn>
@@ -13,16 +13,23 @@
           <v-icon class="back-icon"></v-icon>
         </v-btn>
       </slot>
-      <v-toolbar-title class="toolbar-title white--text" >{{title}}</v-toolbar-title>
-      <slot name="right-tool">
-        <v-btn icon style="visibility: hidden;">
-            <v-icon class="back-icon"></v-icon>
-        </v-btn>
-      </slot>
+      <v-toolbar-title>{{$t('AppName')}}</v-toolbar-title>
+      
+      
+
+      <v-spacer></v-spacer>
+      <v-toolbar-items class="hidden-sm-and-down">
+        <div :class="selectedMenuIndex ===0 ? 'mbtn mactive':'mbtn'" @click="toMyAssets"><v-icon>account_balance_wallet</v-icon>{{$t('Title.MyAssets')}}</div>
+        <div :class="selectedMenuIndex ===1 ? 'mbtn mactive':'mbtn'" flat @click="toTradeCenter"><v-icon>trending_up</v-icon>{{$t('Menu.TradeCenter')}}</div>
+        <div :class="selectedMenuIndex ===2 ? 'mbtn mactive':'mbtn'" flat @click="toDapps"><v-icon>apps</v-icon>{{$t('Title.ThirdApp')}}</div>
+        <div :class="selectedMenuIndex ===3 ? 'mbtn mactive':'mbtn'" flat @click="toMy"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
+        <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon>{{$t('Lock')}}</div>
+      </v-toolbar-items>
+
     </v-toolbar>
 
 
-    <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
+    <v-dialog persistent v-model="showPwdSheet" v-if="showPwdSheet" dark max-width="460px">
       <div class="sheet-content">
         <div class="sheet-title">
           <h4 class="title" v-if="!lockpass">
@@ -53,7 +60,7 @@
           <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
         </div>
       </div>
-    </v-bottom-sheet>
+    </v-dialog>
 
   </div>
 </template>
@@ -85,6 +92,8 @@ export default {
       password: null,
       pwdvisible: false,
       checkPwd: false,//是否正在校验密码
+
+      selectedMenuIndex:null,
 
     }
   },
@@ -121,9 +130,14 @@ export default {
     lockpass:{
       type: Boolean,
       default: false
+    },
+    menuIndex:{
+      type: Number,
+      default: 0
     }
   },
-  mounted(){
+  beforeMount(){
+    this.selectedMenuIndex = this.menuIndex
   },
   methods: {
     ...mapActions({
@@ -255,6 +269,25 @@ export default {
         this.checkPwd = false
       })
     },
+    toMyAssets(){
+      this.selectedMenuIndex = 0
+      this.$router.push({name: 'MyAssets'})
+    },
+    toTradeCenter(){
+      this.selectedMenuIndex = 1
+      this.$router.push({name: 'TradeCenter'})
+    },
+    toDapps(){
+      this.selectedMenuIndex = 2
+      this.$router.push({name: 'Apps'})
+    },
+    toMy(){
+      this.selectedMenuIndex = 3
+      this.$router.push({name: 'My'})
+    },
+    doLock(){
+
+    }
   }
 }
 </script>
@@ -307,5 +340,11 @@ export default {
       font-size: 16px
       color: $primarycolor.green
 
-
+.mactive
+  background: $secondarycolor.green
+  // color: $primarycolor.green
+.mbtn
+  line-height: 48px
+  padding: 0 10px!important
+  cursor: pointer
 </style>

@@ -349,14 +349,14 @@ export default {
       this.qrcodebase64 = img
     },
     copy(value){
-      if(value && cordova.plugins.clipboard){
-        cordova.plugins.clipboard.copy(value)
+      if(value){
+        this.$electron.clipboard.writeText(value)
         this.$toasted.show(this.$t('CopySuccess'))
       }
     },
     copySeed(){
-      if(this.showseed && this.seed && cordova.plugins.clipboard){
-        cordova.plugins.clipboard.copy(this.seed)
+      if(this.showseed && this.seed ){
+        this.$electron.clipboard.writeText(this.seed)
         this.$toasted.show(this.$t('CopySuccess'))
       }
     },

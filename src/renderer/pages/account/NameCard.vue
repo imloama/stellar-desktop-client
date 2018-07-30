@@ -84,7 +84,6 @@ export default {
       this.$router.back()
     },
     save(){
-      //TODO 调用shx-cordova-saveb64-image保存二维码
       let params = {
           data: this.qrcodebase64, 
           prefix: this.account.name + "-namecard" , 
@@ -107,16 +106,12 @@ export default {
     
     },
     copy(value){
-      if(cordova.plugins.clipboard){
-        cordova.plugins.clipboard.copy(value)
-        this.$toasted.show(this.$t('CopySuccess'))
-      }
+      this.$electron.clipboard.writeText(value)
+      this.$toasted.show(this.$t('CopySuccess'))
     },
     copySeed(){
-      if(this.showseed && cordova.plugins.clipboard){
-        cordova.plugins.clipboard.copy(this.accountData.seed)
-        this.$toasted.show(this.$t('CopySuccess'))
-      }
+      this.$electron.clipboard.writeText(this.accountData.seed)
+      this.$toasted.show(this.$t('CopySuccess'))
 
     }
   },

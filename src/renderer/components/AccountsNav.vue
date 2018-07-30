@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com
  * @Date: 2018-01-30 16:58:05
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-02 12:39:14
+ * @Last Modified time: 2018-07-30 14:23:33
  * @License: MIT
  */
 <template>
@@ -58,7 +58,7 @@
     </v-navigation-drawer>
       <!-- end 切换账户 -->
 
-    <v-bottom-sheet  v-model="showPwdSheet" v-if="showPwdSheet" dark>
+    <v-dialog  v-model="showPwdSheet" v-if="showPwdSheet" dark max-width="460px">
       <div class="sheet-content">
         <div class="sheet-title">
           <h4 class="title">
@@ -88,7 +88,7 @@
           <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
         </div>
       </div>
-    </v-bottom-sheet>
+    </v-dialog>
   </div>
 </template>
 

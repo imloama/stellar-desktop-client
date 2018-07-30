@@ -10,47 +10,50 @@
   </div>
 
   <scroll :refresh="reload">
-    <div v-for="(item, index) in deals" :key="index">
+    <div v-for="(item, index) in deals" :key="index" class="mt-1 mb-1">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
           <div class="flex-row">
             <div class="flex3 over-hide">
               <div class="pair-show">
                 <div class="pair-from">
-                  <div class="code">{{item.bought_asset_code}}</div>
-                  <div class="issuer" v-if="assethosts[item.bought_asset_code]">{{assethosts[item.bought_asset_code] | miniaddress}}</div>
-                  <div class="issuer" v-else-if="assethosts[item.bought_asset_issuer]">
-                    {{assethosts[item.bought_asset_issuer] | miniaddress}}
+                  <div class="code">{{item.bought_asset_code}}
+                    <span class="issuer" v-if="assethosts[item.bought_asset_code]">{{assethosts[item.bought_asset_code] | miniaddress}}</span>
+                    <span class="issuer" v-else-if="assethosts[item.bought_asset_issuer]">
+                      {{assethosts[item.bought_asset_issuer] | miniaddress}}
+                    </span>
+                    <span class="issuer" v-else>{{item.sold_asset_issuer | miniaddress}}</span>
+
                   </div>
-                  <div class="issuer" v-else>{{item.sold_asset_issuer | miniaddress}}</div>
+                  
                 </div>
                 <div class="pair-icon">
                   <i class="icons material-icons">&#xE8D4;</i>
                 </div>
                 <div class="pair-to">
-                  <div class="code">{{item.sold_asset_code}}</div>
-                  <div class="issuer" v-if="assethosts[item.sold_asset_code]">{{assethosts[item.sold_asset_code] | miniaddress}}</div>
-                  <div class="issuer" v-else-if="assethosts[item.sold_asset_issuer]">{{assethosts[item.sold_asset_issuer] | miniaddress}}
+                  <div class="code">{{item.sold_asset_code}}
+                    <span class="issuer" v-if="assethosts[item.sold_asset_code]">{{assethosts[item.sold_asset_code] | miniaddress}}</span>
+                  <span class="issuer" v-else-if="assethosts[item.sold_asset_issuer]">{{assethosts[item.sold_asset_issuer] | miniaddress}}
+                  </span>
+                  <span class="issuer" v-else>{{item.sold_asset_issuer| miniaddress}}</span>
                   </div>
-                  <div class="issuer" v-else>{{item.sold_asset_issuer| miniaddress}}</div>
+                  
                 </div>
               </div>
             </div>
-            <div class="flex5 textright">
-              <div>
-                <span class="value">{{Number(item.price)}}{{item.bought_asset_code}}</span>
+            <div class="flex2 textleft pl-2  pt-2">
                 <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
-              </div>
-              <div>
-                <span class="value down">-{{Number(item.sold_amount)}}{{item.sold_asset_code}}</span>
-                <span class="label">{{$t('AmountAbbreviation')}}</span>
-              </div>
-              <div>
-                <span class="value up">+{{Number(item.bought_amount)}}{{item.bought_asset_code}}</span>
-                <span class="label">{{$t('TotalAbbreviation')}}</span>
-              </div>
+                <span class="value">{{Number(item.price)}}{{item.bought_asset_code}}</span>
             </div>
-            <div class="flex1 textright pt-4">
+            <div  class="flex2 textleft pl-2  pt-2">
+              <span class="label">{{$t('AmountAbbreviation')}}</span>
+              <span class="value down">-{{Number(item.sold_amount)}}{{item.sold_asset_code}}</span>
+            </div>
+            <div class="flex2 textleft pl-2  pt-2">
+              <span class="label">{{$t('TotalAbbreviation')}}</span>
+              <span class="value up">+{{Number(item.bought_amount)}}{{item.bought_asset_code}}</span>
+            </div>
+            <div class="flex1 textright pt-2">
              <i class="material-icons trade-icon" v-if="item.type === 'canceled'">not_interested</i>
              <i class="material-icons trade-icon" v-else>done</i>
             </div>
@@ -225,8 +228,6 @@ import { isNativeAsset } from '@/api/assets'
     display: flex
     text-align: center
     font-size: 14px
-    padding-top: 10px
-    padding-bottom: 10px
     overflow:hidden
     .pair-from
       flex: 4
@@ -256,7 +257,7 @@ import { isNativeAsset } from '@/api/assets'
   color: $secondarycolor.font
 .trade-icon
   color: $secondarycolor.font
-  font-size: .6rem
+  font-size: 24px
 .over-hide
   overflow: hidden
 </style>

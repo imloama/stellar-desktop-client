@@ -15,7 +15,7 @@ export function convertRecords(address,rows){
   var data = [];
   for(var i=0,n=rows.length;i<n;i++){
     var r = rows[i];
-    var t = { "id": r.id, "type": r.type , "paging_token": r.paging_token };
+    var t = { "id": r.id, "type": r.type , "paging_token": r.paging_token, origin: Object.assign({}, r) };
     //console.log(`---------------------convert row---------`)
     //console.log(r.transaction())//返回的promise
     switch(r.type){

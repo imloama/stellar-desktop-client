@@ -4,11 +4,11 @@
       <div class="mt-2 mb-2">
         <card padding="10px 10px" class="infocard">
           <div class="history" slot="card-content">
-            <v-layout class="history-li" row wrap v-for="item in history" :key="item.id" @click.stop="toTranscation(item)">
+            <v-layout class="history-li" row wrap v-for="item in history" :key="item.id">
               <v-flex xs4 class="history-wrapper">
                 <div class="history">
-                  <div class="history-flag">{{$t(item.flag)}}</div>
-                  <div class="history-time">{{item.date}}</div>
+                  <div class="history-flag">{{$t(item.flag)}} &nbsp;<span class="tx">{{item.counterparty|miniaddress}}</span></div>
+                  <div class="history-time tx">{{item.origin.created_at}}</div>
                 </div>
               </v-flex>
               <v-flex xs8 class="history-wrapper">
@@ -19,6 +19,7 @@
                   <span class="amount">{{item.amount}}</span>
                   <span class="code" v-if="item.asset">{{item.asset.code}}</span>
                 </div>
+                <div class="textright tx">TX:{{item.origin.transaction_hash}}</div>
               </v-flex>
             </v-layout>
           </div>
@@ -136,7 +137,9 @@
     padding-top: 5px
     padding-bottom: 5px
     font-size: 16px
-
+    border-bottom: 1px solid $secondarycolor.font
+    &:last-child
+      border-bottom: 0px
   .history-amount
     text-align: right
 
@@ -147,4 +150,7 @@
     color: $primarycolor.red
   .loadmore
     padding-top: .3rem
+  .tx
+    color: $secondarycolor.font
+    font-size: 14px
 </style>

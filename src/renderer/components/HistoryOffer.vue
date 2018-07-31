@@ -4,8 +4,11 @@
 */
 <template>
   <div class="content">
-  <scroll :refresh="setup">
-    <div v-for="(offer, index) in offers" :key="index">
+    <card class="offer-card" padding="10px 10px" v-if="!refreshing && !moreloading && offers.length ==0">
+      {{$t("Error.ValueIsNull")}}
+    </card>
+    
+    <div v-for="(offer, index) in offers" :key="index" class="mt-1 mb-1">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
           <div class="flex-row">
@@ -54,7 +57,10 @@
         </div>
       </card>
     </div>
-  </scroll>
+    <v-btn block flat color="primary" v-if="offers.length>0" 
+        :loading="moreloading" @click="loadmore">
+      {{$t('LoadMore')}}
+    </v-btn>
 
    <loading :show="working" :loading="sending" :success="dealok" :fail='dealfail' 
       color="red" :title="loadingTitle" :msg="loadingMsg" :closeable="dealfail" @close="hiddenLoadingView"/>
@@ -86,6 +92,9 @@ import { getXdrResultCode } from '@/api/xdr'
         dealfail: false,
         loadingTitle: null,
         loadingMsg: null,
+
+        refreshing:true,
+        moreloading: false
       
       }
     },
@@ -102,15 +111,31 @@ import { getXdrResultCode } from '@/api/xdr'
       }
     },
     mounted() {
-       this.queryMyOffers()
+       this.refreshing = true
+       this.queryMyOffers().then(response=>{
+         this.refreshing = false
+       }).catch(err=>{
+         this.refreshing = false
+       })
     },
     methods: {
       ...mapActions({
         queryMyOffers: 'queryMyOffers',
+        queryMyNextPageOffers:'queryMyNextPageOffers',
         switchTradePair: 'switchTradePair'
       }),
       setup() {
         return this.queryMyOffers()
+      },
+      loadmore(){
+        if(this.moreloading)return
+        this.moreloading = true
+        this.queryMyNextPageOffers().then(response=>{
+          this.moreloading = false
+        })
+        .catch(err=>{
+          this.moreloading = false
+        })
       },
       switchPair(offer) {
         let index = offer.pair_id

@@ -3,15 +3,22 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-05 16:54:52
+ * @Last Modified time: 2018-07-31 10:07:47
  * @License MIT 
  */
 
 <template>
   <div class="line flex-row">
-      <div class="flex1">
+      <div class="flex1 pl-1 pr-1 textright">{{$t('open_price')}}:{{titleData.open}}</div>
+      <div class="flex1 pl-1 pr-1 textright">{{$t('close_price')}}:{{titleData.close}}</div>
+      <div class="flex1 pl-1 pr-1 textright">{{$t('high_price')}}:{{titleData.high}}</div>
+      <div class="flex1 pl-1 pr-1 textright">{{$t('low_price')}}:{{titleData.low}}</div>
+      <div class="flex1 pl-1 pr-1 textright">{{$t('volumes')}}:{{titleData.base_volume}}{{base.code}}/{{titleData.counter_volume}}{{counter.code}}</div>
+
+      <div class="flex1 pl-1 pr-1">
         <div :class="' price textright ' + ((titleData.change >=0 ^ redUpGreenDown)? 'up':'down') ">
-            {{titleData.price >= 0 ? (titleData.price>=0.000001 ? Number(titleData.price): titleData.price):''}}</div>
+            {{titleData.price >= 0 ? (titleData.price>=0.000001 ? Number(titleData.price): titleData.price):''}}
+        </div>
       </div>
       <div class="flex1">
         <div class="rate">

@@ -11,7 +11,8 @@
       >
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
-    <div class="content">
+    <m-layout>
+    <div class="mt-2">
       <div class="flex-row textcenter menurow">
         <div class="flex1" @click="activeFedAddType">
           <span :class="'menu ' + ( addTypeFed ? 'active':'unactive' )" >{{$t('FederationUrl')}}</span></div>
@@ -86,6 +87,7 @@
 
 
     </div>
+    </m-layout>
   </div>
 </template>
 

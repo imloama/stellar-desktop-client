@@ -4,64 +4,18 @@
  * 点击买单或卖单，会触发@change事件，将当前页面的数据发送出去
  */
 <template>
-  <!---->
-  <div class="orderbook">
-    <!--买卖-->
-    <div class="ob-buy-sell"></div>
-
-    <!--盘面-->
-    <div class="flex-row">
-      <div class="flex1 pl-1 pr-1">
-          <div class="textcenter primarycolor">{{$t('Trade.BuyOffer')}}</div>
-          <card class="buyoffer-table offer-table">
-            <div class="table-head font-13">
-              <div class="headcol">{{$t('Trade.Price')}}</div>
-              <div class="headcol">{{BaseAsset.code}}</div>
-              <div class="headcol">{{CounterAsset.code}}</div>
-              <div class="headcol">{{$t('Trade.Depth')}}</div>
-            </div>
-            <div class="table-row font-13" 
-              v-for="(item,index) in bidsdata" :key="index"
-              :style="'background: linear-gradient(to right,#303034 0%,#303034 '
-                +item.blank+'%,#216549 0%,#216549 ' + item.percent +'%);'"
-              @click.stop="chooseItem('buy',item)"
-              >
-              <div class="b-row price">{{item.price}}</div>
-              <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat }}</div>
-              <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
-              <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
-            </div>
-          </card>
-      </div>
-      <div class="flex1 pl-1 pr-1">
-          <div class="primarycolor textcenter">{{$t('Trade.SellOffer')}}</div>
-          <card class="selloffer-table offer-table">
-            <div class="table-head font-13">
-              <div class="headcol price">{{$t('Trade.Price')}}</div>
-              <div class="headcol">{{BaseAsset.code}}</div>
-              <div class="headcol">{{CounterAsset.code}}</div>
-              <div class="headcol depth">{{$t('Trade.Depth')}}</div>
-            </div>
-            <div class="table-row font-13" 
-              v-for="(item,index) in asksdata" :key="index"
-              :style="'background: linear-gradient(to left,#303034 0%,#303034 '
-                +item.blank+'%,#733520 0%,#733520 ' + item.percent +'%);'"
-                @click.stop="chooseItem('sell',item)"
-              >
-              <div class="b-row price">{{item.price}}</div>
-              <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat}}</div>
-              <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
-              <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
-            </div>
-          </card>
-      </div>
-    </div>
-
-    <!--我的委单-->
-
-  </div>
-<!--
   <scroll :refresh="load">
+    <!--菜单-->
+    <!-- <div class="ordermenu">
+      <div :class="'buyoffer offermenu' + (active==='buy'?' active':'')" 
+          @click.stop="active='buy'">{{$t('Trade.BuyOffer')}}</div>
+      <div :class="'selloffer offermenu' + (active==='sell'?' active':'')" 
+          @click.stop="active='sell'">{{$t('Trade.SellOffer')}}</div>
+      <div :class="'myoffer offermenu' + (active==='myoffer'?' active':'')" 
+          @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
+      <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
+          @click.stop="active='myTradeHistory'">{{$t('History.Trade')}}</div>
+    </div> -->
 
     <v-tabs class="tabs-bg-dark" grow slider-color="primary" color="transparent">
         <v-tab @click.stop="active='buy'">{{$t('Trade.BuyOffer')}}</v-tab>
@@ -154,7 +108,6 @@
 
     </card>
   </scroll>
-  -->
 </template>
 
 <script>
@@ -251,10 +204,10 @@ export default {
         adep = adep.add(realAmount)
         return Object.assign({}, obj, {
           origin: obj,
-          num: amount.toFixed(7),
-          price: obj.price,
-          amount: realAmount.toFixed(7),
-          depth: dep.toFixed(7),
+          num: amount.toFixed(this.decimal),
+          price: new Decimal(obj.price).toFixed(this.decimal),
+          amount: realAmount.toFixed(this.baseDecimal),
+          depth: Number(dep.toFixed(this.decimal)),
           originDepth: adep.toNumber()
         })
       })
@@ -272,10 +225,10 @@ export default {
         dep = dep.add(num);
         adep = adep.add(amount)
         return Object.assign({}, obj, {
-          amount: amount.toFixed(7),
-          price: obj.price,
-          num: num.toFixed(7),
-          depth: dep.toFixed(7),
+          amount: amount.toFixed(this.baseDecimal),
+          price: new Decimal(obj.price).toFixed(this.decimal),
+          num: num.toFixed(this.decimal),
+          depth: dep.toFixed(this.decimal),
           origin: obj,
           originDepth: adep.toNumber()
         });

@@ -169,6 +169,52 @@ const mutations = {
   
 }
 
+const blocks = [
+  'error',
+  'seed',
+  'seedExtData',
+  'mnemonic',
+  'mIndex',
+  'accountname',
+  'accountpassword',
+  'password',
+  'memo',
+  'showTabbar',
+  'autoFundConfig',
+  'accounts.password',
+  'accounts.error',
+  'accounts.accountData.seed',
+  'accounts.accountData.tradepairs',
+  'account.account_not_funding',
+  'account.payments.records',
+  'account.transactions.records',
+  'accounts.effects.records',
+  'accounts.tradePairKLineData',
+  'message.items',
+  'asset.assets',
+  'asset.selected',
+  'trades.trades',
+  'app.contacts',
+  'app.enablePin',
+  'app.horizon',
+  'app.locale',
+  'app.myaddresses',
+  'app.pin'
+
+]
+
+
+let persistencePlugin = createPersist({
+  namespace: APP_NAME + '-vuex-',
+  initialState: {},
+  serialize,
+  deserialize,
+  // never expire
+  expires: 0,
+  blocks
+})
+let plugins = [persistencePlugin]
+
 const store = new Vuex.Store({
   state,
   getters,
@@ -182,7 +228,21 @@ const store = new Vuex.Store({
     trades: TradesStore,
     message:MessageStore
   },
+  plugins
 
 })
+
+function serialize(value){
+  // console.log(value)
+  //return Base64.encode(JSON.stringify(value))
+  let str=  JSON.stringify(value)
+  // console.log('-------------------' + str.length)
+  return str
+}
+
+function deserialize(value){
+  //return JSON.parse(Base64.decode(value))
+  return JSON.parse(value)
+}
 
 export default store

@@ -3,15 +3,17 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-06 12:27:18
+ * @Last Modified time: 2018-07-31 17:23:01
  * @License MIT 
  */
 <template>
   <div class="page">
-    <!-- toolbar -->
+    <!-- toolbar
     <trade-pair-tool-bar @choseTradePair="choseTradePair" @switchTradePair="switchTradePair"/>
-
-    <div class="content trade-content">
+  -->
+  <toolbar :showbackicon="true" :menuIndex="1" ref="toolbar"/>
+    <m-layout>
+    <div class="trade-content">
       <!--K线图-->
       <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
       
@@ -19,7 +21,7 @@
       <order-book ref="orderbook"/>
 
     </div>
-    <!-- 买卖按钮 -->
+    <!-- 买卖按钮 
     <div class="flex-row full-width footer-btns">
       <div class="flex1 btn-flex">
         <div class="full-width btn-buy" color="primary" @click="toBuy">
@@ -34,6 +36,8 @@
         </div>
       </div>
     </div>
+    -->
+    </m-layout>
 
     <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
 
@@ -50,6 +54,7 @@ import BottomNotice from '@/components/BottomNotice'
 import Loading from '@/components/Loading'
 import OrderBook from '@/components/OrderBook'
 import TradePairToolBar from '@/components/TradePairToolBar'
+import Toolbar from '@/components/Toolbar'
 import { listenOrderbook } from '@/api/orderbook'
 import { getTrades } from '@/api/trade'
 import { cancel as cancelOffer, myofferConvert, offer as doOffer }  from '@/api/offer'
@@ -153,7 +158,7 @@ export default {
         }
       })
       if(data.length === 0)return _.defaultsDeep({balance: 0}, asset)
-      return _.defaultsDeep({}, data[0])
+      return defaultsDeep({}, data[0])
     },
     choseTradePair({index,tradepair}){//选择交易对
       this.$nextTick(()=>{
@@ -192,6 +197,7 @@ export default {
     OrderBook,
     TradePairToolBar,
     PasswordSheet,
+    Toolbar
   }
   
 

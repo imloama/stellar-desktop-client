@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-05 17:54:51
+ * @Last Modified time: 2018-07-31 11:46:03
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -30,7 +30,7 @@ export default {
       accountDetails: state => state.account.data
     }),
   },
-  beforeMount () {
+  mounted () {
     if (this.account.address) {
       this.fetchData()
       this.setupFetchAccountInterval()

@@ -3,22 +3,38 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-19 09:30:42
+ * @Last Modified time: 2018-07-31 17:15:54
  * @License: MIT 
  */
 <template>
-<card class="k-card" padding="5px 0px">
+<card class="k-card info-card" padding="5px 0px">
   <div slot="card-content" class="k">
-      <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null">
-          <div class="flex1 title-btn-div"  v-if="fullscreen">
-              <v-btn class="btn-back k-icon" icon @click="back">
-                <i class="material-icons  k-icon">keyboard_arrow_left</i>
-            </v-btn>
+      <div class="atitle pa-2" v-if="showTitle && titleData && titleData.price !== null">
+
+          <div class="flex-row">
+              <div class="flex1 font28 pt-1"><span>{{base.code}}</span>/<span>{{counter.code}}</span></div>
+              <div :class="'flex1 pt-1 '  + ( (titleData.change >=0 ^ redUpGreenDown) ? 'up':'down') ">
+                <span class="price">{{titleData.price}}</span>
+                <span v-if="titleData.rate>0"> +{{titleData.rate}}%</span>
+                <span v-else>{{titleData.rate}}%</span>
+              </div>  
+              <div class="flex3">
+                    <div class="flex-row pt-1">
+                      <div class="flex1"><div v-if="titleData.open" class="label">24H {{$t('open_price')}}</div><div class="value" v-if="titleData.open">{{titleData.open}}</div></div>
+                      <div class="flex1"><div v-if="titleData.close" class="label">24H {{$t('close_price')}}</div><div class="value" v-if="titleData.close">{{titleData.close}}</div></div>
+                      <div class="flex1"><div v-if="titleData.high" class="label">24H {{$t('high_price')}}</div><div class="value" v-if="titleData.high">{{titleData.high}}</div></div>
+                      <div class="flex1"><div v-if="titleData.low" class="label">24H {{$t('low_price')}}</div><div class="value" v-if="titleData.low">{{titleData.low}}</div></div>
+                      <div class="flex1"><div v-if="titleData.base_volume" class="label">24H {{$t('volumes')}}</div><div class="value" v-if="titleData.base_volume">{{titleData.base_volume}}</div></div>
+                  </div>
+
+              </div>
           </div>
+
+         
+<!--          
           <div :class="'flex5 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown) ? 'up':'down') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
-                  <!-- <span class="code">{{counter.code}}</span> -->
               </div>
               <div class="flex-row">
                   <div class="flex2 textright lchange">
@@ -36,18 +52,12 @@
               <div class=""><span class="label">24H {{$t('low')}} </span><span v-if="titleData.low">{{titleData.low}}</span></div>
               <div class=""><span class="label">24H {{$t('volume')}} </span><span v-if="titleData.base_volume">{{Number(titleData.base_volume).toFixed(4)}}</span></div>
           </div>
-          <div class="flex1 title-btn-div">
-                <i class="material-icons k-icon" v-if="showKgraph" @click="switchKgraphShow">trending_up</i>
-                <i class="material-icons  k-icon" v-else @click="switchKgraphShow">visibility_off</i>
-          </div>
          
+          -->
       </div>
        
-      <v-btn class="btn-fullscreen" v-if="showKgraph && !fullscreen"  icon @click="toFullscreen">
-          <i class="material-icons">fullscreen</i>
-      </v-btn>
       
-      <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
+      <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: lineHeight}"></div>
       <!-- <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
@@ -108,9 +118,10 @@ export default {
             opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
-            resolution_key: '15min',
-            resolution: RESOLUTION_15MIN,
-            resolutionIndex: "3",
+            resolution_key: 'hour',
+            resolution: RESOLUTION_1HOUR,
+            resolutionIndex: "2",
+            lineHeight:'480px',
 
             dates:[],//日期
             volumes: [],//成交量
@@ -120,10 +131,10 @@ export default {
             lasttime: null,//上次的执行时间
             RESOLUTION_HOURS: {
                 "week": 16800,//100周
-                "day": 2400,//100天
-                "hour": 240,//10天
-                "15min": 60,//5天
-                "1min": 60
+                "day": 7200,//100天
+                "hour": 720,//30天
+                "15min": 120,//10天
+                "1min": 120
             },
             
             
@@ -266,7 +277,7 @@ export default {
         getStartTime(){
             let defHour = this.RESOLUTION_HOURS[this.resolution_key]
             if(!defHour){
-                defHour = 100
+                defHour = 500
             }
             return Number(moment().subtract(defHour,"hours").format('x'))
         },
@@ -333,8 +344,8 @@ export default {
                 animation: true,
                 color: this.colors,
                 backgroundColor: "#212122",
-              //  title: {left: 'center', text: this.base.code + '/' + this.counter.code },
-                legend: { show: false, top: 30,data: [this.$t('minute'), 'MA5', 'MA10']},
+                title: {left: 'center', text: this.base.code + '/' + this.counter.code },
+                legend: { show: true, top: 30,data: [this.$t('minute'), 'MA5', 'MA10']},
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: { type: 'cross' },
@@ -371,23 +382,10 @@ export default {
                     link: [{xAxisIndex: [0,1]}]
                 },
                 dataZoom: [{
-                    type: 'slider',
-                    xAxisIndex: [0, 1],
-                    filterMode: 'none',
-                    realtime: false,
-                    start: 0,
-                    end: 100,
-                    top: 180,//65,
-                    height: 20,
-                    handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-                    handleSize: '120%'
-                }, {
                     type: 'inside',
                     xAxisIndex: [0, 1],
-                    start: 40,
-                    end: 70,
-                    top: 40,
-                    height: 20
+                    start: 50,
+                    end: 100
                 }],
                 xAxis: [{
                     type: 'category',
@@ -413,7 +411,7 @@ export default {
                     axisLabel: {show: false},
                     axisTick: {show: false},
                     axisLine: { onZero: false, lineStyle: { color: '#777' } },
-                    splitNumber: 20,
+                    splitNumber: 10,
                     min: 'dataMin',
                     max: 'dataMax',
                     axisPointer: {
@@ -425,10 +423,10 @@ export default {
                 }],
                 yAxis: [{
                     scale: true,
-                    splitNumber: 2,
+                    splitNumber: 5,
                     axisLine: { lineStyle: { color: '#777' } },
-                    splitLine: { show: false },
-                    axisTick: { show: false },
+                    splitLine: { show: true, lineStyle:{color: '#666666'} },
+                    // axisTick: { show: false },
                     axisLabel: {
                         inside: true,
                         formatter: '{value}\n'
@@ -437,42 +435,26 @@ export default {
                     scale: true,
                     gridIndex: 1,
                     splitNumber: 2,
-                    axisLabel: {show: false},
-                    axisLine: {show: false},
-                    axisTick: {show: false},
+                    axisLabel: {show: true,inside: true,
+                        formatter: '{value}\n'},
+                    axisLine: {show: true},
+                    axisTick: {show: true},
                     splitLine: {show: false}
                 }],
                 grid: [{
                     left: 0,
                     right: 0,
                     top: 30,//110,
-                    height: 120,
+                    height: 320,
                     //bottom: 0
                 }, {
                     left: 0,
                     right: 0,
-                    height: 40,
-                    top: 210,//260
+                    height: 80,
+                    top: 400,//260
                     //bottom: 0
                 }],
-                graphic: [{
-                    type: 'group',
-                    left: 'center',
-                    top: 70,
-                    width: 300,
-                    bounding: 'raw',
-                    children: [{
-                        id: 'MA5',
-                        type: 'text',
-                       // style: {fill: this.colors[1]},
-                        left: 0
-                    }, {
-                        id: 'MA10',
-                        type: 'text',
-                       // style: {fill: this.colors[2]},
-                        left: 'center'
-                    }]
-                }],
+                graphic: [],
                 series: [ {
                     type: 'candlestick',
                     name: this.$t('minute'),
@@ -515,9 +497,7 @@ export default {
                     smooth: true,
                     showSymbol: false,
                     lineStyle: {
-                        normal: {
-                            width: 1
-                        }
+                        normal: {width: 2,opacity: 0.5}
                     }
                 }, {
                     name: 'MA10',
@@ -527,7 +507,7 @@ export default {
                     showSymbol: false,
                     lineStyle: {
                         normal: {
-                            width: 1
+                            width: 2,opacity: 0.5
                         }
                     }
                 }]
@@ -627,7 +607,7 @@ export default {
             if(price.toNumber() === 0){
                 price = null
             }else{
-                price = price.toFixed(this.decimal || 7)
+                price = price.toFixed(7)
             }
             return Object.assign({},d,{
                     price: price,

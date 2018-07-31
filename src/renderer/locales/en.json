@@ -31,6 +31,7 @@
   "high_price":"high",
   "low_price":"low",
   "volumes":"volume",
+  "change_price":"change",
   "Congratulations":"Congratulations",
 
   "TermsOfServiceTitle":"Terms Of Service",

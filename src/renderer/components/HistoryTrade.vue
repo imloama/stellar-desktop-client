@@ -28,7 +28,7 @@
                   
                 </div>
                 <div class="pair-icon">
-                  <i class="icons material-icons">&#xE8D4;</i>
+                  /
                 </div>
                 <div class="pair-to">
                   <div class="code">{{item.sold_asset_code}}
@@ -41,19 +41,19 @@
                 </div>
               </div>
             </div>
-            <div class="flex2 textleft pl-2  pt-2">
+            <div class="flex2 textleft pl-2  pt-1">
                 <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
                 <span class="value">{{Number(item.price)}}{{item.bought_asset_code}}</span>
             </div>
-            <div  class="flex2 textleft pl-2  pt-2">
+            <div  class="flex2 textleft pl-2  pt-1">
               <span class="label">{{$t('AmountAbbreviation')}}</span>
               <span class="value down">-{{Number(item.sold_amount)}}{{item.sold_asset_code}}</span>
             </div>
-            <div class="flex2 textleft pl-2  pt-2">
+            <div class="flex2 textleft pl-2  pt-1">
               <span class="label">{{$t('TotalAbbreviation')}}</span>
               <span class="value up">+{{Number(item.bought_amount)}}{{item.bought_asset_code}}</span>
             </div>
-            <div class="flex1 textright pt-2">
+            <div class="flex1 textright pt-1">
              <i class="material-icons trade-icon" v-if="item.type === 'canceled'">not_interested</i>
              <i class="material-icons trade-icon" v-else>done</i>
             </div>
@@ -238,7 +238,6 @@ import { isNativeAsset } from '@/api/assets'
         color: $secondarycolor.font
         font-size: 14px
     .pair-icon
-      flex: 1
       .material-icons
         //color: $primarycolor.green
         font-size: 20px

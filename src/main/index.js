@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow,ipcMain  } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -20,13 +20,21 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
-    width: 1000
+    width: 1000,
+    fullscreen: false,
+    fullscreenable: true,
+    backgroundColor: '#212122',
+    show: false
   })
 
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+  mainWindow.once('ready-to-show', () => {
+    console.log('--------------------------ready-to-show')
+    mainWindow.maximize()
   })
 }
 
@@ -43,6 +51,22 @@ app.on('activate', () => {
     createWindow()
   }
 })
+//退出
+ipcMain.on('window-all-closed', () => {
+  app.quit();
+});
+//小化
+ipcMain.on('hide-window', () => {
+  mainWindow.minimize();
+});
+//最大化
+ipcMain.on('show-window', () => {
+  mainWindow.maximize();
+});
+//还原
+ipcMain.on('orignal-window', () => {
+  mainWindow.unmaximize();
+});
 
 /**
  * Auto Updater

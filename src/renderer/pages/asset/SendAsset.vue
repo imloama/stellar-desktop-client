@@ -143,8 +143,7 @@
     <contact-book v-show="showContacts" :data="contactsdata" :close="()=>{showContacts=false}" :ok="selectContact"/>
 
     <contact-book v-show="showmemobook" :data="memobookdata" :close="()=>{showmemobook=false}" :ok="selectmemo"/>
-      <div v-if="is_sendconfim" class="sendconfim_bottom_sheet">
-        <v-bottom-sheet  v-model="is_sendconfim" dark>
+        <v-dialog  v-model="is_sendconfim" dark max-width="460px">
             <v-container class="v_container">
               <v-layout>
                   <v-flex xs12>
@@ -194,8 +193,8 @@
                   </v-flex>
               </v-layout>
             </v-container>
-        </v-bottom-sheet>
-      </div>
+        </v-dialog>
+        
   </div>
 </template>
 

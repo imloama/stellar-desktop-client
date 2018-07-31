@@ -369,6 +369,18 @@ const actions = {
 
     commit(QUERY_MY_OFFERS,records)
   },
+  async queryMyNextPageOffers({dispatch,commit,state}){
+    let originData = state.selectedTradePair.my
+    if(typeof originData.next === 'function'){
+      let newdata = originData.next()
+      let newrecords = newdata.records
+      newdata.records = originData.records.concat(newrecords)
+      commit(QUERY_MY_OFFERS,newdata)
+    }else{
+      return this.queryMyOffers()
+    }
+    
+  },
   //盘面监听得到数据后处理
   orderBookStreamHandler({commit,state}, data){
     commit(ORDERBOOK_STREAM_HANDLER, data)

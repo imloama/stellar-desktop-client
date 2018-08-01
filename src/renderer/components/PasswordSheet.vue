@@ -22,7 +22,8 @@
                 ></v-text-field>
         </div>
         <div  class="sheet-btns">
-          <div class="sheet-btn" @click="canclePwdInput">{{$t('Button.Cancel')}}</div>
+          <div class="sheet-btn" @click="resetPwd" v-if="lock">{{$t('Reset')}}</div>
+          <div class="sheet-btn" @click="canclePwdInput" v-else>{{$t('Button.Cancel')}}</div>
           <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
         </div>
       </div>
@@ -56,6 +57,10 @@ export default {
         },
         address: {
             type: String,
+        },
+        lock:{
+            type: Boolean,
+            default: false
         }
     },
     computed:{
@@ -80,6 +85,9 @@ export default {
         canclePwdInput(){
             this.inpassword = null
             this.$emit('cancel')
+        },
+        resetPwd(){
+            this.inpassword = null
         },
         okPwdInput(){
             if(this.inpassword === null || this.inpassword.length === 0)return

@@ -10,7 +10,7 @@
     <div class="ob-buy-sell"></div>
 
     <!--盘面-->
-    <div class="flex-row">
+    <div class="flex-row mt-4 mb-1">
       <div class="flex1 pl-1 pr-1">
           <div class="textcenter primarycolor">{{$t('Trade.BuyOffer')}}</div>
           <card class="buyoffer-table offer-table">
@@ -57,104 +57,62 @@
       </div>
     </div>
 
-    <!--我的委单-->
+    <!--我的委单  成交记录-->
+    <div class="flex-row mt-4 mb-1">
+      <div class="flex1 pl-1 pr-1">
+        <div class="textcenter primarycolor">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
+        <card class="buyoffer-table offer-table otable">
+          <div class="table-head font-13">
+            <div class="headcol">{{$t('Trade.Price')}}</div>
+            <div class="headcol">{{BaseAsset.code}}</div>
+            <div class="headcol">{{CounterAsset.code}}</div>
+            <div class="headcol"></div>
+          </div>
+          <div class="table-row font-13" 
+            v-for="(item,index) in myoffers" :key="index" :class='item.type'>
+            <div class="b-row price" >{{item.price}}</div>
+            <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
+            <div class="b-row" v-else>-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
+            <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
+            <div class="b-row" v-else>+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
+            <div class="b-row depth">
+              <span class="working" v-if="working && delindex===index"></span>
+              <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
+            </div>
+          </div>
+        </card>
+
+      </div>
+      <div class="flex1 pl-1 pr-1 mb-2">
+        <div class="textcenter primarycolor">{{$t('History.Trade')}}</div>
+        <card class="buyoffer-table offer-table otable">
+          <div class="table-head font-13">
+            <div class="headcol">{{$t('deal_price')}}</div>
+            <div class="headcol">{{BaseAsset.code}}</div>
+            <div class="headcol">{{CounterAsset.code}}</div>    
+            <div class="headcol">{{$t('status')}}</div>      
+          </div>
+          <div class="table-row font-13" 
+            v-for="(item,index) in deals" :key="index" :class='item.type'>
+            <div class="b-row price" >{{item.price}}</div>
+            <div class="b-row" v-if="assetEqBaseAsset(item)">-{{item.sold_amount}}&nbsp;</div>
+            <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
+            
+            <div class="b-row" v-if="assetEqCounterAsset(item)">-{{item.sold_amount}}&nbsp;</div>
+            <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
+
+            <div class="b-row">{{$t(item.type)}}</div>
+          </div>
+        </card>
+      </div>
+    </div>  
+
+
+     <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
+
 
   </div>
-<!--
-  <scroll :refresh="load">
 
-    <v-tabs class="tabs-bg-dark" grow slider-color="primary" color="transparent">
-        <v-tab @click.stop="active='buy'">{{$t('Trade.BuyOffer')}}</v-tab>
-        <v-tab @click.stop="active='sell'">{{$t('Trade.SellOffer')}}</v-tab>
-        <v-tab @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</v-tab>
-        <v-tab @click.stop="active='myTradeHistory'">{{$t('History.Trade')}}</v-tab>
-      </v-tabs>
-
-    <card class="offer-card" padding="10px 10px">
-      <div class="buyoffer-table offer-table" v-if="active === 'buy'" slot="card-content">
-        <div class="table-head font-13">
-          <div class="headcol">{{$t('Trade.Price')}}</div>
-          <div class="headcol">{{BaseAsset.code}}</div>
-          <div class="headcol">{{CounterAsset.code}}</div>
-          <div class="headcol">{{$t('Trade.Depth')}}</div>
-        </div>
-        <div class="table-row font-13" 
-          v-for="(item,index) in bidsdata" :key="index"
-          :style="'background: linear-gradient(to right,#303034 0%,#303034 '
-            +item.blank+'%,#216549 0%,#216549 ' + item.percent +'%);'"
-          @click.stop="chooseItem('buy',item)"
-          >
-          <div class="b-row price">{{item.price}}</div>
-          <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat }}</div>
-          <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
-          <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
-        </div>
-      </div>
-      <div class="selloffer-table offer-table" v-if="active === 'sell'" slot="card-content">
-        <div class="table-head font-13">
-          <div class="headcol price">{{$t('Trade.Price')}}</div>
-          <div class="headcol">{{BaseAsset.code}}</div>
-          <div class="headcol">{{CounterAsset.code}}</div>
-          <div class="headcol depth">{{$t('Trade.Depth')}}</div>
-        </div>
-        <div class="table-row font-13" 
-          v-for="(item,index) in asksdata" :key="index"
-          :style="'background: linear-gradient(to left,#303034 0%,#303034 '
-            +item.blank+'%,#733520 0%,#733520 ' + item.percent +'%);'"
-            @click.stop="chooseItem('sell',item)"
-          >
-          <div class="b-row price">{{item.price}}</div>
-          <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat}}</div>
-          <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
-          <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
-        </div>
-      </div>
-      <div class="myoffer-table offer-table" v-if="active === 'myoffer'" slot="card-content">
-        <div class="table-head font-13">
-          <div class="headcol">{{$t('Trade.Price')}}</div>
-          <div class="headcol">{{BaseAsset.code}}</div>
-          <div class="headcol">{{CounterAsset.code}}</div>
-          <div class="headcol"></div>
-        </div>
-        <div class="table-row font-13" 
-          v-for="(item,index) in myoffers" :key="index" :class='item.type'>
-          <div class="b-row price" >{{item.price}}</div>
-          <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
-          <div class="b-row" v-else>-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
-          <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
-          <div class="b-row" v-else>+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
-          <div class="b-row depth">
-            <span class="working" v-if="working && delindex===index"></span>
-            <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
-          </div>
-        </div>
-      </div>
-      
-      <div class="myoffer-table offer-table" v-if="active === 'myTradeHistory'" slot="card-content">
-        <div class="table-head font-13">
-          <div class="headcol">{{$t('deal_price')}}</div>
-          <div class="headcol">{{BaseAsset.code}}</div>
-          <div class="headcol">{{CounterAsset.code}}</div>    
-          <div class="headcol">{{$t('status')}}</div>      
-        </div>
-        <div class="table-row font-13" 
-          v-for="(item,index) in deals" :key="index" :class='item.type'>
-          <div class="b-row price" >{{item.price}}</div>
-          <div class="b-row" v-if="assetEqBaseAsset(item)">-{{item.sold_amount}}&nbsp;</div>
-          <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
-          
-          <div class="b-row" v-if="assetEqCounterAsset(item)">-{{item.sold_amount}}&nbsp;</div>
-          <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
-
-          <div class="b-row">{{$t(item.type)}}</div>
-        </div>
-      </div>
-
-      <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
-
-    </card>
-  </scroll>
-  -->
 </template>
 
 <script>

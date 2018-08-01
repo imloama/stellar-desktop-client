@@ -17,8 +17,16 @@
       <!--K线图-->
       <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
       
+      <div class="flex-row mt-2">
+        <div class="flex1 pt-2 pb-2 pr-1">
+          <trade-input flag="buy">111</trade-input>
+        </div>
+        <div class="flex1 pt-2 pb-2 pl-1">
+          <trade-input flag="sell"></trade-input>
+        </div>
+      </div>
       <!--买单卖单委单成交-->
-      <order-book ref="orderbook"/>
+      <order-book class="mt-2" ref="orderbook"/>
 
     </div>
     <!-- 买卖按钮 
@@ -63,6 +71,7 @@ import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getXdrResultCode } from '@/api/xdr'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import PasswordSheet from '@/components/PasswordSheet'
+import TradeInput from '@/components/TradeInput'
 
 
 export default {
@@ -86,6 +95,7 @@ export default {
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
+      islogin: state => state.accounts.accountData.seed ? true:false,
 
     }),
     ...mapGetters([
@@ -135,6 +145,7 @@ export default {
     
   },
   mounted () {
+    this.needpwd = !this.islogin
     
   },
 
@@ -197,7 +208,8 @@ export default {
     OrderBook,
     TradePairToolBar,
     PasswordSheet,
-    Toolbar
+    Toolbar,
+    TradeInput
   }
   
 

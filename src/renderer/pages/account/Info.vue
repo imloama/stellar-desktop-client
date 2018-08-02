@@ -1,13 +1,13 @@
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
       ref="toolbar"
-      />
+      /> -->
 
-    <div class="content">
+    <div class="">
       
       <card :class="[{ Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
 
@@ -69,7 +69,7 @@
 
 
       <div class="pwdSheetWrapper" v-if="showPwdSheet">
-        <v-bottom-sheet  v-model="showPwdSheet"  dark>
+        <v-dialog v-model="showPwdSheet"  dark max-width="460">
           <div class="sheet-content">
             <div class="sheet-input">
               <v-text-field
@@ -87,7 +87,7 @@
               <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
             </div>
           </div>
-        </v-bottom-sheet>
+        </v-dialog>
       </div>
         <!--尝试添加的bottom-sheet的例子，可以弹出来的是密钥信息和密钥二维码 -->
       <!-- <div v-if="showViewkeySheet">
@@ -105,7 +105,7 @@
         <!-- </v-bottom-sheet>
       </div> -->
       <div class="text-xs-center" v-if="showViewkeySheet">
-          <v-bottom-sheet v-model="showViewkeySheet" dark>
+          <v-dialog v-model="showViewkeySheet" dark max-width="460">
             <v-list >
               <v-subheader class="info_warning_msg_style">{{$t("Warning_msg")}}</v-subheader>
               <v-subheader class="info_account_miyao_style">{{$t("Account_secretkey")}}</v-subheader>
@@ -114,12 +114,12 @@
               <qrcode class="info_qrcode_style" :text="qrtext" :callback="qrcodecallback" color="red"/>
               <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
             </v-list>
-          </v-bottom-sheet>
+          </v-dialog>
       </div>
 
       <!-- 查看助记词 -->
        <div class="text-xs-center" v-if="showMnemonicSheet">
-          <v-bottom-sheet v-model="showMnemonicSheet" dark>
+          <v-dialog v-model="showMnemonicSheet" dark max-width="460">
             <v-list v-if="mnemonic">
               <v-subheader class="info_warning_msg_style">{{$t("Warning_mnemonic_msg")}}</v-subheader>
               <v-subheader class="info_account_miyao_style">{{$t("mnemonic")}}</v-subheader>
@@ -131,7 +131,7 @@
               <v-subheader class="info_warning_msg_style">{{$t("no_mnemonic_msg")}}</v-subheader>
               <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
             </v-list>
-          </v-bottom-sheet>
+          </v-dialog>
       </div>
 
       <v-dialog v-model="dlgshow" persistent max-width="260">
@@ -147,7 +147,7 @@
 
       <!-- 修改密码 -->
        <div class="pwdSheetWrapper rePwdSheetWrapper" v-if="showResetPwdSheet">
-        <v-bottom-sheet  v-model="showResetPwdSheet" dark>
+        <v-dialog  v-model="showResetPwdSheet" dark max-width="460">
           <div class="bts-dlg">
             <div class="sheet-title">
               <div class="stitle">
@@ -194,7 +194,7 @@
               </div>
             </div>
           </div>
-        </v-bottom-sheet>
+        </v-dialog>
       </div>
 
       <!--密码输入界面，在查看密钥之前
@@ -616,12 +616,6 @@ export default {
   font-size:14px
   margin-top: 3px
   text-align:center
-  position: fixed
-  bottom: 8px
-  bottom: calc(8px + constant(safe-area-inset-bottom))
-  bottom: calc(8px + env(safe-area-inset-bottom))
-  left: 0
-  right: 0
   
   &.active
     color:$primarycolor.green

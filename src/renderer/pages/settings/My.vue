@@ -1,201 +1,212 @@
-/*
-* 我的，显示界面，即：个人中心
-* @Author: mazhaoyong@gmail.com
-* @Date: 2018-01-23 11:14:24
- * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-18 16:14:54
-* @License: MIT
-*/
 <template>
-  <div class="page">
-      <toolbar :title="$t('Menu.My')" :showbackicon="false" lockpass  ref="toolbar">
-            <v-btn icon @click.native="showAccounts" slot="left-tool">
-                <i class="material-icons font28">menu</i>
-            </v-btn>
-      </toolbar>
+<div>
+      <card class="mycard" padding="20px 10px 20px 10px">
 
-      <accounts-nav :show="showaccountsview" @close="closeView"/>
-
-      <div class="content">
-          <card padding="20px 0px"  class="infocard My_my_infocard">
-            <div slot="card-content">
-                <div class="flex-row">
-                    <div class="flex2 textcenter">
-                        <div class="avatar-wrapper">
-                            <span class="avatar-back" @click="toNameCard"><i class="iconfont icon-erweima avatar"></i></span>
-                        </div>
-                    </div>
-                    <div class="flex4">
-                        <div class="title">{{account.name}}</div>
-                        <div class="address">{{account.address | shortaddress}}</div>
-                    </div>
-                </div>
-                <div class="flex-row line32 margin-t-10">
-                    <div class="flex1 textcenter" @click="toOffer">
-                        <i class="material-icons vcenter">&#xE85D;</i>
-                        <span>{{ $t('History.Offer') }}</span>
-                    </div>
-                    <div class="flex1 textcenter" @click="toHistory">
-                        <i class="material-icons  vcenter">&#xE889;</i>
-                        <span>{{$t('History.Title')}}</span>
-                    </div>
-                </div>
+        <div class="card-content" slot="card-content">
+        <v-text-field
+              name="address"
+              :label="$t('Account.AccountAddress')"
+              :value="address"
+              class="white-input"
+              disabled
+            ></v-text-field>  
+          <v-text-field
+              name="name"
+              :label="$t('Account.AccountName')"
+              v-model="name"
+              class="white-input"
+              required
+            ></v-text-field>  
+          <v-text-field
+              name="federation"
+              :label="$t('FederationAddress')"
+              v-model="federation"
+              class="white-input"
+            ></v-text-field>  
+          <v-text-field
+              name="inflation"
+              :label="$t('InflationAddress')"
+              v-model="inflation"
+              class="white-input"
+              multi-line
+              rows=2
+            ></v-text-field>  
+          <div class="hintinfo">
+            <div class="inflation">{{$t('InflationDesc')}}</div>
+            <div class="inflation">
+              <span class="suggest" @click.stop="choseInflation('xlmpool.com')">xlmpool.com<i class="material-icons">link</i></span>
+              <span>{{$t('Account.SuggestInflationPool')}}</span>
             </div>
-          </card>
-          <card padding="0px 0px" margin="20px 0px" class="infocard My_my_tabbar">
-            <div slot="card-content">
-                <ul class="settings-ul">
-                    <li class="settings-li" @click="redirect(item.name)" v-for="item in menus" :key="item.name">
-                        <i class="material-icons vcenter">{{item.icon}}</i>
-                        <span>{{$t(item.title)}}</span>
-                        <i class="material-icons vcenter f-right mt-2">keyboard_arrow_right</i>
-                        <div class="circular" v-if="item.name=='MessageCenter'&&unReadCount>0"> {{unReadCount}}</div>
-                    </li>
-                </ul>
-            </div>
-          </card>
+          </div>
+        </div>
+        
+      </card>
+      <div class="btn-group">
+         <v-btn class="primary btn-save" primary @click.stop="save">{{$t('Save')}}</v-btn>
       </div>
-      <!-- <tab-bar /> -->
-  </div>
+
+    </div>
+
 </template>
 
 <script>
 import Toolbar from '@/components/Toolbar'
+import { mapState, mapActions} from 'vuex'
 import Card from '@/components/Card'
-import AccountsNav from '@/components/AccountsNav'
-import { mapState, mapActions, mapGetters } from 'vuex'
-import  TabBar from '@/components/TabBar'
+import { INFLATION_POOL } from '@/api/gateways'
+import { setOptions } from '@/api/operations'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
-    data(){
-        return {
-            showaccountsview: false,
-            menus: [               
-                {
-                    title: "ManageAccount",
-                    name: "ManageAccount",
-                    icon: "account_balance_wallet"
-                },
-                {
-                    title: "Menu.Contacts",
-                    name: "ContactsList",
-                    icon: "supervisor_account"
-                },
-                {
-                    title: "Menu.MyAddress",
-                    name: "MyAddress",
-                    icon: "bookmark"
-                },
-                {
-                    title: 'kyc',
-                    name: 'KYC',
-                    icon: "security"
-                },
-                 {
-                    title: "Menu.Funding",
-                    name: "Funding",
-                    icon: "import_export"
-                },
-                {
-                    title: "Menu.Settings",
-                    name: "Settings",
-                    icon: "settings"
-                },
-                // {
-                //     title: "Title.ThirdApp",
-                //     name: "Apps",
-                //     icon: "apps"
-                // },
-                {
-                    title: "Menu.Help",
-                    name: "Help",
-                    icon: "help"
-                },
-                {
-                title: "Menu.MessageCenter",
-                name: "MessageCenter",
-                icon: "message"
-              },   
-               {
-                title: "tickets",
-                name: "Tickets",
-                icon: "assignment"
-              }
-            ],
-            myofferpage:{ name: 'History', params: { active: 'offer' } },
-            historypage:{ name: 'History', params: { active: 'transaction' } }
+  data(){
+    return {
+      title: 'Account.Modify',
+      showbackicon: true,
+      showmenuicon: false,
+      name: null,
+      address: null,
+      seed: null,
+      federation: null,
+      inflation: null,
 
+      workindex: null,
+      workaccount:null,
+
+      needUpdateOpt: false,//是否要修改Options
+
+    }
+  },
+  computed:{
+    ...mapState({
+      accounts: state => state.accounts.data,
+      account: state => state.accounts.selectedAccount,
+      accountData: state => state.accounts.accountData,
+      selected: state => state.accounts.selected,
+      password: state => state.accounts.password
+    }),
+  },
+  beforeMount(){
+      let address = this.account.address
+      this.seed = this.accountData.seed
+      // console.log("--------------"+this.seed)
+      for(var i=0,n=this.accounts.length;i<n;i++){
+        if(this.accounts[i].address === address){
+          this.workindex = i
+          let showaccount = defaultsDeep({},this.accounts[i])
+          this.workaccount = showaccount
+          this.name  = showaccount.name
+          this.address = showaccount.address
+          this.federation = showaccount.federationAddress
+          this.inflation = showaccount.inflationAddress
+          break
         }
+      }
+  },
+  mounted(){
+  },
+  methods: {
+    ...mapActions({
+      deleteAccount:'deleteAccount',
+      cleanAccount: 'cleanAccount',
+      updateAccount: 'updateAccount',
+    }),
+    back(){
+      this.$router.back()
     },
-    computed: {
-        ...mapState({
-            account: state => state.accounts.selectedAccount,
-            accountData: state => state.account.data,
-            app: state => state.app,
-            islogin: state => (state.accounts.accountData.seed ? true : false),
-        }),
-      ...mapGetters([
-        'unReadCount'
-      ])
+    qrcodecallback(img){
+      this.qrcodebase64 = img
     },
-    mounted(){
-        if(!this.islogin){
-            this.$refs.toolbar.showPasswordLogin()
-            return
+    save(){
+      //if(!this.password)return
+      let data = Object.assign({}, this.workaccount, {name: this.name,
+      address: this.address,
+      federationAddress: this.federation,
+      inflationAddress: this.inflation})
+
+      if(this.workaccount.federationAddress != this.federation || this.inflationAddress!=this.inflation){
+        this.needUpdateOpt = true
+      }
+      console.log(this.workaccount)
+      console.log(data)
+      let params = {index: this.workindex, account: data}
+      this.updateAccount(params)
+        .then((data)=>{
+          try{
+            if(this.needUpdateOpt){
+              this.saveInflationAndFed()
+            }
+            this.$toasted.show(this.$t('SaveSuccess'))
+          }catch(err){
+            console.error(err)
+            this.$toasted.error(this.$t('SaveFailed'))
+          }
+        })
+        .catch(err=>{
+          console.error(err)
+          this.$toasted.error(this.$t('SaveFailed'))
+        })
+      
+
+    },
+    saveInflationAndFed(){
+      //保存通胀  联邦地址
+      let values = {}
+      let hasdata = false
+      if(this.inflation){
+        hasdata = true
+        values.inflationDest = this.inflation
+      }
+      if(this.federation){
+        hasdata = true
+        values.homeDomain = this.federation
+      }
+      console.log(`save inflation and fed `)
+      console.log(values)
+      setOptions(this.seed,values).then(data=>{
+        console.log(data)
+        console.log('save inflation and fed success')
+      })
+      .catch(err=>{
+        throw err
+      })
+    },
+    choseInflation(host){
+      console.log(INFLATION_POOL)
+      console.log(host)
+      for(var i=0,n=INFLATION_POOL.length;i<n;i++){
+        if(INFLATION_POOL[i].host === host){
+          this.inflation = INFLATION_POOL[i].address
+          break
         }
-    },
-    methods: {
-        ...mapActions([
-            'changeCurrentHistoryComponent'
-        ]),
-        toNameCard(){
-              this.$router.push({name:'AccountNameCard'})
-        },
-        redirect(name){
-            //帮助页面单独做
-            // if('Help' === name){
-            //     let site = 'https://wallet.fchain.io/manual'+'?'+Math.random()
-            //     let title = this.$t('Menu.Help')
-            //     this.$router.push({name: 'DAppOpener', params: { site, title} })
-            //     return;
-            // }
-            // if('kyc' === name){//打开KYC的界面
-            //     let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
-            //     let title = this.$t('kyc')
-            //     this.$router.push({name: 'DAppOpener', params: { site, title} })
-            //     return;
-            // }
-            this.$router.push({name})
-        },
-        showAccounts(){
-            this.showaccountsview = true
-        },
-        closeView(){
-            this.showaccountsview = false
-        },
-        toOffer(){
-            this.changeCurrentHistoryComponent(this.myofferpage.params.active)
-            this.$router.push(this.myofferpage)
-
-        },
-        toHistory(){
-            this.changeCurrentHistoryComponent(this.historypage.params.active)
-            this.$router.push(this.historypage)
-        },
-
-    },
-
-    components: {
-        Toolbar,
-        Card,
-        AccountsNav,
-        TabBar
+      }
     }
 
+  },
+  components: {
+    Toolbar,
+    Card,
+  }
 }
 </script>
 
+
 <style lang="stylus" scoped>
-@require '~@/stylus/settings.styl'
-.content
-    padding-bottom:0px
+@require '~@/stylus/color.styl'
+.hintinfo
+  color: $secondarycolor.font
+  margin-top: -20px
+  .inflation
+    .suggest
+      color: $primarycolor.green
+
+
+.btn-group
+  width: 100%
+  margin-top: 10px
+  .btn-save
+    width: 100%
+    margin: 0px 0px
+    padding: 0px 0px
+    height: 36px
+
 </style>
+

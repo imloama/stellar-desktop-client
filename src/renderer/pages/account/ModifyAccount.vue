@@ -1,12 +1,12 @@
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
-      />
+      /> -->
 
-    <div class="content">
+    <div class="">
       <card class="mycard" padding="20px 10px 20px 10px">
 
         <div class="card-content" slot="card-content">
@@ -84,7 +84,7 @@ export default {
     }),
   },
   beforeMount(){
-      let address = this.$route.query.address || account.address
+      let address = this.$route.query.address || this.account.address
       this.seed = this.$route.query.seed
       // console.log("--------------"+this.seed)
       for(var i=0,n=this.accounts.length;i<n;i++){

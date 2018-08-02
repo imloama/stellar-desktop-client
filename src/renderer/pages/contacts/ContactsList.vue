@@ -3,12 +3,12 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" :showbackicon="true"  @goback="back">
+    <!-- <toolbar :title="$t(title)" :showbackicon="true"  @goback="back">
       <v-btn icon slot='right-tool' @click="toAddContact">
         <i class="material-icons font28">&#xE145;</i>
       </v-btn>
-    </toolbar>
-    <div class="content">
+    </toolbar> -->
+    <div class="">
       <card padding="0px 0px" class="infocard">
         <div class="card-content" slot="card-content">
           <div v-if='!this.allcontacts.length'>
@@ -19,12 +19,8 @@
                           class="search"  hide-details single-line >
             </v-text-field>
             <div class="contracts-list">
-               <div class="contacts-row" v-for="(contact,index) in filteredContacts" :key="contact.id"
-                  v-touch="{
-                    left: () => selectedItem = index,
-                    right: () => selectedItem = null
-                  }">
-                <v-layout class="mycontacts-li third-li" row wrap v-swiper=2.5 @click.stop="toContactDetail(contact.id)">
+               <div class="contacts-row" v-for="contact in filteredContacts" :key="contact.id">
+                <v-layout class="mycontacts-li third-li" row wrap @click.stop="toContactDetail(contact.id)">
                   <v-flex xs2 class="mycontacts-wrapper">
                     <v-avatar :tile=false class="grey darken-4 contact-avatar">
                       <i class="avatar iconfont icon-erweima"></i>
@@ -46,6 +42,7 @@
             </div>
           </div>
         </div>
+        <v-btn block flat color="primary" @click="toAddContact" class="mt-4">{{$t('Add')}}</v-btn>
       </card>
     </div>
     <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
@@ -143,13 +140,12 @@ export default {
   color: $primarycolor.font
   font-size: 16px
   overflow-y: auto
-  .content
-    .infocard
-      margin 0
-      padding-left 15px
-      padding-right 15px
-      box-shadow 0
-      -webkit-box-shadow 0
+.infocard
+  background: $secondarycolor.gray
+  margin 0
+  padding: 15px 15px!important
+  box-shadow 0
+  -webkit-box-shadow 0
 
 .contacts
   overflow: hidden

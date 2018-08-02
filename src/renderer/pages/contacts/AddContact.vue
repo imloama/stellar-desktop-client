@@ -1,7 +1,7 @@
 //新建联系人 
 <template>
   <div class="page" v-bind:class="{hidebackground: showScanner}">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
@@ -12,13 +12,13 @@
           <i class="iconfont icon-erweima1 font28" v-else></i>
         </span>
       </div>
-    </toolbar>
+    </toolbar> 
     <q-r-scan 
       @finish="qrfinish" 
       @close="qrclose" 
       :validator="qrvalidator" 
       v-if="showScanner"
-    ></q-r-scan>
+    ></q-r-scan>-->
     <div class="content" v-if="!showScanner">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">

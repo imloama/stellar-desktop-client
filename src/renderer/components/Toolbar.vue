@@ -23,7 +23,8 @@
         <div :class="selectedMenuIndex ===1 ? 'mbtn mactive':'mbtn'" flat @click="toTradeCenter"><v-icon>trending_up</v-icon>{{$t('Menu.TradeCenter')}}</div>
         <div :class="selectedMenuIndex ===2 ? 'mbtn mactive':'mbtn'" flat @click="toDapps"><v-icon>apps</v-icon>{{$t('Title.ThirdApp')}}</div>
         <div :class="selectedMenuIndex ===3 ? 'mbtn mactive':'mbtn'" flat @click="toMy"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
-        <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon>{{$t('Lock')}}</div>
+        <div :class="selectedMenuIndex ===4 ? 'mbtn mactive':'mbtn'" flat @click="toSettings"><v-icon>settings</v-icon>{{$t('Menu.Settings')}}</div>
+        <!-- <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon>{{$t('Lock')}}</div> -->
       </v-toolbar-items>
 
     </v-toolbar>
@@ -283,10 +284,14 @@ export default {
     },
     toMy(){
       this.selectedMenuIndex = 3
-      this.$router.push({name: 'My'})
+      this.$router.push({name: 'MySettings'})
+    },
+    toSettings(){
+      this.selectedMenuIndex = 4
+      this.$router.push({name: 'Settings'})
     },
     doLock(){
-
+      //判断是否开启了锁屏，未开启则启动锁屏
     }
   }
 }

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-08-02 10:37:38
+ * @Last Modified time: 2018-08-02 20:41:00
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -27,14 +27,17 @@ export default {
   computed: {
     ...mapState({
       account: state => state.accounts.selectedAccount,
-      accountDetails: state => state.account.data
+      accountDetails: state => state.account.data,
+      selectedAccountIndex: state　=> state.accounts.selected,
     }),
   },
   mounted () {
-    if (this.account.address) {
-      this.fetchData()
-      this.setupFetchAccountInterval()
-    }
+    this.$nextTick(()=>{
+      if (this.account.address) {
+        this.fetchData()
+        this.setupFetchAccountInterval()
+      }
+    })
   },
   beforeDestroy(){
     if(this._intervalFetchAccount!== null){
@@ -61,6 +64,8 @@ export default {
     },
 
     fetchData() {
+      console.log('-------------xxxxxxxx-------------fetchData--------------')
+      console.log(this.account)
       if (this.account.address) {
         this.load()
           .then(data => {
@@ -119,6 +124,8 @@ export default {
       // update home_domain and inflation_destination from horizon.
       console.log("updateFederationAndInflationInfo")
       console.log(this.accountData)
+      console.log(this.account.inflationAddress !== this.accountDetails.inflation_destination )
+      console.log(this.account.federationAddress !== this.accountDetails.home_domain)
       if (this.account.inflationAddress !== this.accountDetails.inflation_destination 
         || this.account.federationAddress !== this.accountDetails.home_domain) {
         let data = defaultsDeep({}, this.account, {
@@ -129,6 +136,7 @@ export default {
           index: this.selectedAccountIndex,
           account: data
         }
+        console.log('--------------------------------------------fed-inf-----')
         console.log(params)
         this.updateAccount(params)
           .then(data => {

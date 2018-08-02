@@ -3,20 +3,18 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
       >
-       <!-- <div class="right" slot="right-tool" @click="toAccount">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+      
       <v-btn icon slot='right-tool' @click="toAccount">
         <i class="material-icons font28">&#xE145;</i>
       </v-btn>
 
-    </toolbar>
-    <div class="content">
+    </toolbar> -->
+    <div class="">
       <card class="mycard">
         <div class="card-content" slot="card-content">
           <div class="account-row"  v-for="(item,index) in accounts" :key="index" 
@@ -27,7 +25,7 @@
                 }"
             >
             
-            <div class="flex-row account-wrapper"  v-swiper=2>
+            <div class="flex-row account-wrapper" >
               <div class="flex1">
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
@@ -42,13 +40,14 @@
               <div class="icons flex1">
                 <i class="material-icons"  v-if="item.address === account.address">&#xE876;</i>
               </div>
-            </div>
-
-            <div class="operate-box">
+              <div class="operate-box flex2">
               <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
               <div class="modify" @click.stop="modify(item.address)">{{$t('Modify')}}</div>
               <div class="change" @click.stop="changeaccount(index,item)">{{$t('Change')}}</div>
             </div>
+            </div>
+
+           
             
           </div>
         </div>
@@ -58,7 +57,7 @@
       :title="loadingTitle" :msg="loadingMsg" :closeable="delerror" @close="hideLoadingView"/>
 
      <div class="pwdSheetWrapper" v-if="showPwdSheet">
-        <v-bottom-sheet  v-model="showPwdSheet"  dark>
+        <v-dialog  v-model="showPwdSheet"  dark max-width="460">
           <div class="sheet-content">
             <div class="sheet-input">
               <v-text-field
@@ -76,7 +75,7 @@
               <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
             </div>
           </div>
-        </v-bottom-sheet>
+        </v-dialog>
       </div>
 
   </div>
@@ -400,27 +399,26 @@ export default {
     padding-top: 5px
     padding-right: 5px
 .operate-box 
-  position: absolute
   z-index: 1
   height: 100%
-  right: 0
-  top: 0
   display: flex
+  justify-content: center
   .change
   .modify
   .del
-    display: flex
+    flex: 1
+    display: block
+    text-align: center
     justify-content: center
     align-items: center
-    background-color: $primarycolor.gray
     // background-color: $secondarycolor.green
     color: $primarycolor.green
-    padding: 0 12px
+    padding: 8px 12px
+    cursor:pointer
   .modify
     // border-left: 1px solid $secondarycolor.gray
     color:$primarycolor.green
   .del
-    background-color: $primarycolor.gray
     color:$primarycolor.red
   // .del
   //   display: flex

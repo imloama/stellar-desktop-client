@@ -19,14 +19,14 @@
       
       <div class="flex-row mt-2">
         <div class="flex1 pt-2 pb-2 pr-1">
-          <trade-input flag="buy">111</trade-input>
+          <trade-input ref="tradeInputBuy" flag="buy" @afterOffer="reloadOrderBook"></trade-input>
         </div>
         <div class="flex1 pt-2 pb-2 pl-1">
-          <trade-input flag="sell"></trade-input>
+          <trade-input ref="tradeInputSell" flag="sell" @afterOffer="reloadOrderBook"></trade-input>
         </div>
       </div>
       <!--买单卖单委单成交-->
-      <order-book class="mt-2" ref="orderbook"/>
+      <order-book class="mt-2" ref="orderbook" @choose="chooseOrderBook"/>
 
     </div>
     <!-- 买卖按钮 
@@ -184,6 +184,9 @@ export default {
         this.$refs.orderbook.reload()
       })
     },
+    reloadOrderBook(){
+      this.$refs.orderbook.reload()
+    },
     toBuy(){
       this.$router.push({name: 'TradeBuySell', params: {flag: 'buy'}})
     },
@@ -196,6 +199,13 @@ export default {
     rightPwd(){
       this.needpwd = false
     },
+    chooseOrderBook({type,data}){
+      if(type === 'buy'){
+        this.$refs.tradeInputSell.choose({type,data})
+      }else{
+        this.$refs.tradeInputBuy.choose({type,data})
+      }
+    }
 
 
   },

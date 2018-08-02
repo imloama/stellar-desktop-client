@@ -345,7 +345,7 @@ export default {
                 color: this.colors,
                 backgroundColor: "#212122",
                 title: {left: 'center', text: this.base.code + '/' + this.counter.code },
-                legend: { show: true, top: 30,data: [this.$t('minute'), 'MA5', 'MA10']},
+                legend: { show: true, top: 0,data: [this.$t('minute'), 'MA5', 'MA10']},
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: { type: 'cross' },

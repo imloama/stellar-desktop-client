@@ -107,36 +107,40 @@
   
 
     <!-- 确认内容 -->
+
       
-      <v-dialog v-model="showConfirmSheet" persistent dark max-width="460px" class="confirm-dlg">
+      <v-dialog class="vdialog" v-model="showConfirmSheet" persistent max-width="460">
+        <v-card>
+         
+        
           <div class="confirm-title" v-if="flag === 'buy'">{{$t('Trade.Confirm')}}{{$t('Trade.Buy')}}</div>
           <div class="confirm-title" v-else>{{$t('Trade.Confirm')}}{{$t('Trade.Sell')}}</div>
           <div class="confirm-content">
 
             <div class="confirm-row flex-row" v-if="bids_max_price!=null">
-              <span class="label flex2">{{$t('bids_max_price')}}</span>
+              <span class="label flex2 pl-4">{{$t('bids_max_price')}}</span>
               <span class="value flex2 textright pr-1"> {{bids_max_price}}</span>
               <span class="code flex1">{{CounterAsset.code}}</span>
             </div>
             <div class="confirm-row flex-row" v-if="bids_max_price!=null">
-              <span class="label flex2">{{$t('asks_min_price')}}</span>
+              <span class="label flex2 pl-4">{{$t('asks_min_price')}}</span>
               <span class="value flex2 textright pr-1"> {{asks_min_price}}</span>
               <span class="code flex1">{{CounterAsset.code}}</span>
             </div>
 
             <div class="confirm-row flex-row">
-              <span class="label flex2">{{$t('Trade.Price')}}</span>
+              <span class="label flex2 pl-4">{{$t('Trade.Price')}}</span>
               <span class="value flex2 textright pr-1"> {{Number(Number(price).toFixed(7))}}</span>
               <span class="code flex1">{{CounterAsset.code}}</span>
             </div>
             <div class="confirm-row flex-row">
-              <span class="label flex2"  v-if="flag === 'buy'">{{$t('Trade.Buy')}}</span>
-              <span class="label flex2"  v-else>{{$t('Trade.Sell')}}</span>
+              <span class="label flex2 pl-4"  v-if="flag === 'buy'">{{$t('Trade.Buy')}}</span>
+              <span class="label flex2 pl-4"  v-else>{{$t('Trade.Sell')}}</span>
               <span class="value flex2 textright pr-1"> {{amount}}</span>
               <span class="code flex1">{{BaseAsset.code}}</span>
             </div>
             <div class="confirm-row flex-row">
-              <span class="label flex2">{{$t('Trade.Total')}}</span>
+              <span class="label flex2 pl-4">{{$t('Trade.Total')}}</span>
               <span class="value flex2 textright pr-1"> {{total}}</span>
               <span class="code flex1"> {{CounterAsset.code}}</span>
             </div>
@@ -145,6 +149,7 @@
             <div class="confirm-btn flex1" @click="doTrade">{{$t('Button.OK')}}</div>
             <div class="confirm-btn flex1" @click="showConfirmSheet = false">{{$t('Button.Cancel')}}</div>
           </div>
+          </v-card>
       </v-dialog>
       
   </div>
@@ -483,7 +488,8 @@ export default {
             this.queryMyOffers().then(()=>{}).catch(err=>{console.error(err)});
             //查询账户数据
             this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
-            this.$refs.orderbook.reload()
+            //this.$refs.orderbook.reload()
+            this.$emit('afterOffer')
             //隔10秒再查询一次
             setTimeout(()=>{
               this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
@@ -608,7 +614,8 @@ export default {
       this.amount = 0
       this.total = 0
       this.$nextTick(()=>{
-        this.$refs.orderbook.reload()
+        //this.$refs.orderbook.reload()
+        this.$emit('afterOffer')
       })
     },
     hiddenLoading(){
@@ -852,6 +859,8 @@ export default {
       // this.isSell = true
       this.working = true
       this.sending = true
+      this.loadingTitle = null
+      this.loadingError = null
       try{
         trustAll(this.accountData.seed, this.needTrust)
           .then(response=>{
@@ -863,13 +872,14 @@ export default {
             }catch(err){
               console.error(err)
             }
-            setTimout(()=>{
+            setTimeout(()=>{
               this.working = false
               this.sendsuccess = false
               this.loadingTitle = null
             },3000)
           })
           .catch(err=>{
+            console.error(err)
             this.sending = false
             this.sendfail = true
             let msg = getXdrResultCode(err)
@@ -879,6 +889,7 @@ export default {
             }     
           })//end of trustAll
       }catch(error){
+        console.error(error)
         this.sending = false
         this.sendfail = true
         let msg = getXdrResultCode(err)
@@ -1133,8 +1144,7 @@ export default {
 
 .confirm-dlg
   background: $secondarycolor.gray
-  opacity: 0
-
+ 
 
 
 .mytrade-card

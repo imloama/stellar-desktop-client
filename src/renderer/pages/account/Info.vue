@@ -8,6 +8,10 @@
       /> -->
 
     <div class="">
+      <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item to="/account/manage">{{ $t('ManageAccount') }}</v-breadcrumbs-item>
+        <v-breadcrumbs-item disabled>{{showaccount.name}}</v-breadcrumbs-item>
+      </v-breadcrumbs>
       
       <card :class="[{ Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
 
@@ -562,6 +566,9 @@ export default {
     okResetPwdInput(){
       this.doResetPwd()
     },
+    toPage(name){
+      this.$router.push({name})
+    }
 
   },
   components: {

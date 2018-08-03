@@ -3,16 +3,13 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" :showbackicon="true"  @goback="back"  >
-      <!-- <div class="right" slot="right-tool" @click="toAdd">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+    <!-- <toolbar :title="$t(title)" :showbackicon="true"  @goback="back"  >
       <v-btn icon slot='right-tool' @click="toAdd">
         <i class="material-icons font28">&#xE145;</i>
       </v-btn>
-    </toolbar>
-    <div class="content">
-      <card padding="10px 10px" class="infocard">
+    </toolbar> -->
+    <div class="">
+      <card class="infocard mycard">
         <div class="card-content" slot="card-content">
           <div v-if='!this.myaddresses.length'>
             {{$t('Error.NoData')}}
@@ -34,14 +31,18 @@
                 <v-flex xs6 class="myaddress-wrapper">
                   <div class="myaddress-address grey--text text--darken-1">{{data.address|shortaddress}}</div>
                 </v-flex>
+                <v-flex xs2>
+                  <div class="operate-box">
+                    <div class="del"     @click.stop="del(data)"    >{{$t('Delete')}} </div>
+                    <div class="receive" @click.stop="toEdit(data)">{{$t('Modify')}}</div>
+                  </div>
+                </v-flex>
               </v-layout>
-              <div class="operate-box">
-                <div class="del"     @click.stop="del(data)"    >{{$t('Delete')}} </div>
-                <div class="receive" @click.stop="toEdit(data)">{{$t('Modify')}}</div>
-              </div>
+              
             </div>
           </div>
         </div>
+        <v-btn block flat color="primary" @click="toAdd" class="mt-4">{{$t('Add')}}</v-btn>
       </card>
     </div>
     <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
@@ -157,13 +158,11 @@ export default {
 
 .list
   overflow: hidden
-  position: relative
-  background: $primarycolor.gray
-  border-radius:5px
+  padding: 0 0 
+  margin: 0 0
   .search
     padding-bottom 25px
     padding 10px 2px
-    border-radius:5px
     background:$secondarycolor.gray
   .myaddress-row
     overflow: hidden
@@ -175,7 +174,6 @@ export default {
       background: $secondarycolor.gray
       width: 100%
       min-height 50px
-      border-radius:5px
       .myaddress-wrapper
         font-size: 16px
         display flex
@@ -209,16 +207,16 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background-color: $primarycolor.gray
     // background-color: $secondarycolor.green
     color: $primarycolor.green
     padding: 0 12px
-  .receive
-    border-left: 1px solid $primarycolor.gray
+    cursor: pointer
+    &:hover
+      background: $primarycolor.gray
+  // .receive
+  //   border-left: 1px solid $primarycolor.gray
     // border-left: 1px solid $secondarycolor.gray
   .del
-    background-color: $primarycolor.gray
-    border-right: 1px solid $primarycolor.gray
     color: $primarycolor.red
     // background-color: $secondarycolor.red
     // border-right: 1px solid $secondarycolor.gray
@@ -230,6 +228,12 @@ export default {
   -webkit-transition: 0.3s
   transform: translate(-40%, 0)
   transition: 0.3s
+.infocard
+  background: $secondarycolor.gray
+  margin 0
+  padding: 15px 15px!important
+  box-shadow 0
+  -webkit-box-shadow 0
 
 </style>
 

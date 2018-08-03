@@ -80,6 +80,28 @@ export default {
 
 
       {
+        path: '/myaddress/list',
+        name: 'MyAddressList',
+        component: resolve => require(['../pages/myaddress/MyAddressList.vue'], resolve),
+      },
+      {
+        path: '/myaddress/add',
+        name: 'MyAddressAdd',
+        component: resolve => require(['../pages/myaddress/MyAddressAdd.vue'], resolve)
+      },
+      {
+        path: '/myaddress/edit/:name',
+        name: 'MyAddressEdit',
+        component: resolve => require(['../pages/myaddress/MyAddressEdit.vue'], resolve)
+      },
+      {
+        path: '/myaddress/:name',
+        name: 'MyAddressView',
+        component: resolve => require(['../pages/myaddress/MyAddressView.vue'], resolve)
+      },
+
+
+      {
         path: 'settings',
         name: 'Settings',
         component: resolve => require(['../pages/settings/Settings.vue'], resolve)

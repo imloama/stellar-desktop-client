@@ -3,12 +3,16 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
     >
-    </toolbar>
+    </toolbar> -->
+    <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item to="/myaddress/list">{{ $t('Menu.MyAddress') }}</v-breadcrumbs-item>
+        <v-breadcrumbs-item disabled>{{name}}</v-breadcrumbs-item>
+      </v-breadcrumbs>
     <div class="content">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
@@ -159,7 +163,7 @@ export default {
 .page
   background: $primarycolor.gray
   .content
-    padding: 8px 8px
+    padding: 0 0
     display flex
     flex-direction column
     //min-height calc(100vh - 48px)

@@ -17,40 +17,29 @@
     <div class="">
       <card class="mycard">
         <div class="card-content" slot="card-content">
-          <div class="account-row"  v-for="(item,index) in accounts" :key="index" 
-            @click.stop="info(item)" 
-                v-touch="{
-                  left: () => selectedItem = index,
-                  right: () => selectedItem = null
-                }"
-            >
-            
+          <div class="account-row"  v-for="(item,index) in accounts" :key="index" >
             <div class="flex-row account-wrapper" >
               <div class="flex1">
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
                 </div>
               </div>
-              <div class="name flex2">
+              <div class="name flex2" @click.stop="info(item)" >
                 {{item.name}}
+                <span class="address label">{{item.address | shortaddress}}</span>
               </div>
-              <div class="address flex2">
-                <span class="label">{{item.address | miniaddress}}</span>
-              </div>
-              <div class="icons flex1">
-                <i class="material-icons"  v-if="item.address === account.address">&#xE876;</i>
-              </div>
+             
               <div class="operate-box flex2">
-              <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
-              <div class="modify" @click.stop="modify(item.address)">{{$t('Modify')}}</div>
-              <div class="change" @click.stop="changeaccount(index,item)">{{$t('Change')}}</div>
+                <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
+                <div class="modify" @click.stop="modify(item.address)">{{$t('Modify')}}</div>
+                <div class="change icons" v-if="item.address === account.address"><i class="material-icons"  v-if="item.address === account.address">&#xE876;</i></div>
+                <div class="change" @click.stop="changeaccount(index,item)" v-else>{{$t('Change')}}</div>
+              </div>
             </div>
-            </div>
+          </div>          
 
-           
-            
-          </div>
         </div>
+        <v-btn block flat color="primary" @click="toAccount">{{$t('Add')}}</v-btn>
       </card>
     </div>
     <loading :show="showLoading"  :loading="working" :success="delok" :fail='delerror' 
@@ -381,17 +370,18 @@ export default {
     padding-left: 10px
     text-overflow: clip
     word-break: break-all
+    cursor: pointer
   .address
     text-overflow: clip
     word-break: break-all
-    .label
-      height: 40px
-      line-height: 40px
-      width: 100%
-      color: $secondarycolor.font
-      text-align: right
-      font-size: 16px
-      padding-left: 5px
+    height: 40px
+    line-height: 40px
+    width: 100%
+    color: $secondarycolor.font
+    text-align: right
+    font-size: 16px
+    padding-left: 5px
+    cursor: pointer
   .icons
     text-align: right
     color: $primarycolor.green
@@ -449,7 +439,11 @@ export default {
     flex: 1
     text-align: center
 .mycard
-  padding:0px 0px
+  background: $secondarycolor.gray
+  margin 0
+  padding: 15px 15px!important
+  box-shadow 0
+  -webkit-box-shadow 0
 .selected
   -webkit-transform: translate(-50%, 0)
   -webkit-transition: 0.3s

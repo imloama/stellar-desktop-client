@@ -116,9 +116,29 @@ export default {
       accountData: state => state.account.data,
       app: state => state.app,
       islogin: state => (state.accounts.accountData.seed ? true : false),
-    })
+    }),
+    names(){
+      let d = []
+      this.items.forEach(item=>{
+        d.push(item.name)
+      })
+      return d
+    }
+  },
+  watch: {
+    '$route'(to,from){
+      let i = this.names.indexOf(to.name)
+      if(i>=0){
+        this.selected = i
+      }
+    }
   },
   mounted(){
+    
+    let i = this.names.indexOf(this.$route.name)
+    if(i>=0){
+      this.selected = i
+    }
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
       return

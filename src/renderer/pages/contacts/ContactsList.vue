@@ -32,12 +32,15 @@
                   <v-flex xs4 class="mycontacts-wrapper">
                     <div class="contact-address grey--text text--darken-1">{{contact.address|miniaddress}}</div>
                   </v-flex>
+                  <v-flex xs2>
+                    <div class="operate-box" >
+                      <div class="del"     @click.stop="del(contact)"    >{{$t('Delete')}} </div>
+                      <div class="receive" @click.stop="toModifyContact(contact.id)">{{$t('Modify')}}</div>
+                      <div class="send"    @click.stop="sendto(contact)"   >{{$t('Send')}}   </div>
+                    </div>
+                  </v-flex>
                 </v-layout>
-                <div class="operate-box" >
-                  <div class="del"     @click.stop="del(contact)"    >{{$t('Delete')}} </div>
-                  <div class="receive" @click.stop="toModifyContact(contact.id)">{{$t('Modify')}}</div>
-                  <div class="send"    @click.stop="sendto(contact)"   >{{$t('Send')}}   </div>
-                </div>
+               
               </div>
             </div>
           </div>
@@ -155,7 +158,7 @@ export default {
     padding-bottom 25px
     padding 15px 15px 15px 15px
     background-color:$secondarycolor.gray
-    border-radius:5px
+    // border-radius:5px
     
    
   .contacts-row
@@ -163,7 +166,7 @@ export default {
     position: relative
     border-bottom: 1px solid $secondarycolor.font
     background-color:$primarycolor.gray
-    border-radius:5px
+    // border-radius:5px
     &:last-child
       border-bottom: 0px
     .mycontacts-li
@@ -173,7 +176,6 @@ export default {
       background: $secondarycolor.gray
       width: 100%
       min-height 45px
-      border-radius:5px
       .mycontacts-wrapper
         font-size: 16px
         display flex
@@ -221,23 +223,25 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background-color: $primarycolor.gray
     // background-color: $secondarycolor.green
     color: $primarycolor.green
     padding: 0 12px
+    cursor: pointer
+    &:hover
+      background:$primarycolor.gray
   .receive
     // border-left: 1px solid $secondarycolor.gray
     color:$primarycolor.green
   .del
-    background-color: $primarycolor.gray
+    // background-color: $primarycolor.gray
     color:$primarycolor.red
     // background-color: $secondarycolor.red
     // border-right: 1px solid $secondarycolor.gray
 .contact-avatar
   min-width 42px
   min-height 42px
-.contracts-list
-  border-radius:5px
+// .contracts-list
+//   border-radius:5px
 .selected
   -webkit-transform: translate(-50%, 0)
   -webkit-transition: 0.3s

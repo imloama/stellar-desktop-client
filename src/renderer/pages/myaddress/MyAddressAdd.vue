@@ -1,13 +1,13 @@
 //新建地址
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
     >
-    </toolbar>
-    <div class="content" v-if="!showScanner">
+    </toolbar> -->
+    <div  v-if="!showScanner">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <ul class="settings-ul">
@@ -156,5 +156,12 @@ export default {
   background: transparent;
 .add
   font-size: 16px
+
+.mycard
+  background: $secondarycolor.gray
+  margin 0
+  padding: 15px 15px!important
+  box-shadow 0
+  -webkit-box-shadow 0
 </style>
 

@@ -17,13 +17,9 @@
       </div>
     </toolbar>
 
-    <q-r-scan
-      @finish="qrfinish"
-      @close="qrclose"
-      :validator="qrvalidator"
-      v-if="showScanner"></q-r-scan>
-
+  
     <div class="content" v-if="!showScanner && !showmemobook && !showContacts">
+      <m-layout>
       <card>
        <div class="card-content" slot="card-content" v-if="!showContacts">
           <v-select
@@ -131,6 +127,7 @@
 
       </card>
       
+      
     <div style="flex: 1;"></div>
      <div class="btn-group" v-if="!showContacts">
         <!-- <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn> -->
@@ -138,6 +135,7 @@
         <v-btn class="error btn-send" @click.stop="change_is_sendconfim">{{$t('Send')}}</v-btn>
      </div>
 
+    </m-layout>
     </div>
 
     <contact-book v-show="showContacts" :data="contactsdata" :close="()=>{showContacts=false}" :ok="selectContact"/>
@@ -298,18 +296,6 @@ export default {
         this.memotype = this.$route.params.memo_type
         this.memo = this.$route.params.memo
       }
-    }
-  },
-  created(){
-    if(StatusBar){
-      StatusBar.backgroundColorByHexString("#f35833");
-      this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'error');
-    }
-  },
-  beforeDestroy(){
-    if(StatusBar){
-      StatusBar.backgroundColorByHexString("#21ce90");
-      this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'primary');
     }
   },
   methods: {

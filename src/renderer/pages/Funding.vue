@@ -1,6 +1,6 @@
 <template>
   <div class="page" dark v-bind:class="{hidebackground: scannerView}">
-   <toolbar :title="$t(title)" 
+   <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       ref="toolbar"
@@ -10,7 +10,7 @@
         @click="closeQRScanner"
         v-if="scannerView">&#xE5CD;</i>
    </toolbar> 
-      
+       -->
     <div class="menu-wrapper" v-if="!scannerView">
       <ul class="menu-ul">
         <li :class="'menu-li ' + (active==='deposit'?'active':'')" @click="switchMenu('deposit')">{{$t('DW.Deposit')}}</li>

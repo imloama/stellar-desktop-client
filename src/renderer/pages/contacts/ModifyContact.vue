@@ -1,17 +1,11 @@
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
     >
-      <!--<div class="right" slot="right-tool">
-        <span class="toolbar-ico" @click="scan">
-          <i class="material-icons" v-if="showScanner">&#xE5CD;</i>
-          <i class="iconfont icon-erweima1" v-else></i>
-        </span>
-      </div>-->
-    </toolbar>
+    </toolbar> -->
     <!--
     <q-r-scan 
       @finish="qrfinish" 
@@ -19,6 +13,10 @@
       :validator="qrvalidator" 
       v-if="showScanner"
     ></q-r-scan>-->
+    <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item to="/mycontacts/list">{{ $t('Menu.Contacts') }}</v-breadcrumbs-item>
+        <v-breadcrumbs-item disabled>{{contact.name}}</v-breadcrumbs-item>
+      </v-breadcrumbs>
     <div class="content">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
@@ -188,4 +186,10 @@ export default {
   background: transparent;
 .modify
   background-color #21ce90  !important
+.mycard
+  background: $secondarycolor.gray
+  margin 0
+  padding: 15px 15px!important
+  box-shadow 0
+  -webkit-box-shadow 0
 </style>

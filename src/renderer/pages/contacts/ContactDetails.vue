@@ -3,12 +3,16 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       @goback="back"
       ref="toolbar"
-    />
+    /> -->
+    <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item to="/mycontacts/list">{{ $t('Menu.Contacts') }}</v-breadcrumbs-item>
+        <v-breadcrumbs-item disabled>{{contact.name}}</v-breadcrumbs-item>
+      </v-breadcrumbs>
      <div class="content">
         <div class="contactdetails_card">
             <card  class="mycard ">
@@ -149,6 +153,7 @@ export default {
   .content {
     display: flex;
     flex-direction: column;
+    padding: 0 0;
     // min-height calc(100vh - 48px)
     background-color: $primarycolor.gray;
 

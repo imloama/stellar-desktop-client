@@ -19,6 +19,10 @@
       :validator="qrvalidator" 
       v-if="showScanner"
     ></q-r-scan>-->
+    <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item to="/mycontacts/list">{{ $t('Menu.Contacts') }}</v-breadcrumbs-item>
+        <v-breadcrumbs-item disabled>{{$t('Add')}}</v-breadcrumbs-item>
+      </v-breadcrumbs>
     <div class="content" v-if="!showScanner">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">

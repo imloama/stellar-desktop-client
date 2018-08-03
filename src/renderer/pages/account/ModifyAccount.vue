@@ -5,7 +5,10 @@
       :showbackicon="showbackicon"
       @goback="back"
       /> -->
-
+    <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item to="/account/manage">{{ $t('ManageAccount') }}</v-breadcrumbs-item>
+        <v-breadcrumbs-item disabled>{{name}}</v-breadcrumbs-item>
+      </v-breadcrumbs>
     <div class="">
       <card class="mycard" padding="20px 10px 20px 10px">
 

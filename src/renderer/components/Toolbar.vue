@@ -22,8 +22,9 @@
         <div :class="selectedMenuIndex ===0 ? 'mbtn mactive':'mbtn'" @click="toMyAssets"><v-icon>account_balance_wallet</v-icon>{{$t('Title.MyAssets')}}</div>
         <div :class="selectedMenuIndex ===1 ? 'mbtn mactive':'mbtn'" flat @click="toTradeCenter"><v-icon>trending_up</v-icon>{{$t('Menu.TradeCenter')}}</div>
         <div :class="selectedMenuIndex ===2 ? 'mbtn mactive':'mbtn'" flat @click="toDapps"><v-icon>apps</v-icon>{{$t('Title.ThirdApp')}}</div>
-        <div :class="selectedMenuIndex ===3 ? 'mbtn mactive':'mbtn'" flat @click="toMy"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
-        <div :class="selectedMenuIndex ===4 ? 'mbtn mactive':'mbtn'" flat @click="toSettings"><v-icon>settings</v-icon>{{$t('Menu.Settings')}}</div>
+         <div :class="selectedMenuIndex ===3 ? 'mbtn mactive':'mbtn'" flat @click="toFunding"><v-icon>import_export</v-icon>{{$t('Menu.Funding')}}</div>
+        <div :class="selectedMenuIndex ===4 ? 'mbtn mactive':'mbtn'" flat @click="toMy"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
+        <div :class="selectedMenuIndex ===5 ? 'mbtn mactive':'mbtn'" flat @click="toSettings"><v-icon>settings</v-icon>{{$t('Menu.Settings')}}</div>
         <!-- <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon>{{$t('Lock')}}</div> -->
       </v-toolbar-items>
 
@@ -282,12 +283,16 @@ export default {
       this.selectedMenuIndex = 2
       this.$router.push({name: 'Apps'})
     },
-    toMy(){
+    toFunding(){
       this.selectedMenuIndex = 3
+      this.$router.push({name: 'Funding'})
+    },
+    toMy(){
+      this.selectedMenuIndex = 4
       this.$router.push({name: 'MySettings'})
     },
     toSettings(){
-      this.selectedMenuIndex = 4
+      this.selectedMenuIndex = 5
       this.$router.push({name: 'Settings'})
     },
     doLock(){

@@ -4,13 +4,18 @@
 <template>
   <div class="page" >
     <toolbar :title="$t('About.Title')"
-      :showmenuicon="showmenuicon"
-      :showbackicon="showbackicon"
+      :showbackicon="false"
       @goback="back"
       ref="toolbar"
+      :menuIndex="5"  
       >
+      <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
+      </v-btn>
     </toolbar>
-    <div class="content">
+<accounts-nav :show="showaccountsview" @close="closeView"/>
+
+    <m-layout class="mt-4">
       <card class="icard" padding="20px 10px">
         <div slot="card-content" class="">
           <div class="logo-wrapper" @click="toDebug">
@@ -26,30 +31,30 @@
       </card>
       <card class="detail-card" padding="10px 10px" margin="10px 0 10px 0">
         <div class="card-content" slot="card-content">
-            <div class="row" @click="toTermOfServices">
+            <!-- <div class="row" @click="toTermOfServices">
                 <div class="label">
                     {{$t('TermsOfServiceTitle')}}
                 </div>
                 <div class="value">
                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
-            </div>
-            <div class="row" @click="openURL(officialSite)">
+            </div> -->
+            <div class="row">
                 <div class="label">
                     {{$t('OfficialSite')}}
                 </div>
                 <div class="value"> 
                     {{officialSite}}
-                    <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                    <i class="material-icons icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
-            <div class="row"  @click="openURL(fireflyGithub)">
+            <div class="row" >
                 <div class="label">
                     github
                 </div>
                 <div class="value">
                     {{fireflyGithub}}
-                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                     <i class="material-icons icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
             <div class="row" v-if="latestVersion">
@@ -58,16 +63,16 @@
               </div>
               <div class="value">
                 {{latestVersion}}
-                <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                <i class="material-icons icons vcenter f-right">keyboard_arrow_right</i>
               </div>
             </div>
 
-            <div class="field_btn">
+            <!-- <div class="field_btn">
               <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
-            </div>
+            </div> -->
         </div>
       </card>
-    </div>
+    </m-layout>
   </div>
 </template>
 
@@ -84,6 +89,7 @@ import {
 } from "@/api/gateways";
 const semver = require("semver");
 import  debounce  from 'lodash/debounce'
+import AccountsNav from '@/components/AccountsNav'
 
 export default {
   data() {
@@ -99,6 +105,7 @@ export default {
       working: false,
       counter: 0,
       isDebug: DEBUG,
+      showaccountsview: false,
     };
   },
   beforeDestroy () {
@@ -171,11 +178,18 @@ export default {
     toDebug(){
       //window.location.href = 'http://192.168.2.253:3000'
       window.open('http://192.168.2.253:3000', "_self");
-    }
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
   },
   components: {
     Toolbar,
-    Card
+    Card,
+    AccountsNav,
   }
 };
 </script>
@@ -243,7 +257,7 @@ export default {
   color: $secondarycolor.font;
 }
 
-.material-icons {
+.icons {
   margin-top: 12px;
 }
 </style>

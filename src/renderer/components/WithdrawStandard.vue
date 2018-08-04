@@ -35,8 +35,7 @@
       </div>
      
       <div class="field_select" >
-        <div class="label" @click="switchScanner">{{$t('DestinationAddress')}}
-          <span class="ml-2 title2">({{$t('Title.Scan')}})</span></div>
+        <div class="label" @click="switchScanner">{{$t('DestinationAddress')}}</div>
         <v-text-field class="field_input"  name="dest" 
           v-model="dest"
           dark

@@ -3,7 +3,7 @@
  */
 <template>
 <div>
-  <toolbar :title="$t('Menu.My')" :showbackicon="false" lockpass :menuIndex="3"  ref="toolbar">
+  <toolbar :title="$t('Menu.My')" :showbackicon="false" lockpass :menuIndex="4"  ref="toolbar">
     <v-btn icon @click.native="showAccounts" slot="left-tool">
         <i class="material-icons font28">menu</i>
     </v-btn>
@@ -73,11 +73,11 @@ export default {
             name: 'KYC',
             icon: "security"
         },
-          {
-            title: "Menu.Funding",
-            name: "Funding",
-            icon: "import_export"
-        },
+        //   {
+        //     title: "Menu.Funding",
+        //     name: "Funding",
+        //     icon: "import_export"
+        // },
         // {
         //     title: "Menu.Settings",
         //     name: "Settings",

@@ -3,8 +3,14 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" :showbackicon="true" @goback="back"   />
-    <div class="content">
+    <toolbar :title="$t(title)" :showbackicon="false" @goback="back" lockpass :menuIndex="5"  ref="toolbar">
+      <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
+      </v-btn>
+    </toolbar>
+
+<accounts-nav :show="showaccountsview" @close="closeView"/>
+    <m-layout class="mt-4">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <ul class="settings-ul">
@@ -48,7 +54,7 @@
           </ul>
         </div>
       </card>
-    </div>
+    </m-layout>
 
   </div>
 </template>
@@ -57,12 +63,14 @@
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import { mapState, mapActions} from 'vuex'
+import AccountsNav from '@/components/AccountsNav'
 export default {
   data(){
     return {
       title: 'Menu.Settings',
       pinEnable: false,
       colorSwitch: false,
+       showaccountsview: false,
     }
   },
   computed:{
@@ -122,11 +130,18 @@ export default {
     },
     switchColor(){
       this.changeUpDownColor(!this.redUpGreenDown)
-    }
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
   },
   components: {
     Toolbar,
     Card,
+    AccountsNav,
   }
 }
 </script>
@@ -143,20 +158,19 @@ export default {
   //bottom:0
   //left:0
   //right: 0
-  .content
-    padding: 10px 10px
-    .mycard
-      .card-content
-        .settings-ul
-          padding-left: 10px
-          .settings-li
-            font-size: 16px
-            padding-top: 5px
-            padding-bottom: 5px
-            .pincodeswitch
-              float: right
-              width: 50px
-              padding-top: 0px
+.mycard
+  background: $secondarycolor.gray
+  .card-content
+    .settings-ul
+      padding-left: 10px
+      .settings-li
+        font-size: 16px
+        padding-top: 5px
+        padding-bottom: 5px
+        .pincodeswitch
+          float: right
+          width: 50px!important
+          padding-top: 0px
 .s-right
   margin-right: 10px
 </style>

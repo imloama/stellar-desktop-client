@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "author": "imloama@gmail.com",
   "description": "firefly desktop wallet",
+  "github":"https://github.com/imloama/stellar-desktop-client",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {

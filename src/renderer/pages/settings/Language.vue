@@ -4,11 +4,17 @@
 <template>
   <div class="page">
     <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
+      :showmenuicon="showmenuicon"
+      :showbackicon="false"
       @goback="back"
-      />
-    <div class="content">
+      :menuIndex="5"  
+      >
+       <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
+      </v-btn>
+    </toolbar>
+    <accounts-nav :show="showaccountsview" @close="closeView"/>
+    <m-layout class="mt-4">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <div class="lang" v-for="(item,index) in locales" :key="index" @click.stop="chose(item)">
@@ -22,7 +28,7 @@
           </div>
         </div>
       </card>
-    </div>
+    </m-layout>
 
   </div>
 </template>
@@ -33,13 +39,14 @@ import Card from '@/components/Card'
 import PinCode from '@/components/PinCode'
 import { mapState, mapActions} from 'vuex'
 import { LANGUAGES } from '@/locales'
+import AccountsNav from '@/components/AccountsNav'
 export default {
   data(){
     return {
       title: 'Language',
       showbackicon: true,
       showmenuicon: false,
-
+      showaccountsview: false,
     }
   },
   computed:{
@@ -79,12 +86,19 @@ export default {
           console.log(err)
           this.$toasted.error(this.$t('SaveFailed'))
         })
-    }
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
    
   },
   components: {
     Toolbar,
     Card,
+    AccountsNav,
   }
 }
 </script>
@@ -98,20 +112,20 @@ export default {
   font-size: 16px
   .content
     padding: 5px 5px
-    .mycard
-        background-color:$secondarycolor.gray
-      .card-content
-        .lang
-          padding-top: 10px
-          padding-bottom: 10px
-          .label
-            width: 80%
-          .icons
-            float: right
-            .iconfont
-              font-size: 20px
-            .iconfont.icon-dot1
-              color: $primarycolor.green
+.mycard
+    background-color:$secondarycolor.gray
+  .card-content
+    .lang
+      padding-top: 10px
+      padding-bottom: 10px
+      .label
+        width: 80%
+      .icons
+        float: right
+        .iconfont
+          font-size: 20px
+        .iconfont.icon-dot1
+          color: $primarycolor.green
 
 
 .iconfont_style_color

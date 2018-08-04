@@ -1,16 +1,16 @@
 <template>
   <div class="page" dark v-bind:class="{hidebackground: scannerView}">
-   <!-- <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
+   <toolbar :title="$t(title)" 
+      :showbackicon="false" lockpass :menuIndex="3" 
       ref="toolbar"
       :shadow=false
       >
-      <i class="material-icons" slot="right-tool" 
-        @click="closeQRScanner"
-        v-if="scannerView">&#xE5CD;</i>
+      <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
+    </v-btn>
    </toolbar> 
-       -->
+   <accounts-nav :show="showaccountsview" @close="closeView"/>
+      
     <div class="menu-wrapper" v-if="!scannerView">
       <ul class="menu-ul">
         <li :class="'menu-li ' + (active==='deposit'?'active':'')" @click="switchMenu('deposit')">{{$t('DW.Deposit')}}</li>
@@ -18,7 +18,8 @@
       </ul>
     </div>
 
-    <div class="content">
+  <m-layout>
+    <div class="">
       <div class="pa-2">
         <div class="card-content" slot="card-content">
           <v-select
@@ -116,6 +117,7 @@
 
 
     </div>
+  </m-layout>
 <!--   
     <tab-bar /> -->
 
@@ -142,7 +144,7 @@ import TabBar from '@/components/TabBar'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import { NO_FUNDINS } from '@/api/gateways'
 import UnFundNotice from '@/components/UnFundNotice'
-
+import AccountsNav from '@/components/AccountsNav'
 export default {
   data(){
     return {
@@ -167,6 +169,7 @@ export default {
       withdrawurl: '',//提现的数据提交地址
       scannerView: false,
       accountNotFundDlg: false,
+      showaccountsview: false,
     }
   },
   computed:{
@@ -411,6 +414,12 @@ export default {
     closeAccountNotFoundDlg(){
       this.accountNotFundDlg = false
     },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
 
 
    
@@ -423,6 +432,7 @@ export default {
     WithdrawStandard,
     TabBar,
     UnFundNotice,
+    AccountsNav,
   }
 }
 </script>
@@ -468,6 +478,7 @@ export default {
       width: 100%
       display: flex;
       justify-content: center;
+      cursor: pointer;
       .menu-li
         float: left
         color: $primarycolor.font

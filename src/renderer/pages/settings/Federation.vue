@@ -5,10 +5,16 @@
   <div class="page">
     <toolbar :title="$t(title)"
       :showmenuicon="showmenuicon"
-      :showbackicon="showbackicon"
+      :showbackicon="false"
       @goback="back"
-      />
-    <div class="content">
+      :menuIndex="5"  
+      >
+       <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
+      </v-btn>
+    </toolbar>
+<accounts-nav :show="showaccountsview" @close="closeView"/>
+  <m-layout class="mt-4">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <v-alert type="error" :value="msg">
@@ -39,7 +45,7 @@
         <v-btn class="btn-save" color="primary" primary @click="setName" v-if="currentState=='received' && !existFederation">{{$t('Save')}}</v-btn>
       </div>
 
-    <v-dialog v-model="confirmDlg" max-width="95%" persistent>
+    <v-dialog v-model="confirmDlg" max-width="460" persistent>
       <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
@@ -56,7 +62,7 @@
       </div>
     </v-dialog>
 
-    </div>
+  </m-layout>
   </div>
 </template>
 <script>
@@ -65,7 +71,7 @@ import Card from '@/components/Card'
 import { mapState, mapActions } from 'vuex'
 import { getAccountIdByAddress, getAddressByAccountId } from '@/api/federation'
 import { FED_NETWORK_BIND_ADDRESS } from '@/api/gateways'
-
+import AccountsNav from '@/components/AccountsNav'
 export default {
   data() {
     return {
@@ -78,6 +84,7 @@ export default {
       msg: null,
       working: false,
       confirmDlg: false,
+        showaccountsview: false,
     }
   },
   computed: {
@@ -166,11 +173,18 @@ export default {
           this.$toasted.error(this.$t('FederationName.NetworkError'))
         })
 
-    }
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
   },
   components: {
     Toolbar,
     Card,
+    AccountsNav,
   }
 }
 </script>

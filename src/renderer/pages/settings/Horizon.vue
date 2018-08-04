@@ -4,11 +4,17 @@
 <template>
   <div class="page">
     <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
+      :showmenuicon="showmenuicon"
+      :showbackicon="false"
       @goback="back"
-      />
-    <div class="content">
+      :menuIndex="5"  
+      >
+       <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
+      </v-btn>
+    </toolbar>
+<accounts-nav :show="showaccountsview" @close="closeView"/>
+     <m-layout class="mt-4">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <v-text-field
@@ -19,12 +25,12 @@
             ></v-text-field>
 
             <v-container fluid grid-list-md>
-            <v-layout row wrap>
-              <v-flex d-flex xs12 sm6 md3 @click="changeHorizon(fchain)">
+            <v-layout row wrap >
+              <v-flex d-flex xs12 @click="changeHorizon(fchain)" class="hrow">
                   <v-flex d-flex xs11>
-                    <v-layout row wrap>
-                      <v-flex d-flex xs12 class='label'>{{$t('fchainHorizon')}}</v-flex>
-                      <v-flex d-flex xs12 class="value">{{fchain}}</v-flex>
+                    <v-layout row wrap class="hrow">
+                      <v-flex d-flex xs3 class='label'>{{$t('fchainHorizon')}}</v-flex>
+                      <v-flex d-flex xs9 class="value">{{fchain}}</v-flex>
                     </v-layout>
                   </v-flex>
                   <v-flex xs1 class='select'>
@@ -37,11 +43,11 @@
                 <span class="horizon_msgstyle">{{$t('HorizonVersion')}}:{{horizon_version_fchain}}</span>
               </v-flex>
 
-              <v-flex d-flex xs12 sm6 md3 @click="changeHorizon(stellar)">
+              <v-flex d-flex xs12 @click="changeHorizon(stellar)" class="hrow">
                   <v-flex d-flex xs11>
-                    <v-layout row wrap>
-                      <v-flex d-flex xs12 class='label'>{{$t('StellarOrg')}}</v-flex>
-                      <v-flex d-flex xs12 class="value">{{stellar}}</v-flex>
+                    <v-layout row wrap class="hrow">
+                      <v-flex d-flex xs3 class='label'>{{$t('StellarOrg')}}</v-flex>
+                      <v-flex d-flex xs9 class="value">{{stellar}}</v-flex>
                     </v-layout>
                   </v-flex>
                   <v-flex xs1 class='select'>
@@ -53,11 +59,11 @@
                 <span :class="{horizon_timeusestyle:true, horizon_timeusebgcone:timeUse_stellar<=50,horizon_timeusebgctwo:timeUse_stellar<=100&&timeUse_stellar>50,horizon_timeusebgcthree:timeUse_stellar<=150&&timeUse_stellar>100,horizon_timeusebgcfour:timeUse_stellar<=200&&timeUse_stellar>150,horizon_timeusebgcfive:timeUse_stellar>=200}">{{timeUse_stellar}}ms</span>
                 <span class="horizon_msgstyle">{{$t('HorizonVersion')}}:{{horizon_version_stellar}}</span>
               </v-flex>
-               <v-flex d-flex xs12 sm6 md3  @click="changeHorizon(chinapublic)" >
+               <v-flex d-flex xs12 @click="changeHorizon(chinapublic)" class="hrow">
                   <v-flex d-flex xs11>
-                    <v-layout row wrap>
-                      <v-flex d-flex xs12 class='label'>{{$t('ChinaPublic')}}</v-flex>
-                      <v-flex d-flex xs12 class='value'>{{chinapublic}}</v-flex>
+                    <v-layout row wrap class="hrow">
+                      <v-flex d-flex xs3 class='label'>{{$t('ChinaPublic')}}</v-flex>
+                      <v-flex d-flex xs9 class='value'>{{chinapublic}}</v-flex>
                     </v-layout>
                   </v-flex>
                   <v-flex xs1 class="select">
@@ -102,9 +108,9 @@
         </div> 
       </card>
       <div class="btn-group btns">
-        <v-btn class="btn-save" color="error" @click="save">{{$t('Save')}}</v-btn>
+        <v-btn class="btn-save" block color="error" @click="save">{{$t('Save')}}</v-btn>
       </div>
-    </div>
+    </m-layout>
 
   </div>
 </template>
@@ -117,6 +123,7 @@ import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON,FCHAIN_HORIZON } from '
  
 import { getAddressPinInfo } from '@/api/gateways'
 import * as accountapi from '@/api/account'
+import AccountsNav from '@/components/AccountsNav'
 export default {
   data(){
     return {
@@ -134,6 +141,7 @@ export default {
       timeUse_stellar:null,
       timeUse_chinapublic:null,
       timeUse_wancloud:null,
+      showaccountsview: false,
     }
   },
   computed:{
@@ -228,12 +236,19 @@ export default {
           this.working = false
           this.$toasted.error(this.$t('Error.SaveHorizonFail'))
         })
-    }
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
    
   },
   components: {
     Toolbar,
     Card,
+    AccountsNav
   }
 }
 </script>
@@ -247,29 +262,31 @@ export default {
   align-items center
   color: $primarycolor.green
   .iconfont
-    font-size: .7rem
+    font-size: 2rem
 .page
   background: $primarycolor.gray
   color: $primarycolor.font
   font-size: 16px
   .content
     padding: 10px 10px
-    .mycard
-      .card-content
-        .label
-          color: $secondarycolor.font
-          padding-top: 10px
-          padding-bottom: 1px
-        .value
-          font-size: 18px
-    .btn-group
-      margin-top: 20px
-      width: 100%
-      .btn-save
-        padding: 0px 0px
-        margin: 0px 0px
-        width: 100%
-        height: 36px
+.mycard
+  .card-content
+    .label
+      color: $secondarycolor.font
+      height: 32px
+      line-height: 32px
+    .value
+      font-size: 18px
+      height: 32px
+      line-height: 32px
+.btn-group
+  margin-top: 20px
+  width: 100%
+  .btn-save
+    padding: 0px 0px
+    margin: 0px 0px
+    width: 100%
+    height: 36px
 
 .horizon_pinstyle
   background:$primarycolor.green
@@ -299,13 +316,11 @@ export default {
   span
     padding: 2px 4px
 .btns
-  position: absolute
-  left: 0
-  right: 0
-  bottom: .2rem
-  bottom:  calc(.2rem + constant(safe-area-inset-bottom))
-  bottom:  calc(.2rem + env(safe-area-inset-bottom))
   padding: .1rem .2rem
+
+.hrow
+  height: 32px!important
+  line-height:32px!important
 //颜色分类
   // brand-primary: darken(#428bca, 6.5%); // #337ab7
   // @brand-success: #5cb85c;

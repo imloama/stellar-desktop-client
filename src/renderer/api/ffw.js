@@ -30,17 +30,24 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
 
   //   ,'};'
   // ].join('')
-  let method = isIos ? 'window.webkit.messageHandlers.cordova_iab' : 'cordova_iab'
   let appdata = Object.assign({contacts:[], myaddresses:[]},data);
   let version = pkg.version
-  let uuid = device.uuid
-  if(uuid){
-    let uuidhash = sjcl.hash.sha256.hash(uuid)
-    uuid = sjcl.codec.hex.fromBits(uuidhash)
-  }
+  // let uuid = device.uuid
+  // if(uuid){
+  //   let uuidhash = sjcl.hash.sha256.hash(uuid)
+  //   uuid = sjcl.codec.hex.fromBits(uuidhash)
+  // }
+  let uuid = 'unset'
   let contactstr = JSON.stringify(appdata.contacts)
   let myaddressstr = JSON.stringify(appdata.myaddresses)
   return `if(!window.FFW){
+      // const {ipcRenderer} = require('electron')
+      // console.log(ipcRenderer)
+      // console.log(electron)
+      console.log(window);
+
+      // console.log(EventEmitter);
+      // const ipcRenderer = EventEmitter.electron.ipcRenderer
       window.FFW = {};
       FFW.version = "${version}";
       FFW.platform = "${platform}";
@@ -54,6 +61,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
       FFW.addCallback = function(id,fn){
         FFW.callbackObjs[id] = fn;
       };
+
 
       FFW.callback = function(id, data){
         var fn = FFW.callbackObjs[id];
@@ -72,7 +80,16 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type:'pay',destination: data.destination, code: data.code, issuer: data.issuer, amount: data.amount, memo_type: data.memo_type, memo: data.memo};
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+        //  ipcRenderer.sendToHost(JSON.stringify(params));  
+        // window.parent.postMessage(JSON.stringify(params));  
+          var message = new MessageEvent('message', {
+            view: window.parent,
+            bubbles: false,
+            cancelable: false,
+            data: JSON.stringify(params),
+            source: window
+          })
+          window.dispatchEvent(message)
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -82,7 +99,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type:'pathPayment',destination: data.destination, code: data.code, issuer: data.issuer, amount: data.amount, memo_type: data.memo_type, memo: data.memo };
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -93,7 +110,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type: 'sign', data: data};
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -104,7 +121,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type: 'signXDR', data: data, message: message };
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -116,7 +133,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type: 'backup'};
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -126,7 +143,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type: 'recovery', data: data };
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -136,7 +153,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type: 'trust', code: code, issuer: issuer };
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -144,21 +161,14 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
       };
 
       FFW.scan = function(callback){
-        var params = { type: 'scan'};
-        params = genParams(params, callback);
-        try{
-          ${method}.postMessage(JSON.stringify(params));  
-        }catch(err){
-          console.error(err);
-          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
-        }
+        FFW.callback(params['callback'] ,{code:"fail",message:"unsupport"});
       };
 
       FFW.share = function(options,callback){
         var params = { type: 'share', options: options };
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
@@ -169,7 +179,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         var params = { type: type, data: data};
         params = genParams(params, callback);
         try{
-          ${method}.postMessage(JSON.stringify(params));  
+          ipcRenderer.sendToHost(JSON.stringify(params));  
         }catch(err){
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});

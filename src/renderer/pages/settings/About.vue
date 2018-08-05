@@ -177,7 +177,7 @@ export default {
     },
     toDebug(){
       //window.location.href = 'http://192.168.2.253:3000'
-      window.open('http://192.168.2.253:3000', "_self");
+      // window.open('http://192.168.2.253:3000', "_self");
     },
     showAccounts(){
         this.showaccountsview = true

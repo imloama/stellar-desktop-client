@@ -2,12 +2,12 @@
 <template>
   <div class="page" dark  v-bind:class="{hidebackground: showScanner}">
     <toolbar :title="$t('Title.ThirdApp')" :showbackicon="false"  @goback="back" 
-      :shadow="false" lockpass  ref="toolbar" v-if="!showScanner">
-      <!--右侧打开设置界面-->
-      <v-btn icon slot='right-tool' @click="toSetting">
-        <i class="material-icons font28">extension</i>
+      :shadow="false" lockpass  ref="toolbar" v-if="!showScanner" :menuIndex="2"  >
+      <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
       </v-btn>
     </toolbar>
+
     <toolbar :title="$t('Title.Scan')" 
       :showmenuicon="false" 
       :showbackicon="false"
@@ -18,7 +18,8 @@
       <i class="material-icons font28" slot="right-tool" 
         @click="closeQRScanner">&#xE5CD;</i>
    </toolbar> 
-    
+<accounts-nav :show="showaccountsview" @close="closeView"/>
+    <m-layout class="mt-4">
     <v-container fluid v-bind="{ [`grid-list-md`]: true }" v-if="!showScanner">
       <div class="dapp-subtitle subheading pl-2" @click="fetchApps">{{$t('hot_dapp')}}</div>
       <card padding="8px 0" margin="0 0" v-if="working">
@@ -33,7 +34,7 @@
       </card>
       <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
         <v-flex
-          xs4
+          xs2
           v-for="(app,index) in apps"
           :key="index"
           @click="choose(app)"
@@ -57,25 +58,26 @@
 
       <v-layout class="apps-layout" row wrap >
         <v-flex
-          xs4
+          xs2
           v-for="(app,index) in myapps"
           :key="index"
-          @click="choose(app)"
           class="app-card-wrapper"
         >
           <v-card dark flat tile class="pa-2 textcenter app-card" >
-            <div class="pa-3">
+            <div class="pa-3" @click="choose(app)">
               <v-avatar class="grey darken-4 app-avatar" :size="`62px`">
                <span class="white--text headline">{{app.title.substring(0,1)}}</span> 
              </v-avatar>
             </div>
-             <v-card-title primary-title class="app-title">
+             <v-card-title primary-title class="app-title" @click="choose(app)">
                <div class="textcenter" style="width: 100%;">{{app.title}}</div>
              </v-card-title>
+             <span class="app-icon-del" @click="delDapp(index,app)"><i class="material-icons">delete_forever</i></span>
+             <span class="app-icon-edit" @click="modifyDapp(index,app)"><i class="material-icons">edit</i></span>
           </v-card>
         </v-flex>
         <v-flex
-          xs4
+          xs2
           @click="addDapp"
           class="app-card-wrapper"
         >
@@ -89,7 +91,9 @@
         </v-flex>
       </v-layout>
 
-    <v-dialog v-model="showConfirmDlg" max-width="95%" persistent>
+      
+
+    <v-dialog v-model="showConfirmDlg" max-width="360" persistent>
       <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
@@ -107,16 +111,16 @@
     </v-dialog>
 
     <!--新增弹窗-->
-    <v-dialog v-model="showAddDlg" persistent max-width="90%">
+    <v-dialog v-model="showAddDlg" persistent max-width="460">
       <v-card>
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
               
-              <v-flex xs12 sm6 md4>
+              <v-flex xs12>
                 <v-text-field :label="$t('ContactAdd.name')" clearable required v-model="apptitle"></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6 md4>
+              <v-flex xs12>
                 <v-text-field :label="$t('ContactAdd.address')" clearable required v-model="appsite"></v-text-field>
               </v-flex>
             </v-layout>
@@ -132,6 +136,21 @@
 
 
     </v-container>
+    </m-layout>
+
+    <div class="dapp--container" v-if="dAppShow">
+      <div class="dapp__toolbar">
+        <div class="dapp__t__bar flex-row">
+          <div class="flex1 pt-2 pl-1" @click="closeDappContainer"><i class="material-icons">close</i></div>
+          <div class="flex1 pt-2" @click="dappContainerBack"><i class="material-icons">arrow_back_ios</i></div>
+          <div class="flex4">{{choosed.title}}</div>
+          <div class="flex1"></div>
+          <div class="flex1"></div>
+        </div>
+      </div>
+      <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="info" v-if="dAppLoading"></v-progress-linear>
+      <webview ref="dappWebView" id="dappWebView" :src="choosed.site" class="webView" disablewebsecurity></webview>
+    </div>
 
     <send-asset v-if="showSendAsset" 
       :destination="sendTarget.destination"
@@ -197,6 +216,7 @@ import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
 import { trustAll } from '@/api/operations'
+import AccountsNav from '@/components/AccountsNav'
 
 const COLOR_GREEN = '#21CE90'
 
@@ -230,6 +250,16 @@ export default {
       addingApp: false,
       // showqrscan: false,
       showScanner: false,
+      showaccountsview: false,
+
+      showDappMenu: false,
+      choosedMyDappIndex: -1,
+      choosedMyDapp: null,
+      isAddMyDapp: true,
+
+      dAppShow: false,//是否显示当前的dapp
+      dAppLoading: true,//是否正在加载dapp
+
     }
   },
    computed:{
@@ -244,17 +274,6 @@ export default {
       apps: state => state.dapps || [],
     }),
   },
-  beforeDestroy(){
-    if(this.appInstance){
-      this.appInstance.close()
-      this.appInstance = undefined
-      this.statusbarColor = COLOR_GREEN
-      if(StatusBar){
-        StatusBar.backgroundColorByHexString(this.statusbarColor);
-        this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'primary');
-      }
-    }
-  },
   beforeMount(){
     this.fetchApps()
   },
@@ -267,7 +286,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addMyApp','loadDApps']),
+    ...mapActions(['addMyApp','loadDApps', 'deleteMyApp', 'modifyMyApp']),
     fetchApps(){
       // this.working = true
       this.err = null
@@ -301,106 +320,37 @@ export default {
       localStorage.setItem(this.choosed.site, "confirm")
       this.showConfirmDlg = false
       let color = this.choosed.color || this.statusbarColor
-      if(StatusBar){
-        StatusBar.backgroundColorByHexString(color);
-        // this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'error');
-      }
-      if(cordova.platformId === 'browser'){
-        this.appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=yes,toolbar=yes,toolbarcolor=#21ce90');
-      }else{
-        this.appInstance = cordova.ThemeableBrowser.open(this.choosed.site, '_blank', {
-              statusbar: {
-                  color: color
-              },
-              toolbar: {
-                  height: 44,
-                  color: color
-              },
-              browserProgress: {
-                showProgress: true,
-                progressBgColor: "#007e9c",
-                progressColor: "#FF5E00"
-              },
-              title: {
-                  color: '#FFFFFF',
-                  showPageTitle: true,
-                  staticText: this.choosed.title 
-              },
-              closeButton: {
-                  image: 'close',
-                  imagePressed: 'close_pressed',
-                  align: 'left',
-                  event: 'closePressed'
-              },
-              backButtonCanClose: true,
-              // hidden: true
+
+      this.dAppShow = true
+      this.$nextTick(()=>{
+        this.appInstance = this.$refs.dappWebView
+        this.appInstance.addEventListener('did-start-loading', ()=>{})
+        this.appInstance.addEventListener('did-stop-loading', ()=>{
+          console.log('---stop loadding')
+          this.dAppLoading = false
+          let contacts = this.allcontacts
+          let myaddresses = this.myaddresses
+          let isIos =false
+          let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, "desktop-client", this.locale.key)
+          let that = this;
+          this.appInstance.executeJavaScript(script,false,(params)=>{
+            console.log('---callback---')
+            console.log(this.appInstance.getWebContents())
+            let wc = this.appInstance.getWebContents()
+            wc.on('message', data=>{console.log('----data:' + JSON.stringify(data))})
+
           })
-          
-      }
-      this.appInstance.addEventListener('reloadPressed', e => {
-        this.appInstance.reload()
-      })
-      this.appInstance.addEventListener('sharePressed', e => {
-          this.shareCB(e.url)
-      })
-      // this.appInstance.removeEventListener('closePressed')
-      this.appInstance.addEventListener('closePressed',()=>{
-        this.appInstance.close()
-        this.appInstance = undefined
-        this.statusbarColor = COLOR_GREEN
-        if(StatusBar){
-          StatusBar.backgroundColorByHexString(this.statusbarColor);
-          this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'primary');
-        }
-      })
-      this.appInstance.addEventListener('loadstop',() => {
-        //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
-        //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
-        //alert(scriptEle)
-        let contacts = this.allcontacts
-        let myaddresses = this.myaddresses
-        let isIos = "ios" === cordova.platformId
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId, this.locale.key)
-        // alert(script)
-        this.appInstance.executeScript({ code: script },params => {
-          //console.log(params)
-          //alert('after script insert')
-          //alert(params)
+          this.appInstance.openDevTools()
+          this.appInstance.addEventListener('ipc-message', (event) => { //ipc-message监听，被webview加载页面传来的信息
+            console.log(event)
+            console.log('event')
+          })
+
         })
-
       })
-      let that = this
-      this.appInstance.addEventListener('message', debounce(function (e){
-        // console.log('-----------get message ---- ')
-        // alert(JSON.stringify(e))
-        let type = e.data.type
-        if(type === FFW_EVENT_TYPE_PAY){
-          that.doPayEvent(e)
-        }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
-          that.doPathPaymentEvent(e)
-        }else if(type === FFW_EVENT_TYPE_SIGN){
-          that.appEventType = e.data.type
-          that.appEventData = e.data
-          that.doSign(e)
-        }else if(type == FFW_EVENT_TYPE_SCAN){
-          that.appEventType = e.data.type;
-          that.appEventData = e.data
-          that.showScanner = true;
-          that.doQRScanEvent(e);
-          
 
-        }else if(type == FFW_EVENT_TYPE_SHARE){
-          that.appEventType = e.data.type;
-          that.appEventData = e.data
-          that.doShare(e);
-        // }else if(type === 'after_fund'){
-        //   that.doTrust(e.data.data)
-        }else{  
-          that.appEventType = e.data.type
-          that.appEventData = e.data
-          that.hideDapp()
-        }
-      },500))
+      return
+
     },
     hideDapp(e){
       this.appInstance.hide()
@@ -577,7 +527,8 @@ export default {
       if(!this.apptitle)return
       if(!this.appsite)return
       this.addingApp = true
-      this.addMyApp({title: this.apptitle, site: this.appsite})
+      if(this.isAddMyDapp){
+        this.addMyApp({title: this.apptitle, site: this.appsite})
         .then(response=>{
             this.cancelAddApp()
             this.addingApp = false
@@ -585,6 +536,23 @@ export default {
           .catch(err=>{
             this.$toasted.error(this.$t('SaveFailed') +":" + (err.message ? err.message:''))
           })
+      }else{
+         this.modifyMyApp({index: this.choosedMyDappIndex, app: {title: this.apptitle, site: this.appsite}})
+        .then(response=>{
+          console.log('--------------ok----')
+          console.log(this.myapps)
+            this.cancelAddApp()
+            this.addingApp = false
+            this.isAddMyDapp = false
+            this.choosedMyDappIndex = -1
+            this.choosedMyDapp = null
+          })
+          .catch(err=>{
+            this.$toasted.error(this.$t('SaveFailed') +":" + (err.message ? err.message:''))
+          })
+        
+      }
+      
 
 
     },
@@ -631,6 +599,51 @@ export default {
       this.$refs.qrscanner.closeQRScanner();
       this.showScanner = false
       this.$store.commit('SHOW_TABBAR')
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
+    chooseMyDapp(index,app){
+      this.showDappMenu = true
+      this.choosedMyDappIndex = index
+      this.choosedMyDapp = app
+      this.isAddMyDapp = true
+    },
+    openDapp(){
+      this.choose(this.choosedMyDapp)
+    },
+    delDapp(index, app){
+      console.log('-del----'+index+","+JSON.stringify(app))
+      if(this.addingApp)return
+      this.addingApp = true
+      //直接删除
+      this.deleteMyApp(index)
+        .then(response=>{
+            this.addingApp = false
+          })
+          .catch(err=>{
+            this.addingApp = false
+            this.$toasted.error(this.$t('SaveFailed') +":" + (err.message ? err.message:''))
+          })
+    },
+    modifyDapp(index,app){
+      this.isAddMyDapp = false
+      this.showAddDlg = true
+      this.choosedMyDappIndex = index
+      this.choosedMyDapp = app
+      this.apptitle = this.choosedMyDapp.title
+      this.appsite = this.choosedMyDapp.site
+    },
+
+    closeDappContainer(){
+      this.choosed = {}
+      this.dAppShow = false
+    },
+    dappContainerBack(){
+      this.$refs.dappWebView.goBack()
     }
 
 
@@ -645,6 +658,7 @@ export default {
     BackUpData,
     SignXDR,
     QRScan,
+    AccountsNav,
   }
 }
 </script>
@@ -692,4 +706,48 @@ export default {
   background: $secondarycolor.gray!important
 .hidebackground
   background: none!important
+
+.dapp--container
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  overflow-y: auto
+  background: $primarycolor.gray
+  z-index: 9
+  .dapp__progress
+    width:375px
+    margin: 0 auto
+  .dapp__toolbar
+    margin: auto auto
+    height: 48px
+    line-height: 48px
+    .dapp__t__bar
+      line-height: 48px
+      background: $primarycolor.green
+      width:375px
+      margin: 0 auto
+  .webView
+    width:375px
+    height:667px
+    margin: auto auto
+    background: #ffffff
+
+.app-icon-del
+  position: absolute
+  top: 4px
+  right: 4px
+  cursor: pointer
+  .material-icons
+    font-size: 20px
+    color: #999999
+.app-icon-edit
+  position: absolute
+  cursor: pointer
+  top: 4px
+  right: 28px
+  .material-icons
+    font-size: 20px
+    color: #999999
 </style>

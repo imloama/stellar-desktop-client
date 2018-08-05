@@ -180,6 +180,7 @@
   "Delete":"删除",
   "Modify":"修改",
   "Export":"导出",
+  "Open":"打开",
   "SendAssetSuccess":"发送资产成功",
   "Error.SendAssetFail":"发送资产失败",
 

@@ -2,7 +2,7 @@
  * 导入钱包界面
  */
 <template>
-<m-layout>
+<m-layout mid>
 <div class="page" v-bind:class="{hidebackground: showScanner}">
     <!-- <toolbar :title="$t(title)" :showbackicon="showbackicon">
       <v-btn icon style="visibility: hidden;" slot="left-tool">

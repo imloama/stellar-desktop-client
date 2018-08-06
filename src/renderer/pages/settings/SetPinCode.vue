@@ -2,17 +2,9 @@
  * pin码设置界面（从设置中打开时）
  */
 <template>
-  <div class="page" dark>
-    <Toolbar 
-      :title="$t(title)"
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-      @goback="goback"></Toolbar>
-
-    <pin-code class="pin1" v-on:finish="finish" v-show="working==='set'"></pin-code>
-    <pin-code class="pin2" v-on:finish="resetFinish" v-show="working==='reset'" reset></pin-code>
+  <v-card>
     
-  </div>
+  </v-card>
 </template>
 
 <script>

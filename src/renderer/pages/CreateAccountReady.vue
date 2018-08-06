@@ -12,6 +12,7 @@
     </toolbar> -->
     <div class="headline mt-5 textcenter primarycolor" v-if="!seedInputDlgShow">{{$t(title)}}</div>
     
+    <m-layout mid>
     <div class="content"  v-if="!seedInputDlgShow">
       <div class="label">{{$t('Account.AccountName')}}</div>
       <div class="value" >{{name}}</div>
@@ -39,17 +40,8 @@
         </v-flex>
        </v-layout>
     </div>
+    
 
-    <v-dialog v-model="coveringDlg" persistent max-width="460px">
-      <v-card>
-        <v-card-title class="headline">{{$t('Account.WhetherCoverAccount')}}</v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green" flat @click.native="coveringDlg = false">{{$t('Button.Cancel')}}</v-btn>
-          <v-btn color="red" flat @click.native="doCoverAccount">{{$t('Button.OK')}}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
     <!-- 密钥输入窗口 不再使用dialog  -->
     <div class="si-dlg" v-if="seedInputDlgShow">
@@ -88,7 +80,19 @@
       </div>
 
     </div>
+  </m-layout>
+
   
+    <v-dialog v-model="coveringDlg" persistent max-width="460px">
+      <v-card>
+        <v-card-title class="headline">{{$t('Account.WhetherCoverAccount')}}</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green" flat @click.native="coveringDlg = false">{{$t('Button.Cancel')}}</v-btn>
+          <v-btn color="red" flat @click.native="doCoverAccount">{{$t('Button.OK')}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- 是否跳过验证窗口 -->
     <v-dialog v-model="showSkipDlg" max-width="460px" persistent>

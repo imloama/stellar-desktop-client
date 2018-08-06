@@ -6,7 +6,7 @@
     <div class="confirm-wrapper" v-show="step === 0">
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
-      <v-bottom-sheet v-model="showSendDlg" persistent dark>
+      <v-dialog v-model="showSendDlg" persistent dark max-width="460">
         <div class="send-dlg-content sheet-content">
           <div class="menu-head">
             <div class="menu-row">
@@ -62,12 +62,12 @@
             <div :class="'confirm-btn flex1 ' + (choosedIndex >=0 ? '':'disable-btn')" @click="showPwdDlg">{{$t('Button.OK')}}</div>
           </div>
         </div>
-      </v-bottom-sheet>
+      </v-dialog>
       </div>
     </div>
 
     <!--显示密码输入界面-->
-    <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
+    <v-dialog persistent v-model="showPwdSheet" v-if="showPwdSheet" dark max-width="320">
       <div class="sheet-content send-dlg-content">
         <div class="sheet-title textcenter">
           <div class="title">{{$t('payment')}} {{choosed.amount}}  {{choosed.code}}</div>
@@ -92,7 +92,7 @@
           <div class="sheet-btn" @click="doPayment">{{$t('payment')}}</div>
         </div>
       </div>
-    </v-bottom-sheet>
+    </v-dialog>
 
     <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
       color="red" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>

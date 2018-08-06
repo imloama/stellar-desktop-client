@@ -1,26 +1,31 @@
 /**
  * 工单系统
- */
+ */// 打开KYC界面
 <template>
-  <div class="page">
-     <toolbar :title="$t('tickets')" 
-        :showmenuicon="false" 
-        :showbackicon="true"
-        ref="toolbar"
-        >
-    </toolbar>
+  <div class="kycpage">
+      <div class="dapp--container">
+      <div class="dapp__toolbar">
+        <div class="dapp__t__bar flex-row">
+          <div class="flex6 textcenter">{{$t('tickets')}}</div>
+        </div>
+      </div>
+      <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="info" v-if="dAppLoading"></v-progress-linear>
+      <webview ref="dappWebView" id="dappWebView" class="webView" :src="site" disablewebsecurity></webview>
+    </div>
+
   </div>
 </template>
 
 <script>
 import { mapState, mapActions} from 'vuex'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import debounce from 'lodash/debounce'
 import Toolbar from '@/components/Toolbar'
+import { KYC_SITE } from '@/api/gateways'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
-
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
 // export const FFW_EVENT_TYPE_SIGN = 'sign'
@@ -31,8 +36,9 @@ import isJson from '@/libs/is-json'
 export default {
   data(){
     return {
-      site:'https://jn279.gitee.io/firefly_assets/tickets',
-      title:this.$t('tickets'),
+      site: 'https://jn279.gitee.io/firefly_assets/tickets?r='+Math.random(),
+      appInstance: null,
+      dAppLoading: true
     }
   },
    computed:{
@@ -45,21 +51,6 @@ export default {
       locale: state => state.app.locale,
     }),
   },
-  beforeMount () {
-    //接收要打开的应用
-    let _title = this.$route.params.title;
-    let _site = this.$route.params.site;
-    this.title = _title||this.title
-    this.site = _site||this.site
-    this.site = this.site + '?'+Math.random()
-
-  },
-  beforeDestroy(){
-    if(this.appInstance){
-      this.appInstance.close()
-      this.appInstance = undefined
-    }
-  },
   mounted () {
     this.openApp()
   },
@@ -68,84 +59,50 @@ export default {
       this.$router.back()
     },
     openApp(){
+      // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
+      this.appInstance = this.$refs.dappWebView
       
-      if(cordova.platformId === 'browser'){
-        this.appInstance = cordova.InAppBrowser.open(this.site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
-      }else{
-        this.appInstance = cordova.ThemeableBrowser.open(this.site, '_blank', {
-              statusbar: {
-                  color: '#21ce90'
-              },
-              toolbar: {
-                  height: 44,
-                  color: '#21ce90'
-              },
-              browserProgress: {
-                showProgress: true,
-                progressBgColor: "#007e9c",
-                progressColor: "#FF5E00"
-              },
-              title: {
-                  color: '#FFFFFF',
-                  showPageTitle: true,
-                  staticText: this.title 
-              },
-              closeButton: {
-                  image: 'close',
-                  imagePressed: 'close_pressed',
-                  align: 'left',
-                  event: 'closePressed'
-              },
-              backButtonCanClose: false,
-              // hidden: true
-          })
-          
-      }
-      // this.appInstance.removeEventListener('closePressed')
-      this.appInstance.addEventListener('closePressed',()=>{
-        this.appInstance.close()
-        this.appInstance = undefined
-        this.$router.back();
+      this.appInstance.addEventListener('did-start-loading', ()=>{
+        this.dAppLoading = true
       })
-      this.appInstance.addEventListener('backPressed', ()=>{
-        this.appInstance.close()
-        this.appInstance = undefined
-        this.$router.back();
-      });
-
-      this.appInstance.addEventListener('loadstop',() => {
-        //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
-        //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
-        //alert(scriptEle)
+      this.appInstance.addEventListener('did-stop-loading', ()=>{
+          console.log('---stop loadding')
+          this.dAppLoading = false
+      })
+      this.appInstance.addEventListener('dom-ready',()=>{
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
-        let isIos = "ios" === cordova.platformId
-
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId,this.locale.key)
-        // alert(script)
-        this.appInstance.executeScript({ code: script },params => {
-          //console.log(params)
-          //alert('after script insert')
-          //alert(params)
+        let isIos =false
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, "desktop-client", this.locale.key)
+        let that = this;
+        this.appInstance.executeJavaScript(script,false,(params)=>{
+          console.log('---callback---')
         })
-
+        // this.appInstance.openDevTools()
+        let wc = this.appInstance.getWebContents()
+        wc.enableDeviceEmulation({screenPosition:'mobile',
+        size:{width:375, height: 667},
+        viewSize:{width:375, height: 667}})
+        
+        this.appInstance.addEventListener('console-message', e => {
+          let msg = e.message
+          if(!isJson(msg))return
+          let d = JSON.parse(msg)
+          let type = d.type
+          this.appEventType = type;
+          this.appEventData = d
+          if(type === FFW_EVENT_TYPE_SIGN){
+            this.doSign(d)
+          }
+        })
       })
-      let that = this
-      this.appInstance.addEventListener('message', debounce(function (e){
-        // alert('message - ' + JSON.stringify(e))
-       let type = e.data.type
-       if(type === FFW_EVENT_TYPE_SIGN){
-          that.doSign(e)
-        }
-      },3000))
+
+      return
+      
     },
-    hideDapp(e){
-      this.appInstance.hide()
-      console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
-    },
-     doSign(e){
+    doSign(d){
       //签名
-      let data = e.data.data
+      let data = d.data
       if(!isJson(data)){
         return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
       }
@@ -153,31 +110,31 @@ export default {
         let cdata = signToBase64(this.accountData.seed, data)
         console.log('---------------encrypt data---' + cdata)
        // alert('sign---'+cdata)
-        this.doCallbackEvent(e.data.callback,this.callbackData('success', 'success', cdata))
+        this.doCallbackEvent(this.callbackData('success', 'success', cdata))
       }else{
        // alert('sign-fail--')
-        this.doCallbackEvent(e.data.callback,this.callbackData('fail','no data to sign'))
+        this.doCallbackEvent(this.callbackData('fail','no data to sign'))
       }
     },
-    doCallbackEvent(cb,data){
+    doCallbackEvent(data){
       console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
       // alert('do callback event- ' + JSON.stringify(this.appEventData))
-      try{
-        let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
-        console.log('===============callback------event---')
-        console.log(code)
-        this.appInstance.executeScript({
-          code: code }, 
-          params=>{})
-      }catch(err){
-        console.error(err)
+      if(this.appEventData && this.appEventData.callback){
+        try{
+          let cb = this.appEventData.callback
+          let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          console.log('===============callback------event---')
+          console.log(code)
+          this.appInstance.executeJavaScript(code)
+        }catch(err){
+          console.error(err)
+        }
       }
     },
     callbackData(code,message,data){
       // return JSON.stringify({code,message,data})
       return {code,message,data}
     },
-
   },
   components: {
     Toolbar,
@@ -187,4 +144,26 @@ export default {
 
 
 <style lang="stylus" scoped>
+@require '../../stylus/color.styl'
+.dapp--container
+  overflow-y: auto
+  background: $primarycolor.gray
+  z-index: 9
+  .dapp__progress
+    width:375px
+    margin: 0 auto
+  .dapp__toolbar
+    margin: auto auto
+    height: 48px
+    line-height: 48px
+    .dapp__t__bar
+      line-height: 48px
+      background: $primarycolor.green
+      width:375px
+      margin: 0 auto
+  .webView
+    width:375px
+    height:667px
+    margin: auto auto
+    background: #ffffff
 </style>

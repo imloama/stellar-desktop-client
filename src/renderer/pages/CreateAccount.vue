@@ -9,7 +9,8 @@
           <v-icon class="back-icon"/>
         </v-btn>
     </toolbar>
-    <div class="content econtent">
+    <m-layout mid>
+    <div class="">
       <v-text-field
               dark
               name="name"
@@ -50,6 +51,7 @@
         </v-flex>
        </v-layout>  
     </div>
+    </m-layout>
   </div>
 </div>
 </template>

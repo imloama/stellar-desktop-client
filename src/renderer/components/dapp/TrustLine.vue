@@ -6,7 +6,7 @@
     <div class="confirm-wrapper">
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
-      <v-bottom-sheet v-model="showDlg" persistent dark>
+      <v-dialog v-model="showDlg" persistent dark max-width="460">
         <div class="sheet-content">
           <div class="menu-head">
             <div class="menu-row">
@@ -37,12 +37,12 @@
             <div class="confirm-btn flex1" @click="showPwdDlg">{{$t('Button.OK')}}</div>
           </div>
         </div>
-      </v-bottom-sheet>
+      </v-dialog>
       </div>
     </div>
 
     <!--显示密码输入界面-->
-    <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
+    <v-dialog persistent v-model="showPwdSheet" v-if="showPwdSheet" dark max-width="320">
       <div class="sheet-content">
         <div class="sheet-title textcenter">
           <div class="title">{{$t('ManullayAddTrust')}}&nbsp;{{asset_code}}</div>
@@ -67,7 +67,7 @@
           <div class="sheet-btn" @click="doTrust">{{$t('Button.OK')}}</div>
         </div>
       </div>
-    </v-bottom-sheet>
+    </v-dialog>
 
     <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
       color="red" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>

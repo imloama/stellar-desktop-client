@@ -534,7 +534,8 @@
   "tickets":"tickets",
   "autofund_hint":"please wait, autofund is working...",
   "Lock":"lock screen",
-  "refresh":"refresh"
+  "refresh":"refresh",
+  "set_all_read":"read all"
 
   
 

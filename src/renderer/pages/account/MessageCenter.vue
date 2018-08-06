@@ -1,6 +1,6 @@
 <template>
   <div>
-    <tool-bar :title="$t(title)"
+    <!-- <tool-bar :title="$t(title)"
               :showmenuicon="false"
               :showbackicon="true"
               @goback="back">
@@ -8,9 +8,9 @@
         <i class="material-icons font28">done_all</i>
       </v-btn>
       
+    </tool-bar> -->
 
-    </tool-bar>
-      <ul class="content">
+      <ul class="">
         <li v-for="(item ,index) in messages" class="item" @click="goToDetils(item)" :key="index">
           <div :class="'item-title' + (reads.indexOf(item.link) === -1  ? '':' read')"> 
             {{item.title }}
@@ -21,6 +21,7 @@
           <span class="circular" v-if="reads.indexOf(item.link) === -1 "></span>
         </li>
       </ul>
+      <v-btn block flat @click="readAll">{{$t('set_all_read')}}</v-btn>
   </div>
 </template>
 
@@ -76,20 +77,20 @@
    .content
       .item
         position relative
-        padding: .2rem .2rem
+        padding: .5rem .5rem
         background #303034
         margin: .1rem auto
         .item-title
           line-height: 24px
           height: 24px
-          font-size .45rem!important
+          font-size 1rem!important
           white-space: nowrap
           overflow hidden
           &.read
             color: $secondarycolor.font  
 
         .item-time
-          font-size: .35rem
+          font-size: .8rem
           color: $secondarycolor.font
         .item-content
           flex 2
@@ -100,10 +101,10 @@
           padding-top 15px
         .circular
           position: absolute
-          width .2rem
-          height .2rem
+          width .5rem
+          height .5rem
           background: $primarycolor.red
-          border-radius .2rem
-          right .1rem 
-          top .1rem
+          border-radius .5rem
+          right .4rem 
+          top .4rem
 </style>

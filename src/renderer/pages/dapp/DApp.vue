@@ -140,12 +140,12 @@
 
     <div class="dapp--container" v-if="dAppShow">
       <div class="dapp__toolbar">
-        <div class="dapp__t__bar flex-row">
+        <div class="dapp__t__bar flex-row" :style="{backgroundColor:dappBgColor}">
           <div class="flex1 pt-2 pl-1" @click="closeDappContainer"><i class="material-icons">close</i></div>
-          <div class="flex1 pt-2" @click="dappContainerBack"><i class="material-icons">arrow_back_ios</i></div>
-          <div class="flex4">{{choosed.title}}</div>
-          <div class="flex1"></div>
-          <div class="flex1"></div>
+          <div class="flex1 pt-2" @click="dappContainerBack"><i class="material-icons">keyboard_arrow_left</i></div>
+          <div class="flex6 textcenter">{{choosed.title}}</div>
+          <div class="flex1">&nbsp;</div>
+          <div class="flex1">&nbsp;</div>
         </div>
       </div>
       <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="info" v-if="dAppLoading"></v-progress-linear>
@@ -210,7 +210,7 @@ import SignXDR from '@/components/dapp/SignXDR'
 import QRScan from '@/components/QRScan'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,
-   FFW_EVENT_TYPE_SIGNXDR, FFW_EVENT_TYPE_SHARE,
+   FFW_EVENT_TYPE_SIGNXDR, FFW_EVENT_TYPE_SHARE,FFW_EVENT_TYPE_BALANCES,
    FFW_EVENT_TYPE_SCAN } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
@@ -259,6 +259,7 @@ export default {
 
       dAppShow: false,//是否显示当前的dapp
       dAppLoading: true,//是否正在加载dapp
+      dappBgColor:"#21CE90",
 
     }
   },
@@ -286,7 +287,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addMyApp','loadDApps', 'deleteMyApp', 'modifyMyApp']),
+    ...mapActions(['addMyApp','loadDApps', 'deleteMyApp', 'modifyMyApp','getAccountInfo']),
     fetchApps(){
       // this.working = true
       this.err = null
@@ -320,6 +321,9 @@ export default {
       localStorage.setItem(this.choosed.site, "confirm")
       this.showConfirmDlg = false
       let color = this.choosed.color || this.statusbarColor
+      if(color){
+        this.dappBgColor = color
+      }
 
       this.dAppShow = true
       this.$nextTick(()=>{
@@ -335,16 +339,44 @@ export default {
           let that = this;
           this.appInstance.executeJavaScript(script,false,(params)=>{
             console.log('---callback---')
-            console.log(this.appInstance.getWebContents())
-            let wc = this.appInstance.getWebContents()
-            wc.on('message', data=>{console.log('----data:' + JSON.stringify(data))})
+          })
+          // this.appInstance.openDevTools()
+          let wc = this.appInstance.getWebContents()
+          wc.enableDeviceEmulation({screenPosition:'mobile',
+          size:{width:375, height: 667},
+          viewSize:{width:375, height: 667}})
+          
+          this.appInstance.addEventListener('console-message', e => {
+            console.log('webview: ' + e.message);
+            let msg = e.message
+            if(!isJson(msg))return
+            let d = JSON.parse(msg)
+            let type = d.type
+            this.appEventType = type;
+            this.appEventData = d
+            if(type === FFW_EVENT_TYPE_PAY){
+              this.doPayEvent(d)
+            }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
+              this.doPathPaymentEvent(d)
+            }else if(type === FFW_EVENT_TYPE_SIGN){
+              this.doSign(d)
+            }else if(type === FFW_EVENT_TYPE_SCAN){
+              this.doCallbackEvent(this.callbackData('fail','unsupported'))
+            }else if(type === FFW_EVENT_TYPE_SHARE){
+              // this.doShare(e);
+               this.doCallbackEvent(this.callbackData('fail','unsupported'))
+            // }else if(type === 'after_fund'){
+            //   that.doTrust(e.data.data)
+            }else if(type === FFW_EVENT_TYPE_BALANCES){
+              //查询账户余额
+              this.getBalances()
+            }else{
+              // this.hideDapp()
+              //this.doCallbackEvent(this.callbackData('fail','unsupported'))
+              //that.doCallbackEvent( that.callbackData('fail','unknown event type'))
+            }
 
-          })
-          this.appInstance.openDevTools()
-          this.appInstance.addEventListener('ipc-message', (event) => { //ipc-message监听，被webview加载页面传来的信息
-            console.log(event)
-            console.log('event')
-          })
+          });
 
         })
       })
@@ -363,7 +395,7 @@ export default {
       
       trustAll(this.accountData.seed, assets)
         .then(resp => {
-          this.hideDapp()
+          //this.hideDapp()
           this.$toasted.show(this.$t('fund_success'))
           setTimeout(()=>{
             this.$router.push({name: 'MyAssets'})  
@@ -376,20 +408,29 @@ export default {
         })
 
     },
-    doPayEvent(e){
+    doPayEvent(d){
       try{
-        this.appInstance.hide()
+        //this.appInstance.hide()
         this.showSendAsset = true
-        this.sendTarget = e.data
+        this.sendTarget = d
         this.pathPayment = false
       }catch(err){
         console.error(err)
         //alert('error:'+err.message)
       }
     },
-    doSign(e){
+    getBalances(){
+      this.getAccountInfo(this.account.address)
+        .then(data=>{
+          this.doCallbackEvent(this.callbackData('success', 'success', this.balances))
+        })
+        .catch(err=>{
+          this.doCallbackEvent(this.callbackData('fail',err.message))
+        })
+    },
+    doSign(d){
       //签名
-      let data = e.data.data
+      let data = d.data
       if(!isJson(data)){
         return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
       }
@@ -403,11 +444,11 @@ export default {
         this.doCallbackEvent(this.callbackData('fail','no data to sign'))
       }
     },
-    doPathPaymentEvent(e){
+    doPathPaymentEvent(d){
       try{
-        this.appInstance.hide()
+        // this.appInstance.hide()
         this.showSendAsset = true
-        this.sendTarget = e.data
+        this.sendTarget = d
         this.pathPayment = true
       }catch(err){
         console.error(err)
@@ -423,9 +464,7 @@ export default {
           let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
           console.log('===============callback------event---')
           console.log(code)
-          this.appInstance.executeScript({
-            code: code }, 
-            params=>{})
+          this.appInstance.executeJavaScript(code)
         }catch(err){
           console.error(err)
         }
@@ -450,21 +489,11 @@ export default {
       });
     },
     shareCB(url){
-      let options = {
-        subject: this.choosed.title,
-        url: url,
-        chooserTitle: this.$t('Share')
-      }
-      window.plugins.socialsharing.shareWithOptions(options, result=>{
-        console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
-        console.log("Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
-      }, msg=>{
-        console.log("Sharing failed with message: " + msg);
-      });
+      
     },
     exitEvent(msg){
       this.$nextTick(()=>{
-        this.appInstance.show()
+        // this.appInstance.show()
         this.doCallbackEvent(this.callbackData('fail',msg))
         this.$nextTick(()=>{
           this.appEventType = null
@@ -475,7 +504,7 @@ export default {
     successEvent(msg='success',data){
       // alert('----success--event---'+ JSON.stringify(data))
       this.$nextTick(()=>{
-        this.appInstance.show();
+        // this.appInstance.show();
         this.doCallbackEvent(this.callbackData('success',msg, data))
         this.$nextTick(()=>{
           this.appEventType = null
@@ -643,7 +672,9 @@ export default {
       this.dAppShow = false
     },
     dappContainerBack(){
-      this.$refs.dappWebView.goBack()
+      if(this.$refs.dappWebView.canGoForward()){
+        this.$refs.dappWebView.goBack()
+      }
     }
 
 

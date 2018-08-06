@@ -73,18 +73,6 @@ export default {
   data(){
     return {
       showmenu: false,
-      AccountSettings: [
-         { title: 'Menu.MyAssets', path:{name:'MyAssets'}, icon: "account_balance_wallet" },
-         { title: 'Menu.TradeCenter', path:{name:'TradeCenter'}, icon: "trending_up" },
-         { title: 'Menu.Funding', path:{name:'Funding'}, icon: "import_export" },
-         { title: 'Menu.History', path:{name:'History'}, icon: "history" },
-      ],
-      WalletSettings: [
-         { title: 'Menu.MyAddress', path:{name:'MyAddress'}, icon: "bookmark" },
-         { title: 'Menu.Contacts', path:{name:'ContactsList'}, icon: "supervisor_account"},
-         { title: 'Menu.Settings', path:{name:'Settings'}, icon: "settings" },
-         { title: 'Menu.Help', path:{name:'Help'}, icon: "help" },
-      ],
       selected: {},
       password: null,
       showaccounts: false,
@@ -293,7 +281,7 @@ export default {
     },
     toSettings(){
       this.selectedMenuIndex = 5
-      this.$router.push({name: 'Settings'})
+      this.$router.push({name: 'SettingsParent'})
     },
     doLock(){
       //判断是否开启了锁屏，未开启则启动锁屏

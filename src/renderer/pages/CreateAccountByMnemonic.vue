@@ -9,6 +9,7 @@
 <div class="page">
   <div class="create-account-page">
     <div class="headline mt-5 textcenter primarycolor">{{$t(title)}}</div>
+    <m-layout mid>
     <div class="content mt-4">
       <v-text-field
               dark
@@ -55,6 +56,7 @@
         </v-flex>
        </v-layout>  
     </div>
+    </m-layout>
   </div>
 </div>
 </m-layout>

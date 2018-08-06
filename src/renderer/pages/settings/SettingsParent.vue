@@ -1,9 +1,7 @@
-/**
- * 我的界面
- */
+
 <template>
 <div>
-  <toolbar :title="$t('Menu.My')" :showbackicon="false" lockpass :menuIndex="4"  ref="toolbar">
+  <toolbar :title="$t('Menu.Settings')" :showbackicon="false" lockpass :menuIndex="5"  ref="toolbar">
     <v-btn icon @click.native="showAccounts" slot="left-tool">
         <i class="material-icons font28">menu</i>
     </v-btn>
@@ -50,61 +48,36 @@ export default {
   data(){
     return {
       items: [{
-          name: 'My',
-          title: 'MyAccount',
-          icon: 'account_box'
+          name: 'CustomTradeColor',
+          title: 'redUpGreenDown',
+          icon: 'color_lens'
         },
         {
-            title: "ManageAccount",
-            name: "ManageAccount",
-            icon: "account_balance_wallet"
+            title: "Lock",
+            name: "SetPinCode",
+            icon: "lock"
         },
         {
-            title: "Menu.Contacts",
-            name: "ContactsList",
-            icon: "supervisor_account"
+            title: "Language",
+            name: "Language",
+            icon: "language"
         },
         {
-            title: "Menu.MyAddress",
-            name: "MyAddress",
-            icon: "bookmark"
+            title: "PublicNetUrl",
+            name: "Horizon",
+            icon: "link"
         },
         {
-            title: 'kyc',
-            name: 'KYC',
-            icon: "security"
+            title: 'FederationName',
+            name: 'Federation',
+            icon: "credit_card"
         },
-        //   {
-        //     title: "Menu.Funding",
-        //     name: "Funding",
-        //     icon: "import_export"
-        // },
-        // {
-        //     title: "Menu.Settings",
-        //     name: "Settings",
-        //     icon: "settings"
-        // },
-        // {
-        //     title: "Title.ThirdApp",
-        //     name: "Apps",
-        //     icon: "apps"
-        // },
-        // {
-        //     title: "Menu.Help",
-        //     name: "Help",
-        //     icon: "help"
-        // },
         {
-        title: "Menu.MessageCenter",
-        name: "MessageCenter",
-        icon: "message",
-        count: 0
-      },   
-        {
-        title: "tickets",
-        name: "Tickets",
-        icon: "assignment"
-      }
+            title: 'About.Title',
+            name: 'About',
+            icon: "info"
+        },
+        
       
       ],
       showaccountsview: false,
@@ -119,9 +92,6 @@ export default {
       app: state => state.app,
       islogin: state => (state.accounts.accountData.seed ? true : false),
     }),
-    ...mapGetters([
-      'unReadCount'
-    ]),
     names(){
       let d = []
       this.items.forEach(item=>{
@@ -136,14 +106,9 @@ export default {
       if(i>=0){
         this.selected = i
       }
-    },
-    unReadCount(){
-      this.items[5].count = this.unReadCount
     }
   },
   mounted(){
-    console.log('----------unread count' + this.unReadCount)
-    this.items[5].count = this.unReadCount
     let i = this.names.indexOf(this.$route.name)
     if(i>=0){
       this.selected = i

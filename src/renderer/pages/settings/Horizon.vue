@@ -3,7 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon"
       :showbackicon="false"
       @goback="back"
@@ -13,10 +13,9 @@
         <i class="material-icons font28">menu</i>
       </v-btn>
     </toolbar>
-<accounts-nav :show="showaccountsview" @close="closeView"/>
-     <m-layout class="mt-4">
-      <card padding="10px 10px" class="mycard">
-        <div class="card-content" slot="card-content">
+<accounts-nav :show="showaccountsview" @close="closeView"/> -->
+     <v-card class="pa-2 mycard">
+        <div class="card-content">
           <v-text-field
               name="horizon"
               :label="$t('PublicNetUrl')"
@@ -106,11 +105,10 @@
             </v-layout>
           </v-container>
         </div> 
-      </card>
       <div class="btn-group btns">
         <v-btn class="btn-save" block color="error" @click="save">{{$t('Save')}}</v-btn>
       </div>
-    </m-layout>
+    </v-card>
 
   </div>
 </template>

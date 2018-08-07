@@ -235,15 +235,15 @@ export default {
   text-align: center
   font-size: 16px
 .confirm-title
-  height: .8rem
-  line-height: .8rem
-  font-size: .8rem
+  height: 1rem
+  line-height: 1rem
+  font-size: 1rem
   padding-left: .4rem
   color: $primarycolor.font
 .confirm-amount
   color: $primarycolor.green
   text-align: center
-  font-size: .5rem
+  font-size: 1rem
 .confirm-memo
   padding-left: .5rem
   color: $secondarycolor.font

@@ -527,7 +527,10 @@
   "autofund_hint":"请稍等，正在进行激活操作！",
   "Lock":"锁屏",
   "refresh":"刷新",
-  "set_all_read":"全部已读"
+  "set_all_read":"全部已读",
+  "lock_enable":"开启锁屏",
+  "lock_disable":"关闭锁屏",
+  "lock_pwd_wrong":"锁屏密码错误！"
 
  
  

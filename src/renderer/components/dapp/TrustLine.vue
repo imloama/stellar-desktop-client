@@ -9,11 +9,7 @@
       <v-dialog v-model="showDlg" persistent dark max-width="460">
         <div class="sheet-content">
           <div class="menu-head">
-            <div class="menu-row">
-              <div class=" menu-row-1">
-                <v-icon class="avatar iconfont icon-erweima" color="primary"></v-icon>
-              </div>
-            </div>
+            
             <div class="menu-row menu-row-2">
               <div class="name">{{account.name}}</div>
               <div class="address">{{account.address | shortaddress}}</div>
@@ -271,44 +267,28 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 8.5rem
-  bottom: calc(8.5rem + constant(safe-area-inset-bottom))
-  bottom: calc(8.5rem + env(safe-area-inset-bottom))
+  bottom: 0
   right: 0
   left: 0
   top: 0
-  top: constant(safe-area-inset-top)
-  top: env(safe-area-inset-top)
   z-index: 9
-.confirm-dlg
-  background: $secondarycolor.gray
-  height: 8.5rem
-  height: calc(8.5rem + constant(safe-area-inset-bottom))
-  height: calc(8.5rem + env(safe-area-inset-bottom))
-  position: fixed
-  bottom: 0
-  padding-bottom: 0
-  padding-bottom: constant(safe-area-inset-bottom)
-  padding-bottom: env(safe-area-inset-bottom)
-  right: 0
-  left: 0
-  opacity: 1
 .dlg-title
   color: $primarycolor.green
   text-align: center
   font-size: 16px
 .confirm-title
-  height: .8rem
-  line-height: .8rem
-  font-size: .4rem
-  padding-left: .4rem
+  height: 1.8rem
+  line-height: 1.8rem
+  font-size: 1rem
+  padding-left: 1rem
+  padding-top: .2rem
   color: $primarycolor.font
 .confirm-amount
   color: $primarycolor.green
   text-align: center
-  font-size: .5rem
+  font-size: 1rem
 .confirm-memo
-  padding-left: .5rem
+  padding-left: 1rem
   color: $secondarycolor.font
 .confirm-content
   font-size: 16px

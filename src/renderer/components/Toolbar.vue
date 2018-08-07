@@ -25,7 +25,7 @@
          <div :class="selectedMenuIndex ===3 ? 'mbtn mactive':'mbtn'" flat @click="toFunding"><v-icon>import_export</v-icon>{{$t('Menu.Funding')}}</div>
         <div :class="selectedMenuIndex ===4 ? 'mbtn mactive':'mbtn'" flat @click="toMy"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
         <div :class="selectedMenuIndex ===5 ? 'mbtn mactive':'mbtn'" flat @click="toSettings"><v-icon>settings</v-icon>{{$t('Menu.Settings')}}</div>
-        <!-- <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon>{{$t('Lock')}}</div> -->
+        <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon>{{$t('Lock')}}</div>
       </v-toolbar-items>
 
     </v-toolbar>
@@ -93,6 +93,7 @@ export default {
       account: state => state.accounts.selectedAccount,
       selectedAccountIndex: state => state.accounts.selected,
       accountData: state => state.accounts.accountData,
+      app: state => state.app,
     }),
   },
   props: {
@@ -285,6 +286,12 @@ export default {
     },
     doLock(){
       //判断是否开启了锁屏，未开启则启动锁屏
+      if(this.app.enablePin){
+        this.$router.push({name: 'PinLock'})
+      }else{
+        this.$router.push({name: 'SetPinCode'})
+      }
+
     }
   }
 }

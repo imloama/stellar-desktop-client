@@ -3,7 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
+    <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon"
       :showbackicon="false"
       @goback="back"
@@ -12,11 +12,10 @@
        <v-btn icon @click.native="showAccounts" slot="left-tool">
         <i class="material-icons font28">menu</i>
       </v-btn>
-    </toolbar>
-    <accounts-nav :show="showaccountsview" @close="closeView"/>
-    <m-layout class="mt-4">
-      <card padding="10px 10px" class="mycard">
-        <div class="card-content" slot="card-content">
+    </toolbar> -->
+    <!-- <accounts-nav :show="showaccountsview" @close="closeView"/> -->
+      <v-card  class="mycard pa-4">
+        <div class="card-content">
           <div class="lang" v-for="(item,index) in locales" :key="index" @click.stop="chose(item)">
             <span class="label">{{item.label}}</span>
             <span class="icons">
@@ -27,8 +26,7 @@
             </span>
           </div>
         </div>
-      </card>
-    </m-layout>
+      </v-card>
 
   </div>
 </template>
@@ -40,6 +38,7 @@ import PinCode from '@/components/PinCode'
 import { mapState, mapActions} from 'vuex'
 import { LANGUAGES } from '@/locales'
 import AccountsNav from '@/components/AccountsNav'
+
 export default {
   data(){
     return {

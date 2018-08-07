@@ -13,6 +13,8 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
+let start ;
+
 function createWindow () {
   /**
    * Initial window options
@@ -33,9 +35,25 @@ function createWindow () {
     mainWindow = null
   })
   mainWindow.once('ready-to-show', () => {
-    console.log('--------------------------ready-to-show')
     mainWindow.maximize()
+    start = new Date().getTime()
   })
+  mainWindow.on('blur', ()=>{
+    //记录时间
+    start = new Date().getTime()
+    console.log('------------blur------------------' + start)
+  })
+  mainWindow.on('focus', ()=>{
+    //判断是否要显示锁屏界面
+    let end = new Date().getTime()
+    let gap = end - start
+    console.log('----------focus---------' + end + '--' + gap)
+    if(gap> 60000){//10分钟 60000
+      mainWindow.webContents.send('lock', 'needlock')
+    }
+  })
+
+
 }
 
 app.on('ready', createWindow)

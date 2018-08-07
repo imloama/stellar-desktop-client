@@ -3,7 +3,7 @@
  */
 <template>
   <div class="page" >
-    <toolbar :title="$t('About.Title')"
+    <!-- <toolbar :title="$t('About.Title')"
       :showbackicon="false"
       @goback="back"
       ref="toolbar"
@@ -13,24 +13,24 @@
         <i class="material-icons font28">menu</i>
       </v-btn>
     </toolbar>
-<accounts-nav :show="showaccountsview" @close="closeView"/>
+<accounts-nav :show="showaccountsview" @close="closeView"/> -->
 
-    <m-layout class="mt-4">
-      <card class="icard" padding="20px 10px">
-        <div slot="card-content" class="">
+    <v-card class="pa-2">
+      <div class="icard">
+        <div  class="">
           <div class="logo-wrapper" @click="toDebug">
             <img src="../../assets/img/logox.png" alt="firefly" class="logo-img"/>
           </div>
           <div class="textcenter appname">
-            FireFly
+            FireFly Desktop
           </div>
           <div class="textcenter appversion">
             {{$t('Version')}}:{{appversion}}<span v-if="isDebug">&nbsp;DEBUG</span>
           </div>
         </div>
-      </card>
-      <card class="detail-card" padding="10px 10px" margin="10px 0 10px 0">
-        <div class="card-content" slot="card-content">
+      </div>
+      <div class="detail-card pa-2" >
+        <div class="card-content" >
             <!-- <div class="row" @click="toTermOfServices">
                 <div class="label">
                     {{$t('TermsOfServiceTitle')}}
@@ -71,8 +71,8 @@
               <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
             </div> -->
         </div>
-      </card>
-    </m-layout>
+      </div>
+    </v-card>
   </div>
 </template>
 

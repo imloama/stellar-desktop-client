@@ -43,6 +43,11 @@ export default {
         name: 'Help',
         component: resolve => require(['../pages/settings/Help'], resolve)
       },
+      {
+        path: '/about',
+        name: 'About',
+        component: resolve => require(['../pages/settings/About'], resolve)
+      },
     ],
     
   }

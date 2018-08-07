@@ -535,7 +535,10 @@
   "autofund_hint":"please wait, autofund is working...",
   "Lock":"lock screen",
   "refresh":"refresh",
-  "set_all_read":"read all"
+  "set_all_read":"read all",
+  "lock_enable":"lock screen enabled",
+  "lock_disable":"lock screeb disabled",
+  "lock_pwd_wrong":"wrong unlock password!"
 
   
 

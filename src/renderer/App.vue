@@ -6,9 +6,15 @@
         <router-view />
       </v-content>
       <v-footer class="footright pa-3">
-        <div>{{version}}</div>
+        <div>v{{version}}</div>
         <v-spacer></v-spacer>
-        <div>&copy; fchain.io</div>
+        <div>
+          <span v-for="(item,index) in languages" :key="index" 
+            :class="'pl-1 pr-1 lanspan ' + (locale && locale.key===item.key ? 'activelan':'')"
+            @click="changeLan(item)">
+            <img :src="item.img" style="height: 24px;"/>
+          </span>
+        </div>
       </v-footer>
 
   </v-app>
@@ -33,7 +39,8 @@ import  TabBar from '@/components/TabBar'
 import { getFchainRss } from '@/api/fchain'
 import { PLATFORM_IS_IOS } from '@/store/modules/AppSettingStore'
 import { FCHAIN_HORIZON } from '@/api/horizon'
-
+import { LANGUAGES } from '@/locales'
+import { ipcRenderer } from 'electron'
 export default {
   data() {
     return {
@@ -51,6 +58,7 @@ export default {
       updating: false,
       // items:Store.fetch(),
       version: APP_VERSION,
+      languages:LANGUAGES,
     };
   },
   watch: {
@@ -136,6 +144,12 @@ export default {
           this.saveAppSetting({ locale: this.devicelang||ZH_CN });
           this.$router.push({ name: "Wallet" });
         });
+
+
+    ipcRenderer.on('lock', (event, message)=>{
+        console.log('------------------lock---------')
+        this.$router.push({ name: "PinLock" });
+    })
   },
   mounted() {
     //每小时执行一次
@@ -162,12 +176,23 @@ export default {
       "saveDefaultTradePairsStat",
       'loadDApps',
       'loadFundConfig',
+      'setLocale',
     ]),
     showTabbarView(){
       this.tabBarShow = true
     },
     hideTabbarView(){
       this.tabBarShow = false
+    },
+    changeLan(item){
+      this.setLocale(item)
+        .then(()=>{
+          this.$i18n.locale = item.key
+        })
+        .catch(err=>{
+          console.log(err)
+          this.$toasted.error(this.$t('SaveFailed'))
+        })
     }
     // toPicklanguage(){
     //   this.$router.push({name:'Picklanguage'})
@@ -185,4 +210,5 @@ export default {
 };
 </script>
 <style lang="stylus" src="./stylus/all.styl">
+
 </style>

@@ -2,17 +2,27 @@
  * pin码设置界面（从设置中打开时）
  */
 <template>
-  <v-card>
-    
-  </v-card>
+  <v-card class="pa-4">
+    <v-switch
+        :label="pinEnabled ? $t('lock_enable'):$t('lock_disable')"
+        color="primary"
+        v-model="pinEnabled"
+        @change="switchLock"
+      ></v-switch>
+    <v-text-field name="input-name" required dark
+        :label="$t('Lock')" v-model="lockpwd"
+        v-if="showIput"
+      ></v-text-field>
+    <v-btn color="error" block @click="doSave"  v-if="showIput"
+      :disabled="lockpwd===null || lockpwd.length===0"
+      :loading="working">{{$t('Save')}}</v-btn>
+</v-card>
 </template>
 
 <script>
 import Toolbar from '@/components/Toolbar'
 import PinCode from '@/components/PinCode'
 import { mapState, mapActions} from 'vuex'
-const WORKING_SET = 'set'
-const WORKING_RESET = 'reset'
 
 export default {
   data(){
@@ -20,14 +30,26 @@ export default {
       title: 'SetPinCode',//'resetPin'
       showmenuicon: false,
       showbackicon: true,
-      working: WORKING_SET,// set or reset
-      password: '',
-      repassword:'',
-      showerr: false
+      working:false,
+
+      pinEnabled: false,
+      showIput: false,
+      lockpwd: null,
     }
   },
-  mounted(){
-   
+  computed:{
+    ...mapState({
+      account: state => state.accounts.selectedAccount,
+      accountData: state => state.accounts.accountData,
+      app: state => state.app,
+      redUpGreenDown: state => state.app.redUpGreenDown,
+    }),
+  },
+  beforeMount(){
+    this.pinEnabled = this.app.enablePin || false
+  },
+  beforeUpdate(){
+    this.pinEnabled = this.app.enablePin || false
   },
   components: {
     PinCode,
@@ -35,38 +57,43 @@ export default {
   },
   methods: {
     ...mapActions([
-      'enablePing'
+      'enablePing','disablePing'
     ]),
-    goback(){
-      if(this.working === WORKING_SET){
-        this.$router.back()
+    switchLock(val){//改变
+      console.log('---------------change----------'+ val)
+      if(!val){
+        //清理锁屏码
+        this.disablePing()
+          .then(data=>{
+            this.pinEnabled = false
+          })
+          .catch(err=>{
+            this.$toasted.error(err.message)
+            this.pinEabled = true
+          })
       }else{
-        this.title = 'SetPinCode'
-        this.working = WORKING_SET
+        //设置锁屏码
+        this.pinEnabled = true
+        this.showIput = true
       }
+
     },
-    finish(password){
-      this.password = password
-      this.working = WORKING_RESET
-      this.title = 'ResetPinCode'
-    },
-    resetFinish(resetpassword){
-      if(this.password != resetpassword){
-        //两次pin码不相同
-        this.$toasted.error(this.$t('Error.PinCodeIsDifferent'))
-        return;
-      }
-      this.enablePing(this.password)
-        .then(()=>{
-          this.$toasted.show(this.$t('SetPinCodeSuccess'))
-          this.$router.back()
+    doSave(){
+      if(this.working)return
+      if(this.lockpwd === null || this.lockpwd.length ===0 )return
+      this.working = true
+      this.enablePing(this.lockpwd)
+        .then(data=>{
+          this.$toasted.success(this.$t('SaveSuccess'))
+          this.working = false
+          this.lockpwd = null
+          this.showIput = false
         })
         .catch(err=>{
-          console.error(err)
-          this.$toasted.error(this.$t('SaveFailed'))
+          this.working = false
+          this.$toasted.error(this.$t('SaveFailed')+" " + err.message)
         })
-
-    }
+    },
   }
 }
 </script>

@@ -3,7 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)"
+    <!-- <toolbar :title="$t(title)"
       :showmenuicon="showmenuicon"
       :showbackicon="false"
       @goback="back"
@@ -13,10 +13,9 @@
         <i class="material-icons font28">menu</i>
       </v-btn>
     </toolbar>
-<accounts-nav :show="showaccountsview" @close="closeView"/>
-  <m-layout class="mt-4">
-      <card padding="10px 10px" class="mycard">
-        <div class="card-content" slot="card-content">
+<accounts-nav :show="showaccountsview" @close="closeView"/> -->
+  <v-card class="pa-2 mycard">
+        <div class="card-content">
           <v-alert type="error" :value="msg">
             {{msg}}
           </v-alert>
@@ -35,12 +34,11 @@
           <p v-else-if="currentState=='connecting'">{{$t('FederationName.Connecting')}}</p>
           <p v-else>{{$t('FederationName.ConnectionFailed')}}</p>
         </div>
-      </card>
-      <card padding="10px 10px" margin="10px 0 10px 0" class="mycard">
-        <div class="card-content" slot="card-content">
+      <div  class="mycard">
+        <div class="card-content" >
           <p>{{$t('FederationName.Description')}}</p>
         </div>
-      </card>
+      </div>
       <div class="btn-group">
         <v-btn class="btn-save" color="primary" primary @click="setName" v-if="currentState=='received' && !existFederation">{{$t('Save')}}</v-btn>
       </div>
@@ -62,7 +60,7 @@
       </div>
     </v-dialog>
 
-  </m-layout>
+  </v-card>
   </div>
 </template>
 <script>

@@ -9,11 +9,7 @@
       <v-dialog v-model="showSendDlg" persistent dark max-width="460">
         <div class="send-dlg-content sheet-content">
           <div class="menu-head">
-            <div class="menu-row">
-              <div class=" menu-row-1">
-                <v-icon class="avatar iconfont icon-erweima" color="primary"></v-icon>
-              </div>
-            </div>
+            
             <div class="menu-row menu-row-2">
               <div class="name">{{account.name}}</div>
               <div class="address">{{account.address | shortaddress}}</div>
@@ -23,8 +19,8 @@
           
           <div class="confirm-content">
             <div class="confirm-title">
-              <span v-if="appname">{{$t('Third.SendTo',[appname])}}</span>
-              <span v-else>{{$t('Third.SendTo',[target])}}</span>
+              <!-- <span v-if="appname">{{$t('Third.SendTo',[appname])}}</span> -->
+              <span>{{$t('Third.SendTo',[target])}}</span>
             </div>
             <div class="confirm-amount">{{Number(Number(amount).toFixed(7))}}&nbsp;&nbsp;{{asset_code}}</div>
             <div class="confirm-title" v-if="memo">
@@ -214,7 +210,17 @@ export default {
     }
   },
   beforeMount () {
-    this.fetchPaths()
+    if(this.pathPayment){
+      this.fetchPaths()
+    }else{
+      this.assets = [{
+        code: this.asset_code,
+        issuer: this.asset_issuer,
+        path:[]
+      }]
+      this.choosedIndex = 0
+      this.choosed = this.assets[0]
+    }
   },
   mounted () {
     //this.swiperInstance.controller.control = this.swiperContent
@@ -293,7 +299,7 @@ export default {
       this.loadingTitle = null
       this.loadingError = null
 
-      if(this.choosed.id === this.choosed.destId){
+      if(!this.pathPayment || this.choosed.id === this.choosed.destId){
         this.sendNoPath(seed)
       }else{
         this.sendByPath(seed)
@@ -310,10 +316,11 @@ export default {
         memo_type:  this.memo_type,
         memo_value: this.memo
       }
+      // alert('send no path:'+ JSON.stringify(params))
 
       this.sendAsset(params)
         .then(response=>{
-          this.sendsuccess()
+          this.sendSuccess()
         })
         .catch(err=>{
           this.sendFail(err)
@@ -325,9 +332,11 @@ export default {
       let record = this.choosed.origin
       let memo_type =  this.memo_type
       let memo = this.memo
-      this.sendPathPayment({seed,destination,record,memo_type,memo})
+      let params = {seed,address: this.account.address, destination,record,memo_type,memo}
+      // alert('Send By Path: ' + JSON.stringify(params))
+      this.sendPathPayment(params)
           .then(response=>{
-            this.sendsuccess()
+            this.sendSuccess()
           })
           .catch(err=>{
             this.sendFail(err)
@@ -367,12 +376,7 @@ export default {
       //根据当前的数量，计算path payment
       pathAssets(this.account.address, this.destination, this.asset_code, this.asset_issuer, this.amount + '')
         .then(data => {
-          // let values = {}
-          // this.balances.map(item => 
-          //   isNativeAsset(item) ? 
-          //     Object.assign({},item,{id: item.code}) :  
-          //     Object.assign({},item,{id: item.code + '-' + item.issuer }))
-          //   .forEach(item => { values[item.id] = item })
+          this.loading = false
           let paths = {}
           data.filter(record => Number(record.source_amount) > 0)
             .forEach(record => {
@@ -401,6 +405,7 @@ export default {
                     destId: origin.destination_asset_type === 'native' ? 
                       'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
                     amount: Number(origin.source_amount), destination_amount: origin.destination_amount,
+                    path:origin.path,
                     origin
                   })
                 }
@@ -414,6 +419,7 @@ export default {
                     id: origin.source_asset_code + '-' + origin.source_asset_issuer,
                     destId: origin.destination_asset_type === 'native' ? 
                       'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
+                    path:origin.path,
                     origin
                   })
                 }
@@ -428,7 +434,10 @@ export default {
           }else{
             this.nodata = true
           }
-          this.loading = false
+          this.$nextTick(()=>{
+            this.loading = false
+          })
+          
         })
         .catch(err => {
           this.loading = false
@@ -468,38 +477,24 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 13rem
-  bottom: calc(13rem + constant(safe-area-inset-bottom))
-  bottom: calc(13rem + env(safe-area-inset-bottom))
+  bottom: 0
   right: 0
   left: 0
   top: 0
   // top: constant(safe-area-inset-top)
   // top: env(safe-area-inset-top)
   z-index: 9
-.confirm-dlg
-  background: $secondarycolor.gray
-  height: 13rem
-  height: calc(13rem+constant(safe-area-inset-bottom))
-  height: calc(13rem+env(safe-area-inset-bottom))
-  position: fixed
-  bottom: 0
-  padding-bottom:0
-  padding-bottom: constant(safe-area-inset-bottom)
-  padding-bottom: env(safe-area-inset-bottom)
-  right: 0
-  left: 0
-  opacity: 1
+
 .confirm-title
-  height: .8rem
-  line-height: .8rem
-  font-size: .4rem
+  height: 1rem
+  line-height: 1rem
+  font-size: 1rem
   padding-left: .4rem
   color: $primarycolor.font
 .confirm-amount
   color: $primarycolor.green
   text-align: center
-  font-size: .5rem
+  font-size: 1rem
 .confirm-memo
   padding-left: .5rem
   color: $secondarycolor.font
@@ -590,8 +585,8 @@ export default {
 .confirm-assets
   padding: .2rem .2rem
   .asset-card
-    width: 3rem
-    height: 3.2rem
+    width: 4.5rem
+    height: 4.5rem
     background: $secondarycolor.gray
     margin: .2rem .2rem
     padding: .2rem .2rem
@@ -603,7 +598,7 @@ export default {
     .asset-code
       color: $primarycolor.green
     .asset-issuer
-      font-size: .2rem
+      font-size: 0.8rem
       color: $secondarycolor.font
       overflow: hidden
       white-space: nowrap

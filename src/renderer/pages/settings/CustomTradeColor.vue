@@ -1,5 +1,5 @@
 <template>
-  <v-card style="padding: 8px 8px;">
+  <v-card class="pa-4">
     <v-radio-group v-model="color" @change="switchColor">
       <v-radio :label="$t('redUpGreenDown')" color="primary" :value="0"></v-radio>
       <v-radio :label="$t('greenUpRedDown')" color="primary"  :value="1"></v-radio>

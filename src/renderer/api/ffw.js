@@ -19,6 +19,7 @@ export const FFW_EVENT_TYPE_TRUST = 'trust'
 export const FFW_EVENT_TYPE_SIGNXDR = 'signXDR'
 export const FFW_EVENT_TYPE_SCAN = 'scan'
 export const FFW_EVENT_TYPE_SHARE = 'share'
+export const FFW_EVENT_TYPE_BALANCES = 'balances'
 
 export function FFWScript(address, data = {}, isIos = false, platform, locale = 'zh_cn'){
   // return [
@@ -41,13 +42,6 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
   let contactstr = JSON.stringify(appdata.contacts)
   let myaddressstr = JSON.stringify(appdata.myaddresses)
   return `if(!window.FFW){
-      // const {ipcRenderer} = require('electron')
-      // console.log(ipcRenderer)
-      // console.log(electron)
-      console.log(window);
-
-      // console.log(EventEmitter);
-      // const ipcRenderer = EventEmitter.electron.ipcRenderer
       window.FFW = {};
       FFW.version = "${version}";
       FFW.platform = "${platform}";
@@ -74,6 +68,12 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         }
         fn.apply(this,[data]);
         delete FFW.callbackObjs[id]; 
+      };
+
+      FFW.balances = function(callback){
+        var params = { type:'balances'};
+        params = genParams(params, callback);
+        console.log(JSON.stringify(params));
       };
 
       FFW.pay = function(data,callback){
@@ -155,18 +155,15 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
       };
 
       FFW.scan = function(callback){
+        var params = { type: 'scan'};
+        params = genParams(params, callback);
         FFW.callback(params['callback'] ,{code:"fail",message:"unsupport"});
       };
 
       FFW.share = function(options,callback){
-        var params = { type: 'share', options: options };
+        var params = { type: 'scan',options:options};
         params = genParams(params, callback);
-        try{
-          console.log(JSON.stringify(params));
-        }catch(err){
-          console.error(err);
-          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
-        }
+        FFW.callback(params['callback'] ,{code:"fail",message:"unsupport"});
       };
 
       FFW.fireEvent = function(type, data, callback){

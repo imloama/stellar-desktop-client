@@ -64,12 +64,12 @@
           class="app-card-wrapper"
         >
           <v-card dark flat tile class="pa-2 textcenter app-card" >
-            <div class="pa-3" @click="choose(app)">
+            <div class="pa-3" @click="choose(app,true)">
               <v-avatar class="grey darken-4 app-avatar" :size="`62px`">
                <span class="white--text headline">{{app.title.substring(0,1)}}</span> 
              </v-avatar>
             </div>
-             <v-card-title primary-title class="app-title" @click="choose(app)">
+             <v-card-title primary-title class="app-title" @click="choose(app,true)">
                <div class="textcenter" style="width: 100%;">{{app.title}}</div>
              </v-card-title>
              <span class="app-icon-del" @click="delDapp(index,app)"><i class="material-icons">delete_forever</i></span>
@@ -260,6 +260,7 @@ export default {
       dAppShow: false,//是否显示当前的dapp
       dAppLoading: true,//是否正在加载dapp
       dappBgColor:"#21CE90",
+      ismydapp: false,
 
     }
   },
@@ -273,6 +274,7 @@ export default {
       myapps: state => state.app.myapps,
       locale: state => state.app.locale,
       apps: state => state.dapps || [],
+      balances: state=> state.account.data.balances,
     }),
   },
   beforeMount(){
@@ -307,8 +309,9 @@ export default {
     back(){
       this.$router.back()
     },
-    choose(app){
+    choose(app,ismydapp){
       this.choosed = app
+      this.ismydapp = ismydapp
       let val = localStorage.getItem(app.site)
       if(val){
         this.openApp()
@@ -332,6 +335,8 @@ export default {
         this.appInstance.addEventListener('did-stop-loading', ()=>{
           console.log('---stop loadding')
           this.dAppLoading = false
+        });
+        this.appInstance.addEventListener('dom-ready', ()=>{
           let contacts = this.allcontacts
           let myaddresses = this.myaddresses
           let isIos =false
@@ -340,13 +345,17 @@ export default {
           this.appInstance.executeJavaScript(script,false,(params)=>{
             console.log('---callback---')
           })
-          // this.appInstance.openDevTools()
+          if(this.ismydapp){
+            this.appInstance.openDevTools()
+          }
           let wc = this.appInstance.getWebContents()
           wc.enableDeviceEmulation({screenPosition:'mobile',
           size:{width:375, height: 667},
           viewSize:{width:375, height: 667}})
           
-          this.appInstance.addEventListener('console-message', e => {
+          
+        });
+        this.appInstance.addEventListener('console-message', e => {
             console.log('webview: ' + e.message);
             let msg = e.message
             if(!isJson(msg))return
@@ -377,8 +386,6 @@ export default {
             }
 
           });
-
-        })
       })
 
       return
@@ -422,6 +429,7 @@ export default {
     getBalances(){
       this.getAccountInfo(this.account.address)
         .then(data=>{
+
           this.doCallbackEvent(this.callbackData('success', 'success', this.balances))
         })
         .catch(err=>{
@@ -461,9 +469,9 @@ export default {
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
-          let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          let d = JSON.stringify(data)
+          let code = `FFW.callback("${cb}",${d})`
           console.log('===============callback------event---')
-          console.log(code)
           this.appInstance.executeJavaScript(code)
         }catch(err){
           console.error(err)
@@ -672,6 +680,7 @@ export default {
       this.dAppShow = false
     },
     dappContainerBack(){
+      // console.log('------' + this.$refs.dappWebView.canGoForward())
       if(this.$refs.dappWebView.canGoForward()){
         this.$refs.dappWebView.goBack()
       }
@@ -759,6 +768,8 @@ export default {
       background: $primarycolor.green
       width:375px
       margin: 0 auto
+      .material-icons
+        cursor: pointer
   .webView
     width:375px
     height:667px

@@ -17,7 +17,7 @@
       <v-card  class="mycard pa-4">
         <div class="card-content">
           <div class="lang" v-for="(item,index) in locales" :key="index" @click.stop="chose(item)">
-            <span class="label">{{item.label}}</span>
+            <span :class="'label ' + (isChosed(item) ? 'active':'')">{{item.label}}</span>
             <span class="icons">
               <!-- <i class="iconfont icon-dot1" v-if="isChosed(item)"></i>
               <i class="iconfont icon-dot" v-else></i> -->
@@ -117,8 +117,11 @@ export default {
     .lang
       padding-top: 10px
       padding-bottom: 10px
+      cursor: pointer
       .label
         width: 80%
+        &.active
+          color: $primarycolor.green
       .icons
         float: right
         .iconfont

@@ -25,8 +25,12 @@
             FireFly Desktop
           </div>
           <div class="textcenter appversion">
+            {{platform}}
+          </div>
+          <div class="textcenter appversion">
             {{$t('Version')}}:{{appversion}}<span v-if="isDebug">&nbsp;DEBUG</span>
           </div>
+          
         </div>
       </div>
       <div class="detail-card pa-2" >
@@ -90,6 +94,7 @@ import {
 const semver = require("semver");
 import  debounce  from 'lodash/debounce'
 import AccountsNav from '@/components/AccountsNav'
+const os = require('os')
 
 export default {
   data() {
@@ -106,13 +111,33 @@ export default {
       counter: 0,
       isDebug: DEBUG,
       showaccountsview: false,
+      platform:null,
+
     };
   },
   beforeDestroy () {
     
   },
   mounted() {
+  //  console.log('-----------os-----------')
+  //  console.log(os.platform())
+  // //  操作系统主机名
+  //  var hostname=os.hostname()
+  // console.log(hostname);
+  // //操作系统版本
+  // var release=os.release();
+  // console.log(release);
+  // //操作系统名称，基于linux的返回linux,基于苹果的返回Darwin,基于windows的返回Windows_NT
+  // var type=os.type();
+  // console.log(type);
+
+
+  //  console.log(process)
+
+   this.platform = os.type() + ' ' + os.release() + ' ' + process.arch
+
    this.getReleaseVersion()
+
    document.addEventListener('chcp_nothingToUpdate',()=>{
      this.$toasted.show(this.$t('NothingToInstall'))
    }, false)

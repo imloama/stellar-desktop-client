@@ -217,7 +217,7 @@ import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
 import { trustAll } from '@/api/operations'
 import AccountsNav from '@/components/AccountsNav'
-
+const os = require('os')
 const COLOR_GREEN = '#21CE90'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
@@ -340,7 +340,8 @@ export default {
           let contacts = this.allcontacts
           let myaddresses = this.myaddresses
           let isIos =false
-          let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, "desktop-client", this.locale.key)
+          let platform = 'desktop-'+process.platform
+          let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, platform, this.locale.key)
           let that = this;
           this.appInstance.executeJavaScript(script,false,(params)=>{
             console.log('---callback---')

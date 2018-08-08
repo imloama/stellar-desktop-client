@@ -105,6 +105,7 @@
     v-if="needpwd && isBuy" @cancel="cancelpwd" @ok="rightpwd"
     ></password-sheet> -->
   
+   <password-sheet lock v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
 
     <!-- 确认内容 -->
 
@@ -914,7 +915,7 @@ export default {
     cancelpwd(){
       this.needpwd = false
     },
-    rightpwd(){
+    rightPwd(){
       this.needpwd = false
     },
     //撤消委单

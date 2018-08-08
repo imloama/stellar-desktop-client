@@ -1,5 +1,6 @@
 {
   "globalDevDependencies": {
     "electron-packager": "registry:dt/electron-packager#5.1.0+20160510010627"
-  }
+  },
+  "globalDependencies": {}
 }

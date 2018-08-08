@@ -89,12 +89,8 @@ export default {
     }),
   },
   beforeMount() {
-    console.log('-----------------------------1:'+this.$route.name)
-    if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
-      this.tabBarShow = true
-      this.$store.commit('SHOW_TABBAR')
-    }else{
-      this.$store.commit('HIDE_TABBAR')
+    if(this.locale){
+      this.$i18n.locale = this.locale.key
     }
     
     this.getMessages()
@@ -147,8 +143,9 @@ export default {
 
 
     ipcRenderer.on('lock', (event, message)=>{
-        console.log('------------------lock---------')
-        this.$router.push({ name: "PinLock" });
+        if (this.alldata.app.enablePin) {
+          this.$router.push({ name: "PinLock" });
+        } 
     })
   },
   mounted() {

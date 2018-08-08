@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-08-02 10:38:12
+ * @Last Modified time: 2018-08-08 11:01:05
  * @License MIT 
  */
 <template>
@@ -17,7 +17,7 @@
       <!--K线图-->
       <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
       
-      <div class="flex-row mt-2">
+      <div class="flex-row mt-2" v-if="needTrust.length  === 0">
         <div class="flex1 pt-2 pb-2 pr-1">
           <trade-input ref="tradeInputBuy" flag="buy" @afterOffer="reloadOrderBook"></trade-input>
         </div>
@@ -25,6 +25,7 @@
           <trade-input ref="tradeInputSell" flag="sell" @afterOffer="reloadOrderBook"></trade-input>
         </div>
       </div>
+      <trade-trust v-else/>
       <!--买单卖单委单成交-->
       <order-book class="mt-2" ref="orderbook" @choose="chooseOrderBook"/>
 
@@ -72,6 +73,7 @@ import { getXdrResultCode } from '@/api/xdr'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import PasswordSheet from '@/components/PasswordSheet'
 import TradeInput from '@/components/TradeInput'
+import TradeTrust from '@/components/TradeTrust'
 
 
 export default {
@@ -104,6 +106,27 @@ export default {
       'reserve',
       'base_reserve'
     ]),
+    needTrust(){//返回当前需要授信的资产
+      let result = []
+      let basset = this.BaseAsset
+      let casset = this.CounterAsset
+      let hasBaseAsset = isNativeAsset(basset) || false
+      let hasCounterAsset = isNativeAsset(casset)  || false
+      this.balances.forEach(item=>{
+        if(item.code === basset.code && item.issuer === basset.issuer){
+          hasBaseAsset = true
+        }else if(item.code === casset.code && item.issuer === casset.issuer){
+          hasCounterAsset = true
+        }
+      })
+      if(!hasBaseAsset){
+        result.push(basset)
+      }
+      if(!hasCounterAsset){
+        result.push(casset)
+      }
+      return result
+    },
     
     BaseAsset(){
       return this.selectedTrade.from
@@ -219,7 +242,8 @@ export default {
     TradePairToolBar,
     PasswordSheet,
     Toolbar,
-    TradeInput
+    TradeInput,
+    TradeTrust,
   }
   
 

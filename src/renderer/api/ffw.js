@@ -53,11 +53,14 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
       FFW.callbackObjs = {}
 
       FFW.addCallback = function(id,fn){
+        console.log('----addCallback---' + id + ','+fn)
         FFW.callbackObjs[id] = fn;
       };
 
 
       FFW.callback = function(id, data){
+        console.log('callbackObjs:' + JSON.stringify(FFW.callbackObjs))
+
         var fn = FFW.callbackObjs[id];
         if(fn === undefined){
           fn = window[id];

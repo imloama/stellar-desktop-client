@@ -172,5 +172,6 @@ export default {
       text-align: center
       font-size: 16px
       color: $primarycolor.green
+      cursor: pointer
 
 </style>

@@ -5,6 +5,7 @@ import {encrypt,decrypt} from './crypt'
 var Promise = require('es6-promise').Promise
 //import * as fileStorage from './filestorage'
 import * as localstorage from './localstorage'
+import * as nedbstorage from './nedb_storage'
 import { newServer } from './server'
 import { OFFICIAL_HORIZON,FCHAIN_HORIZON } from './horizon'
 
@@ -20,8 +21,8 @@ const LOCK_KEY = 'ilovefirefly'
 
 // read account
 export function readAccounts(){
-  let read = localstorage.readFile(FILENAME_ACCOUNTS);
-
+  //let read = localstorage.readFile(FILENAME_ACCOUNTS);
+  let read = nedbstorage.readFile(FILENAME_ACCOUNTS);
   return read.then(result=>{
     return new Promise((resolve,reject)=>{
       if(result){
@@ -49,7 +50,8 @@ export function createAccount(accounts, address,value,password){
 
 // write accounts
 export function saveAccounts(accounts){
-  return localstorage.saveFile(FILENAME_ACCOUNTS, accounts);
+  //return localstorage.saveFile(FILENAME_ACCOUNTS, accounts);
+  return nedbstorage.saveFile(FILENAME_ACCOUNTS, accounts);
 }
 
 // read account data
@@ -104,7 +106,7 @@ export function readTradePairData(){
 
 
 export function readByEncrypt(file,password = LOCK_KEY){
-  let read = localstorage.readFile(file);
+  let read = nedbstorage.readFile(file)//localstorage.readFile(file);
   return read.then(value=>{
     console.log('read value')
     console.log(value)
@@ -130,12 +132,14 @@ export function readByEncrypt(file,password = LOCK_KEY){
 export function saveByEncrypt(file,value,password = LOCK_KEY){
   value = JSON.stringify(value)
   value = encrypt(password, value)
-  return localstorage.saveFile(file,value)
+  //return localstorage.saveFile(file,value)
+  return nedbstorage.saveFile(file, value)
 }
 
 export function deleteAccountData(address){
   let file = address +'.firefly'
-  return localstorage.deleteFile(file)
+  // return localstorage.deleteFile(file)
+  return nedbstorage.deleteFile(file)
 }
 
 //获取现有消息link地址数组

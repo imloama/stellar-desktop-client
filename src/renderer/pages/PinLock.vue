@@ -3,7 +3,6 @@
  */
 <template>
   <div class="page pinlock-page">
-   
    <v-layout style="height:100%;">
      <v-flex xs4>&nbsp;</v-flex>
      <v-flex xs4 class="lockcontent">

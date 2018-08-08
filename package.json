@@ -1,6 +1,6 @@
 {
   "name": "stellar-desktop-client",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "imloama@gmail.com",
   "description": "firefly desktop wallet",
   "github": "https://github.com/imloama/stellar-desktop-client",
@@ -22,7 +22,6 @@
     "pbuild:linux": "cross-env BUILD_TARGET=linux node .electron-vue/pbuild.js",
     "pbuild:mas": "cross-env BUILD_TARGET=mas node .electron-vue/pbuild.js",
     "pbuild:win32": "cross-env BUILD_TARGET=win32 node .electron-vue/pbuild.js"
-
   },
   "build": {
     "productName": "firefly-desktop",
@@ -71,6 +70,7 @@
     "js-nacl": "^1.2.2",
     "lodash": ">=4.17.4",
     "moment": ">=2.20.1",
+    "nedb": "^1.8.0",
     "nprogress": ">=0.2.0",
     "number-precision": ">=1.2.0",
     "raf.js": ">=0.0.4",

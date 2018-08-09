@@ -31,9 +31,9 @@ npm run pbulid:darwin # or yarn pbulid:darwin
 ----
 screenshots
 
-[import account](docs/screenshots/S01.png)
-[assets](docs/screenshots/S02.png)
-[trade](docs/screenshots/S03.png)
-[dapps](docs/screenshots/S04.png)
-[my](docs/screenshots/S05.png)
-[settings](docs/screenshots/S06.png)
+![import account](docs/screenshots/S01.png)
+![assets](docs/screenshots/S02.png)
+![trade](docs/screenshots/S03.png)
+![dapps](docs/screenshots/S04.png)
+![my](docs/screenshots/S05.png)
+![settings](docs/screenshots/S06.png)

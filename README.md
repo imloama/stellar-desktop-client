@@ -1,8 +1,8 @@
-# stellar desktop client
+# polarstar
 
 v0.1.0 released
 
-stellar desktop client is based on firefly wallet[https://github.com/stellarcn/firefly](https://github.com/stellarcn/firefly), use electron + vue, is full features desktop wallet.
+polarstar is based on firefly wallet[https://github.com/stellarcn/firefly](https://github.com/stellarcn/firefly), use electron + vue, is full features desktop wallet.
 
 ## dev
 git clone https://github.com/imloama/https://github.com/imloama/stellar-desktop-client.git

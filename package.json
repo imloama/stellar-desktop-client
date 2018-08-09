@@ -1,8 +1,8 @@
 {
-  "name": "stellar-desktop-client",
+  "name": "polarstar",
   "version": "0.1.0",
   "author": "imloama@gmail.com",
-  "description": "firefly desktop wallet",
+  "description": "stellar desktop wallet",
   "github": "https://github.com/imloama/stellar-desktop-client",
   "license": "MIT",
   "main": "./dist/electron/main.js",
@@ -24,8 +24,8 @@
     "pbuild:win32": "cross-env BUILD_TARGET=win32 node .electron-vue/pbuild.js"
   },
   "build": {
-    "productName": "stellar-desktop-client",
-    "appId": "io.fchain.firefly.desktop",
+    "productName": "polarstar",
+    "appId": "com.github.imloama.polarstar",
     "directories": {
       "output": "build"
     },

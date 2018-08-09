@@ -24,8 +24,8 @@
     "pbuild:win32": "cross-env BUILD_TARGET=win32 node .electron-vue/pbuild.js"
   },
   "build": {
-    "productName": "firefly-desktop",
-    "appId": "org.simulatedgreg.electron-vue",
+    "productName": "stellar-desktop-client",
+    "appId": "io.fchain.firefly.desktop",
     "directories": {
       "output": "build"
     },

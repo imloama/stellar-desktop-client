@@ -8,13 +8,31 @@ import { remote } from 'electron'
 export const DB_NAME = 'firefly.db'
 export const CREATE_TABLE = `CREATE TABLE IF NOT EXISTS firefly (K TEXT PRIMARY KEY NOT NULL,V TEXT)`
 
-let db = new Datastore({
-  autoload: true,
+let db =  new Datastore({
   filename: path.join(remote.app.getPath('userData'), 'db/'+DB_NAME)
 })
+db.loadDatabase(err=>{
+  console.log('load data--')
+  console.error(err)
+})
+// export function initDB(){
+//   if(db){
+//     return Promise.resolve()
+//   }
+//   db = new Datastore({
+//     filename: path.join(remote.app.getPath('userData'), 'db/'+DB_NAME)
+//   })
+//   return new Promise((resolve,reject)=>{
+//     db.loadDatabase(err=>{
+
+//     })
+//   })
+
+// }
 
 // delete file
 export function deleteFile(file){
+  console.log('-------------------------delete file-----' + file)
   return new Promise((resolve,reject) => {
     db.remove({K: file},{multi: true}, (err, numRemoved)=>{
       if(err){
@@ -32,17 +50,21 @@ export function deleteFile(file){
 
 // read file into string
 export function readFile(key){
+  console.log('-------------------------read file-----' + key)
     return new Promise((resolve,reject) => {
-      db.findOne({ K: key },  (err, item) => {
+      db.find({ K: key },  (err, items) => {
+        console.log('--------find data-------' + key)
+        console.error(err)
+        console.log(items)
         if(err){
           reject(err)
         }else{
           try{
-            let value = item.V
+            let value = items[0].V
             value = Base64.decode(value)
             resolve(value)
           }catch(err){
-            reject('Error.NoData')
+            reject(err)
           }
         }
       });

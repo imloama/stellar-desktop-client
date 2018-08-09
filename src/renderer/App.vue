@@ -111,31 +111,32 @@ export default {
         })
         .then(data => {
           //尝试加载当前账户信息
-          try {
-            if (this.address) {
-              //this.getAccountInfo(this.address)
-              //closeStreams();
-              
-              // initStreams(this.address);
-              this.getAllAssetHosts();
+          this.$nextTick(()=>{
+            try {
+              if (this.address) {
+                this.getAllAssetHosts();
+              }
+              this.saveDefaultTradePairsStat().then(()=>{}).catch(err=>{console.error(err)});
+            } catch (err) {
+              console.log(err);
             }
-            this.saveDefaultTradePairsStat().then(()=>{}).catch(err=>{console.error(err)});
-          } catch (err) {
-            console.log(err);
-          }
-          if (this.alldata.app.enablePin) {
-            this.$router.push({ name: "PinLock" });
-          } else {
-            if (this.accounts.length === 0) {
-              this.$router.push({ name: "Wallet" });
+            if (this.alldata.app.enablePin) {
+              this.$router.push({ name: "PinLock" });
             } else {
-              this.$router.push({ name: "MyAssets" });
+              console.log('---------------------------accounts----')
+              console.log(this.accounts)
+              if (this.accounts.length === 0) {
+                this.$router.push({ name: "Wallet" });
+              } else {
+                this.$router.push({ name: "MyAssets" });
+              }
             }
-          }
+          })
         })
         .catch(err => {
           console.log("load app setting error ");
-          console.log(err);
+          console.error(err);
+          console.log('------------------------app setting error')
           
           this.saveAppSetting({ locale: this.devicelang||ZH_CN });
           this.$router.push({ name: "Wallet" });

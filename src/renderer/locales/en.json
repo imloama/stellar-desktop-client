@@ -47,7 +47,7 @@
   "Title.Scan": "Scan",
   "Title.MyWallet":"My wallet",
   "Title.Account":"Account",
-  "Title.MyAssets":"My Assets",
+  "Title.MyAssets":"Assets",
   "CopySuccess":"Copy success",
 
 
@@ -239,7 +239,7 @@
   "DW.Receive":"receive",
 
 
-  "Menu.TradeCenter":"Trade Center",
+  "Menu.TradeCenter":"Trade",
   "Trade.SelfSelection":"self selection",
   "Trade.Buy":"Buy",
   "Trade.Sell":"Sell",

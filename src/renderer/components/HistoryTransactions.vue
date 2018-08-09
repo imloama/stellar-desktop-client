@@ -5,13 +5,15 @@
             <v-flex  v-for="item in transactions" :key="item.id" xs12 class="transactions_itemstyle">
               <v-flex @click="showmoreinformation(item.id)">
                 <v-layout>
-                  <v-flex xs7 class="itemstyleo">{{item.temptype==='payment'?$t("Dispatcher"):item.temptype==='change_trust'?$t("ChangeTrust"):item.temptype==='manage_offer'?$t("Trade"):item.temptype==='set_options'?$t("Menu.Settings"):item.temptype==='create_account'?$t("AccountCreated"):item.temptype==='allow_trust'?$t("AllowTrust"):''}}</v-flex>
-                  <v-flex xs5 class="itemstylet" v-if="item.memo_type!='none'">{{$t("Memo")}}:{{getTransactionsMiniAddress(item.memo)}}</v-flex>
-                  <v-flex xs5 class="itemstylef" v-else>{{$t("Memo")}}:{{$t("No")}}</v-flex>
+                  <!-- <v-flex xs7 class="itemstyleo">{{item.temptype==='payment'?$t("Dispatcher"):item.temptype==='change_trust'?$t("ChangeTrust"):item.temptype==='manage_offer'?$t("Trade"):item.temptype==='set_options'?$t("Menu.Settings"):item.temptype==='create_account'?$t("AccountCreated"):item.temptype==='allow_trust'?$t("AllowTrust"):''}}</v-flex> -->
+                  <v-flex xs12 class="itemstyleo">TX:{{item.hash}}</v-flex>
+                  
                 </v-layout>
                 <v-layout>
                   <v-flex xs7 class="itemtime">{{getlocaltime_ymd(item.created_at)}}</v-flex>
-                  <v-flex xs5 class="itemstyleth">TX:{{getTransactionsMiniAddress(item.hash)}}</v-flex>
+                  <v-flex xs4 class="itemstylet" v-if="item.memo_type!='none'">{{$t("Memo")}}:{{getTransactionsMiniAddress(item.memo)}}</v-flex>
+                  <v-flex xs4 class="itemstylef" v-else>{{$t("Memo")}}:{{$t("No")}}</v-flex>
+                  <v-flex xs1 class="itemstyleo textright pr-2">{{$t('Detail')}}</v-flex>
                 </v-layout>
               </v-flex>
             </v-flex>
@@ -23,7 +25,7 @@
                 </v-layout>
             </v-flex>
 
-            <v-dialog v-model="show_flag"  v-if="show_flag" >
+            <v-dialog v-model="show_flag"  v-if="show_flag" max-width="460" >
               <v-card class="vcardstyle" v-if="this.transactionsOperations.length!=0">
                 <div v-if="this.transactionsOperations[0].type=='payment'"><!--接收 Dispatcher-->
                   <v-layout>
@@ -272,6 +274,9 @@
                   </v-layout>
                 </div>
               </v-card>
+              <v-card class="textcenter pa-4" v-else>
+                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+              </v-card>
             </v-dialog>
       </div>
     </scroll>
@@ -475,6 +480,7 @@
   background:$secondarycolor.gray
   // margin-left:3px
   padding:2px 0px 2px 0px
+  cursor: pointer
 
 
 .itemtime
@@ -484,7 +490,7 @@
   // text-align:center
 
 .itemstyleo
-  color:$primarycolor.green
+  color:$secondarycolor.font
   font-size:16px
   padding-left:5px
 .itemstylet

@@ -1,6 +1,16 @@
 <template>
   <div class="page" dark>
-    <toolbar :title="$t(title)" :showbackicon="true" style="z-index:999;" @goback="back"/>
+    <toolbar :title="$t(title)" style="z-index:999;" menuName="History"
+     :showbackicon="false" lockpass 
+      ref="toolbar"
+      :shadow=false
+      >
+      <v-btn icon @click.native="showAccounts" slot="left-tool">
+        <i class="material-icons font28">menu</i>
+    </v-btn>
+   </toolbar> 
+   <accounts-nav :show="showaccountsview" @close="closeView"/>
+
     <swiper :options="swiperOptionTop" id="swiper1" class="swiper-container" ref="swiperTop">
             <swiper-slide  class="swiper-slide">
               <div @click="switchComponent('offer')">{{$t('History.Offer')}}</div>
@@ -21,7 +31,9 @@
               <div @click="switchComponent('transactions')">{{$t('History.Transactions')}}</div>
             </swiper-slide>
         </swiper>
-    <component v-bind:is="show.component"></component>
+        <m-layout>
+          <component v-bind:is="show.component"></component>
+        </m-layout>
      
   </div>
 </template>
@@ -37,6 +49,7 @@
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import HistoryEffects from '@/components/HistoryEffects'
   import HistoryTransactions from '@/components/HistoryTransactions'
+  import AccountsNav from '@/components/AccountsNav'
   export default {
     data() {
       return {
@@ -62,7 +75,9 @@
           touchRatio: 0.2,
           slideToClickedSlide: true,
           watchSlidesProgress:true,
-          }
+          },
+        accountNotFundDlg: false,
+        showaccountsview: false,
       }
     },
     created() {
@@ -71,6 +86,7 @@
     computed: {
      ...mapState({
        currentHistoryComponent: state => state.accounts.currentHistoryComponent,
+       islogin: state => state.accounts.accountData.seed ? true:false,
      }),
     swiperTop() {
         return this.$refs.swiperTop.swiper
@@ -119,14 +135,21 @@
         if(typeNumber==5){
           this.switchComponent('transactions')
         }
-      }, 
+      },
+      showAccounts(){
+          this.showaccountsview = true
+      },
+      closeView(){
+          this.showaccountsview = false
+      },
     },
     beforeDestroy() {
       this.changeCurrentHistoryComponent(this.show.name)
     },
     components: {
       Toolbar,
-      Card
+      Card,
+      AccountsNav,
     }
   }
 </script>
@@ -160,6 +183,7 @@
   height: 100%;
   opacity: 0.6;
   margin-top:6px
+  cursor: pointer
 .swiper-slide-active 
   opacity: 1;
   font-weight 600 

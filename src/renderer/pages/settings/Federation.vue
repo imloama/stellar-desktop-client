@@ -40,7 +40,7 @@
         </div>
       </div>
       <div class="btn-group">
-        <v-btn class="btn-save" color="primary" primary @click="setName" v-if="currentState=='received' && !existFederation">{{$t('Save')}}</v-btn>
+        <v-btn block class="btn-save" color="primary" primary @click="setName" v-if="currentState=='received' && !existFederation">{{$t('Save')}}</v-btn>
       </div>
 
     <v-dialog v-model="confirmDlg" max-width="460" persistent>
@@ -102,11 +102,16 @@ export default {
       )
       .catch(error => {
         console.log(error);
-        if (error.data) {
+        if (error.data ) {
           this.msg = error.data.detail
           this.existFederation = null
           this.currentState = 'received'
-        } else {
+        } else if(error.response && error.response.data){
+          this.msg = error.response.data.detail
+          this.existFederation = null
+          this.currentState = 'received'
+
+        }else {
           this.currentState = 'error'
         }
       })

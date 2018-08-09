@@ -82,7 +82,7 @@
                             <v-flex xs12 class="itemtime">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
-                            <v-flex xs5 class="itemstyleo">{{getEffectsDataMiniAddress(item.account)}}</v-flex>
+                            <v-flex xs5 class="itemstyleo">{{getEffectsDataMiniAddress(item.account)}}1</v-flex>
                             <v-flex xs5 class="itemstylet">{{item.weight}}</v-flex>
                             <v-flex xs2 class="itemstyleth">{{item.type_i}}</v-flex>
                         </v-layout>

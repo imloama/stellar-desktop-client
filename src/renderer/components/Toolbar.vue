@@ -15,18 +15,18 @@
       </slot>
       <v-toolbar-title>stellar desktop client</v-toolbar-title>
       
-      
+      <v-spacer/>
+      <div class="flex-row ml-4 mr-2">
+        <div :class="selectedMenuIndex ===0 ? 'flex1 mbtn mactive':'flex1 mbtn'" @click="toPage(0)"><v-icon>account_balance_wallet</v-icon>{{$t('Title.MyAssets')}}</div>
+        <div :class="selectedMenuIndex ===1 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(1)"><v-icon>history</v-icon>{{$t('History.Title')}}</div>
+        <div :class="selectedMenuIndex ===2 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(2)"><v-icon>trending_up</v-icon>{{$t('Menu.TradeCenter')}}</div>
+        <div :class="selectedMenuIndex ===3 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(3)"><v-icon>apps</v-icon>{{$t('Title.ThirdApp')}}</div>
+        <div :class="selectedMenuIndex ===4 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(4)"><v-icon>import_export</v-icon>{{$t('Menu.Funding')}}</div>
+        <div :class="selectedMenuIndex ===5 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(5)"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
+        <div :class="selectedMenuIndex ===6 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(6)"><v-icon>settings</v-icon>{{$t('Menu.Settings')}}</div>
+        <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon></div>
+      </div>
 
-      <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-sm-and-down">
-        <div :class="selectedMenuIndex ===0 ? 'mbtn mactive':'mbtn'" @click="toMyAssets"><v-icon>account_balance_wallet</v-icon>{{$t('Title.MyAssets')}}</div>
-        <div :class="selectedMenuIndex ===1 ? 'mbtn mactive':'mbtn'" flat @click="toTradeCenter"><v-icon>trending_up</v-icon>{{$t('Menu.TradeCenter')}}</div>
-        <div :class="selectedMenuIndex ===2 ? 'mbtn mactive':'mbtn'" flat @click="toDapps"><v-icon>apps</v-icon>{{$t('Title.ThirdApp')}}</div>
-         <div :class="selectedMenuIndex ===3 ? 'mbtn mactive':'mbtn'" flat @click="toFunding"><v-icon>import_export</v-icon>{{$t('Menu.Funding')}}</div>
-        <div :class="selectedMenuIndex ===4 ? 'mbtn mactive':'mbtn'" flat @click="toMy"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
-        <div :class="selectedMenuIndex ===5 ? 'mbtn mactive':'mbtn'" flat @click="toSettings"><v-icon>settings</v-icon>{{$t('Menu.Settings')}}</div>
-        <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon>{{$t('Lock')}}</div>
-      </v-toolbar-items>
 
     </v-toolbar>
 
@@ -84,6 +84,15 @@ export default {
       checkPwd: false,//是否正在校验密码
 
       selectedMenuIndex:null,
+      pageNames:[
+        'MyAssets',
+        'History',
+        'TradeCenter',
+        'Apps',
+        'Funding',
+        'MySettings',
+        'SettingsParent'
+      ]
 
     }
   },
@@ -122,13 +131,16 @@ export default {
       type: Boolean,
       default: false
     },
-    menuIndex:{
-      type: Number,
-      default: 0
+    menuName:{
+      type: String
     }
   },
   beforeMount(){
-    this.selectedMenuIndex = this.menuIndex
+    if(this.menuName){
+      this.selectedMenuIndex = this.pageNames.indexOf(this.menuName)
+    }else{
+      this.selectedMenuIndex = 0
+    }
   },
   methods: {
     ...mapActions({
@@ -260,6 +272,10 @@ export default {
         this.checkPwd = false
       })
     },
+    toPage(index){
+      this.selectedMenuIndex = index
+      this.$router.push({name: this.pageNames[index]})
+    },
     toMyAssets(){
       this.selectedMenuIndex = 0
       this.$router.push({name: 'MyAssets'})
@@ -352,4 +368,8 @@ export default {
   line-height: 48px
   padding: 0 10px!important
   cursor: pointer
+  white-space: nowrap
+  
+
+
 </style>

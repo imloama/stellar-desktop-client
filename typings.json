@@ -2,5 +2,7 @@
   "globalDevDependencies": {
     "electron-packager": "registry:dt/electron-packager#5.1.0+20160510010627"
   },
-  "globalDependencies": {}
+  "globalDependencies": {
+    "localforage": "registry:dt/localforage#0.0.0+20161102134758"
+  }
 }

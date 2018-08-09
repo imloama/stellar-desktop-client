@@ -48,7 +48,7 @@
   "Title.Scan": "扫描二维码",
   "Title.MyWallet":"我的钱包",
   "Title.Account":"账户信息",
-  "Title.MyAssets":"我的资产",
+  "Title.MyAssets":"资产",
   "CopySuccess":"复制成功",
 
   "Error.ScannerPrepareFail": "扫描二维码配置失败",
@@ -124,7 +124,7 @@
   "Error.PasswordWrong":"密码错误！",
 
   "Menu.MyAssets":"我的资产",
-  "Menu.Funding":"充值提现",
+  "Menu.Funding":"充提",
   "Menu.Contacts":"联系人",
   "Menu.MyAddress":"我的地址簿",
   "Menu.Settings":"设置",
@@ -234,7 +234,7 @@
   "DW.Receive":"实际收到",
 
 
-  "Menu.TradeCenter":"交易中心",
+  "Menu.TradeCenter":"交易",
   "Trade.SelfSelection":"自选交易",
   "Trade.Buy":"买入",
   "Trade.Sell":"卖出",
@@ -342,7 +342,7 @@
   "Q.DeleteAccount":"您确认删除该账户么？",
   "Q.ResetPassword":"您确认重置密码么？",
 
-  "History.Title": "历史记录",
+  "History.Title": "历史",
   "History.Offer": "我的委单",
   "History.Transaction": "收发记录",
   "History.Trade": "成交记录",

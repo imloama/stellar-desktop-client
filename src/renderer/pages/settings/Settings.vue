@@ -3,7 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" :showbackicon="false" @goback="back" lockpass :menuIndex="5"  ref="toolbar">
+    <toolbar :title="$t(title)" :showbackicon="false" @goback="back" lockpass menuName="SettingsParent"  ref="toolbar">
       <v-btn icon @click.native="showAccounts" slot="left-tool">
         <i class="material-icons font28">menu</i>
       </v-btn>

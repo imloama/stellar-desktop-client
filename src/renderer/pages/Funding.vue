@@ -1,7 +1,7 @@
 <template>
   <div class="page" dark v-bind:class="{hidebackground: scannerView}">
    <toolbar :title="$t(title)" 
-      :showbackicon="false" lockpass :menuIndex="3" 
+      :showbackicon="false" lockpass menuName="Funding" 
       ref="toolbar"
       :shadow=false
       >

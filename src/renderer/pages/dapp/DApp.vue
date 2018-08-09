@@ -2,7 +2,7 @@
 <template>
   <div class="page" dark  v-bind:class="{hidebackground: showScanner}">
     <toolbar :title="$t('Title.ThirdApp')" :showbackicon="false"  @goback="back" 
-      :shadow="false" lockpass  ref="toolbar" v-if="!showScanner" :menuIndex="2"  >
+      :shadow="false" lockpass  ref="toolbar" v-if="!showScanner" menuName="Apps"  >
       <v-btn icon @click.native="showAccounts" slot="left-tool">
         <i class="material-icons font28">menu</i>
       </v-btn>

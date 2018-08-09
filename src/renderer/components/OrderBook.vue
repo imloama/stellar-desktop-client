@@ -12,8 +12,9 @@
     <!--盘面-->
     <div class="flex-row mt-4 mb-1">
       <div class="flex1 pl-1 pr-1">
+        <v-card>
           <div class="textcenter primarycolor">{{$t('Trade.BuyOffer')}}</div>
-          <card class="buyoffer-table offer-table">
+          <div class="buyoffer-table offer-table">
             <div class="table-head font-13">
               <div class="headcol">{{$t('Trade.Price')}}</div>
               <div class="headcol">{{BaseAsset.code}}</div>
@@ -31,11 +32,13 @@
               <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
               <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
             </div>
-          </card>
+          </div>
+        </v-card>
       </div>
       <div class="flex1 pl-1 pr-1">
+        <v-card>
           <div class="primarycolor textcenter">{{$t('Trade.SellOffer')}}</div>
-          <card class="selloffer-table offer-table">
+          <div class="selloffer-table offer-table">
             <div class="table-head font-13">
               <div class="headcol price">{{$t('Trade.Price')}}</div>
               <div class="headcol">{{BaseAsset.code}}</div>
@@ -53,15 +56,17 @@
               <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
               <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
             </div>
-          </card>
+          </div>
+          </v-card>
       </div>
     </div>
 
     <!--我的委单  成交记录-->
     <div class="flex-row mt-4 mb-1">
       <div class="flex1 pl-1 pr-1">
+        <v-card>
         <div class="textcenter primarycolor">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
-        <card class="buyoffer-table offer-table otable">
+        <div class="buyoffer-table offer-table otable">
           <div class="table-head font-13">
             <div class="headcol">{{$t('Trade.Price')}}</div>
             <div class="headcol">{{BaseAsset.code}}</div>
@@ -80,12 +85,14 @@
               <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
             </div>
           </div>
-        </card>
+        </div>
+       </v-card> 
 
       </div>
       <div class="flex1 pl-1 pr-1 mb-2">
+        <v-card>
         <div class="textcenter primarycolor">{{$t('History.Trade')}}</div>
-        <card class="buyoffer-table offer-table otable">
+        <div class="buyoffer-table offer-table otable">
           <div class="table-head font-13">
             <div class="headcol">{{$t('deal_price')}}</div>
             <div class="headcol">{{BaseAsset.code}}</div>
@@ -103,7 +110,8 @@
 
             <div class="b-row">{{$t(item.type)}}</div>
           </div>
-        </card>
+        </div>
+        </v-card>
       </div>
     </div>  
 

@@ -1,7 +1,7 @@
 
 <template>
 <div>
-  <toolbar :title="$t('Menu.Settings')" :showbackicon="false" lockpass :menuIndex="5"  ref="toolbar">
+  <toolbar :title="$t('Menu.Settings')" :showbackicon="false" lockpass menuName="SettingsParent"  ref="toolbar">
     <v-btn icon @click.native="showAccounts" slot="left-tool">
         <i class="material-icons font28">menu</i>
     </v-btn>

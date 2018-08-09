@@ -45,8 +45,7 @@
     <loading :show="showLoading"  :loading="working" :success="delok" :fail='delerror' 
       :title="loadingTitle" :msg="loadingMsg" :closeable="delerror" @close="hideLoadingView"/>
 
-     <div class="pwdSheetWrapper" v-if="showPwdSheet">
-        <v-dialog  v-model="showPwdSheet"  dark max-width="460">
+        <v-dialog  v-model="showPwdSheet" persistent dark max-width="460">
           <div class="sheet-content">
             <div class="sheet-input">
               <v-text-field
@@ -65,7 +64,6 @@
             </div>
           </div>
         </v-dialog>
-      </div>
 
   </div>
 </template>
@@ -418,18 +416,10 @@ export default {
   //   padding: 0 12px
   //   background-color: $secondarycolor.red
   //   border-right: 1px solid $secondarycolor.gray
-.pwdSheetWrapper
-  background: $secondarycolor.gray
-  height: 140px
-  position: fixed
-  bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
-  right: 0
-  left: 0
-  z-index: 100
+
 .sheet-content
   padding: 10px 10px
+  background: $secondarycolor.gray
 .sheet-btns
   display: flex
   color: $primarycolor.green

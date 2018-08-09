@@ -11,7 +11,7 @@
     <!-- toolbar
     <trade-pair-tool-bar @choseTradePair="choseTradePair" @switchTradePair="switchTradePair"/>
   -->
-  <toolbar :showbackicon="true" :menuIndex="1" ref="toolbar"/>
+  <toolbar :showbackicon="true" menuName="TradeCenter" ref="toolbar"/>
     <m-layout>
     <div class="trade-content">
       <!--K线图-->

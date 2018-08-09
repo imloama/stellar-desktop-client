@@ -48,7 +48,7 @@
   "Title.Scan": "掃描二維碼",
   "Title.MyWallet":"我的錢包",
   "Title.Account":"賬戶信息",
-  "Title.MyAssets":"我的資產",
+  "Title.MyAssets":"資產",
   "CopySuccess":"複製成功",
 
   "Error.ScannerPrepareFail": "掃描二維碼配置失敗",
@@ -124,7 +124,7 @@
   "Error.PasswordWrong":"密碼錯誤！",
 
   "Menu.MyAssets":"我的資產",
-  "Menu.Funding":"充值提現",
+  "Menu.Funding":"充提",
   "Menu.Contacts":"聯繫人",
   "Menu.MyAddress":"我的地址簿",
   "Menu.Settings":"設置",
@@ -233,7 +233,7 @@
   "DW.Fee":"費用",
   "DW.Receive":"實際收到",
 
-  "Menu.TradeCenter":"交易中心",
+  "Menu.TradeCenter":"交易",
   "Trade.SelfSelection":"自選交易",
   "Trade.Buy":"買入",
   "Trade.Sell":"賣出",
@@ -341,7 +341,7 @@
   "Q.DeleteAccount":"您確認刪除該賬戶么？",
   "Q.ResetPassword":"您確認重置密碼么？",
 
-  "History.Title": "歷史記錄",
+  "History.Title": "歷史",
   "History.Offer": "我的委單",
   "History.Transaction": "收發記錄",
   "History.Trade": "成交記錄",

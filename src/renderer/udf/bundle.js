@@ -812,7 +812,7 @@ var FFWAPI = /** @class */ (function () {
                         name: 'firefly',
                         desc: 'firefly',
                     }],
-                symbols_types: [{ name: 'Stock', value: 'stock' }]
+                symbols_types: [{ name: 'bitcoin', value: 'bitcoin' }]
             };
             resolve(result);
         });
@@ -825,14 +825,17 @@ var FFWAPI = /** @class */ (function () {
         return new Promise(function (resolve, reject) {
             resolve({
                 name: _this._baseCode + '/' + _this._counterCode,
-                ticker: _this._key,
+                ticker: _this._baseCode + '/' + _this._counterCode,
                 description: '',
+                "exchange-traded":"firefly",
+                "exchange-listed":"firefly",
                 type: 'bitcoin',
                 exchange: 'firefly',
                 timezone: 'UTC',
                 minmov: 1,
                 // pricescale: 0.0000001,
                 minmov2: 0,
+                "pricescale":100,
                 // pointvalue: 1,
                 has_intraday: true,
                 "intraday_multipliers": ['1'], 
@@ -965,7 +968,7 @@ var Requester = /** @class */ (function () {
         // 	if (paramKeys.length !== 0) {
         // 		urlPath += '?';
         // 	}
-        // 	urlPath += paramKeys.map((key: string) => {
+        // 	urlPath += paramKeys.map((key) => {
         // 		return `${encodeURIComponent(key)}=${encodeURIComponent(params[key].toString())}`;
         // 	}).join('&');
         // }
@@ -975,15 +978,16 @@ var Requester = /** @class */ (function () {
         console.log(urlPath);
         console.log(params);
         // Send user cookies if the URL is on the same origin as the calling script.
-        // const options: RequestInit = { credentials: 'same-origin' };
+        // const options = { credentials: 'same-origin' };
         // if (this._headers !== undefined) {
         // 	options.headers = this._headers;
         // }
+        //  return fetch(`${datafeedUrl}/${urlPath}`, options)
+        // 	.then((response) => response.text())
+        // 	.then((responseTest) => JSON.parse(responseTest));
         var service = new FFWAPI(datafeedUrl, params);
         return service.handle(urlPath);
-        // return fetch(`${datafeedUrl}/${urlPath}`, options)
-        // 	.then((response: Response) => response.text())
-        // 	.then((responseTest: string) => JSON.parse(responseTest));
+       
         //自定义业务
         /**
              /config返回配置信息，

@@ -82,7 +82,9 @@ export default {
         timezone = 'Asia/Shanghai'
       }
       console.log(this.horizon + '/' + url)
-      this.feed = new UDFCompatibleDatafeed(this.horizon + '/firefly_trade_mock/' + url, this.inteval)
+      this.feed = new UDFCompatibleDatafeed(this.horizon + '/firefly_trade_mock/' + url, this.interval)
+        //'https://demo_feed.tradingview.com',this.interval)
+        //this.horizon + '/firefly_trade_mock/' + url, this.interval)
       console.log('---------this.feed-------')
       console.log(this.feed)
       this.chartWidget = new TradingView.widget({
@@ -318,5 +320,5 @@ export default {
 <style lang="stylus" scoped>
 .trading-view
   width: 100%
-  height: 90vh
+  height: 85vh
 </style>

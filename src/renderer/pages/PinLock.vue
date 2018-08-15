@@ -11,6 +11,7 @@
           :append-icon="pwdvisible ? 'visibility' : 'visibility_off'"
           :append-icon-cb="() => (pwdvisible = !pwdvisible)"
           :type="pwdvisible ? 'text':'password'"
+          @keyup.enter.native="unlock"
         ></v-text-field>
         <v-btn block color="error" 
           :disabled="lockpwd === null || lockpwd.length ===0"

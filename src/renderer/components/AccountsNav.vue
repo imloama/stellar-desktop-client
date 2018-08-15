@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com
  * @Date: 2018-01-30 16:58:05
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-30 14:23:33
+ * @Last Modified time: 2018-08-15 16:16:56
  * @License: MIT
  */
 <template>
@@ -81,6 +81,7 @@
                 :append-icon-cb="() => (pwdvisible = !pwdvisible)"
                 :type="pwdvisible ? 'text':'password'"
                 required dark
+                @keyup.enter.native="okPwdInput"
               ></v-text-field>
         </div>
         <div  class="sheet-btns">

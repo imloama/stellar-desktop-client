@@ -38,6 +38,7 @@
               :append-icon-cb="() => (repwdvisible = !repwdvisible)"
               :type="repwdvisible? 'text': 'password'"
               required
+              @keyup.enter.native="nextStep"
             ></v-text-field>
       <div class="hint">{{$t('Account.CreateAccountHint')}}</div>
     </div>

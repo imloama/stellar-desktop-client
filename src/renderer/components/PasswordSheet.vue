@@ -18,6 +18,7 @@
                 :append-icon="pwdvisible ? 'visibility' : 'visibility_off'"
                 :append-icon-cb="() => (pwdvisible = !pwdvisible)"
                 :type="pwdvisible ? 'text':'password'"
+                @keyup.enter.native="okPwdInput"
                 required dark
                 ></v-text-field>
         </div>

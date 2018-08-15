@@ -56,6 +56,7 @@
                 :append-icon-cb="() => (pwdvisible = !pwdvisible)"
                 :type="pwdvisible ? 'text':'password'"
                 required dark
+                @keyup.enter.native="doTrust"
               ></v-text-field>
         </div>
         <div  class="sheet-btns">

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-31 17:15:54
+ * @Last Modified time: 2018-08-15 15:36:14
  * @License: MIT 
  */
 <template>
@@ -57,22 +57,15 @@
       </div>
        
       
-      <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: lineHeight}"></div>
-      <!-- <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
-          <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
-          <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
-          <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
-          <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
-          <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
-      </div> -->
-
+      <!-- <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: lineHeight}"></div> -->
+<!--      
       <v-tabs class="tabs-bg-dark" v-model="resolutionIndex" grow hide-slider color="transparent" v-show="showKgraph">
         <v-tab @click="chgResolution('week')">{{$t('week')}}</v-tab>
         <v-tab @click="chgResolution('day')">{{$t('day')}}</v-tab>
         <v-tab @click="chgResolution('hour')">{{$t('hour')}}</v-tab>
         <v-tab @click="chgResolution('15min')">15{{$t('minute')}}</v-tab>
         <v-tab @click="chgResolution('1min')">1{{$t('minute')}}</v-tab>
-      </v-tabs>
+      </v-tabs> -->
   </div>
 </card>
 </template>
@@ -242,15 +235,15 @@ export default {
     },
     mounted () {
         console.log('----before mounted------')
-        this.$nextTick(()=>{
+        // this.$nextTick(()=>{
 
-            setTimeout(()=>{
-                 //开启定时器
-                this.tinterval = setInterval(this.fetch, this.resolution)
-                this.reload();
-            }, this.timeout)
+        //     setTimeout(()=>{
+        //          //开启定时器
+        //         this.tinterval = setInterval(this.fetch, this.resolution)
+        //         this.reload();
+        //     }, this.timeout)
            
-        })
+        // })
     },
     methods: {
 

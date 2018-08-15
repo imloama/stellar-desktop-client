@@ -11,7 +11,7 @@
     <div class="trade-content  ti-card f-card">
 
     <div class="input-content">
-      <card class="mytrade-card" padding="10px 10px">
+      <div class="mytrade-card" style="padding:0 10px;">
         <div class="card-content" slot="card-content">
           <div class="primarycolor textcenter pt-1 pb-1" v-if="isBuy">{{$t('Trade.Buy')}}</div>
           <div class="primarycolor textcenter pt-1 pb-1" v-else>{{$t('Trade.Sell')}}</div>
@@ -66,7 +66,7 @@
           </div>
           
         </div>
-      </card>
+      </div>
 
     
 

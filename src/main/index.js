@@ -26,7 +26,7 @@ function createWindow () {
     fullscreen: false,
     fullscreenable: true,
     backgroundColor: '#212122',
-    show: false
+    show: true
   })
 
   mainWindow.loadURL(winURL)
@@ -35,25 +35,21 @@ function createWindow () {
     mainWindow = null
   })
   mainWindow.once('ready-to-show', () => {
-    mainWindow.maximize()
+    // mainWindow.maximize()
     start = new Date().getTime()
   })
   mainWindow.on('blur', ()=>{
     //记录时间
     start = new Date().getTime()
-    console.log('------------blur------------------' + start)
   })
   mainWindow.on('focus', ()=>{
     //判断是否要显示锁屏界面
     let end = new Date().getTime()
     let gap = end - start
-    console.log('----------focus---------' + end + '--' + gap)
     if(gap> 60000){//10分钟 60000
       mainWindow.webContents.send('lock', 'needlock')
     }
   })
-
-
 }
 
 app.on('ready', createWindow)

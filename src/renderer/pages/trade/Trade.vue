@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-08-08 11:01:05
+ * @Last Modified time: 2018-08-15 15:35:06
  * @License MIT 
  */
 <template>
@@ -14,9 +14,14 @@
   <toolbar :showbackicon="true" menuName="TradeCenter" ref="toolbar"/>
     <m-layout>
     <div class="trade-content">
-      <!--K线图-->
+
+     
+
+      <!--K线图 -->
       <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
-      
+      <trading-view-chart 
+          :base="BaseAsset" :counter="CounterAsset"
+        />
       <div class="flex-row mt-2" v-if="needTrust.length  === 0">
         <div class="flex1 pt-2 pb-2 pr-1">
           <trade-input ref="tradeInputBuy" flag="buy" @afterOffer="reloadOrderBook"></trade-input>
@@ -26,7 +31,7 @@
         </div>
       </div>
       <trade-trust v-else/>
-      <!--买单卖单委单成交-->
+      <!---->
       <order-book class="mt-2" ref="orderbook" @choose="chooseOrderBook"/>
 
     </div>
@@ -46,6 +51,7 @@
       </div>
     </div>
     -->
+    
     </m-layout>
 
     <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
@@ -74,6 +80,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 import PasswordSheet from '@/components/PasswordSheet'
 import TradeInput from '@/components/TradeInput'
 import TradeTrust from '@/components/TradeTrust'
+import TradingViewChart from '@/components/TradingViewChart'
 
 
 export default {
@@ -244,6 +251,7 @@ export default {
     Toolbar,
     TradeInput,
     TradeTrust,
+    TradingViewChart,
   }
   
 

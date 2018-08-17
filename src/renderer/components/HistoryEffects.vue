@@ -1,55 +1,45 @@
 <template>
-    <div>
+    <div class="pt-2">
         <scroll :refresh="onRefresh">
             <div class="templatestyle">
                 <v-flex xs12 v-for="item in effectsData" :key="item.id+item.paging_token" >
                     <v-flex xs12 v-if="item.type=='account_credited'" class="content_style">
                         <v-layout>
-                            <v-flex xs7 class="itemtype_account_credited">{{$t("AccountCredited")}}</v-flex>
-                            <v-flex xs5 class="itemstylef_account_credited" v-if="item.tx!=undefined&&item.tx.length!=0" >TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0" >TX:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_account_credited">Account Credited</v-flex>
                         </v-layout>
                         <v-layout>
-                            <v-flex xs7 class="itemtime_account_credited" >{{getlocaltime(item.time)}}</v-flex>
-                            <v-flex xs5 class="itemstyleth_account_credited">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_type}}</v-flex>
-                        </v-layout>
-                        <v-layout>
-                            <v-flex xs7 class="itemstyleo_account_credited">{{$t("SourceAccount")}}:{{getEffectsDataMiniAddress(item.account)}}</v-flex>
-                            <v-flex xs5 class="itemstylet_account_credited">{{$t("Amount")}}：+{{item.amount}}</v-flex>
+                            <v-flex xs4 class="itemstyleth_account_credited">+{{item.amount}}{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex>
+                            <v-flex xs4 class="itemstyleo_account_credited">{{$t("From")}}:{{getEffectsDataMiniAddress(item.account)}}</v-flex>
+                            <v-flex xs4 class="itemtime_account_credited" >{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='trade'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_trade">{{$t("Trade")}}</v-flex>
-                            <v-flex xs5 class="itemstylef_trade" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_trade">{{$t("Trade")}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
+                            <v-flex xs6 class="itemstyleo_trade">+{{item.bought_amount}}{{item.bought_asset_type==='native'? 'XLM':item.bought_asset_code}}
+                                &nbsp;-{{item.sold_amount}}{{item.sold_asset_type==="native"?"XLM":item.sold_asset_code}}
+                            </v-flex>
                             <v-flex xs6 class="itemtime_trade">{{item.time}}</v-flex>
                         </v-layout>
-                        <v-layout xs12>
-                                <v-flex xs5 class="itemstyleo_trade">+{{item.bought_amount}}{{item.bought_asset_code}}</v-flex>
-                                <v-flex xs1 class="itemstylet_trade">/</v-flex>    
-                                <v-flex xs6 class="itemstyleth_trade" >-{{item.sold_amount}}{{item.sold_asset_type==="native"?"XLM":item.sold_asset_type}}</v-flex>    
-                        </v-layout>
-                          <v-layout>
-                        </v-layout>                             
                     </v-flex>
                     <v-flex v-if="item.type=='trustline_created'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_trustline_c">{{$t("CreateTrustLine")}}</v-flex>
-                            <v-flex xs5 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_trustline_c">{{$t("CreateTrustLine")}}</v-flex>
                         </v-layout>
                         <v-layout>
-                            <v-flex xs7 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
-                            <v-flex xs5 class="itemstyleth_trustline_c">{{$t("AssetCode")}}：{{item.asset_code}}</v-flex>
-                        </v-layout>
-                        <v-layout>
-                            <v-flex xs12 class="itemstylet_trustline_c">{{$t("AssetIssuer")}}:&nbsp;{{getEffectsDataMiniAddress(item.asset_issuer)}}</v-flex>
+                            <v-flex xs7 class="itemstyleth_trustline_c">{{$t("AssetCode")}}：{{item.asset_code}}({{getEffectsDataMiniAddress(item.asset_issuer)}})</v-flex>
+                            <v-flex xs5 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='trustline_removed'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_trustline_r">{{$t("RemoveTrustLine")}}</v-flex>
-                            <v-flex xs5 class="itemstylef_trustline_r" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_trustline_r">{{$t("RemoveTrustLine")}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
                             <v-flex xs7 class="itemtime_trustline_r">{{getlocaltime(item.time,item.tx)}}</v-flex>
@@ -61,12 +51,12 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_debited'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_account_debited">{{$t("AccountDebited")}}</v-flex>
-                            <v-flex xs5 class="itemstylef_account_debited" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_account_debited">Account Debited</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs7 class="itemtime_account_debited">{{getlocaltime(item.time)}}</v-flex>
-                            <v-flex xs5 class="itemstyleth_account_debited">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_type}}</v-flex>
+                            <v-flex xs5 class="itemstyleth_account_debited">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs7 class="itemstyleo_account_debited">{{$t("SourceAccount")}}：{{getEffectsDataMiniAddress(item.account)}}</v-flex>
@@ -75,8 +65,8 @@
                     </v-flex>
                     <v-flex v-if="item.type=='signer_updated'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs6 class="itemtype">{{$t("SignerUpdated")}}</v-flex>
-                            <v-flex xs6 class="itemtx_signer_updated" v-if="item.tx!=undefined&&item.tx.length!=0"> {{item.tx}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0"> {{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype">{{$t("SignerUpdated")}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs12 class="itemtime">{{getlocaltime(item.time)}}</v-flex>
@@ -91,8 +81,8 @@
                     </v-flex>
                     <v-flex v-if="item.type=='signer_created'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_signer_created">{{$t("SignerCreated")}}</v-flex>
-                            <v-flex xs5 class="itemstyleo_signer_created" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_signer_created">{{$t("SignerCreated")}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
                             <v-flex xs12 class="itemtime_signer_created">{{getlocaltime(item.time)}}</v-flex>
@@ -100,8 +90,8 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_home_domain_updated'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_ahdu">{{$t("AccountHomeDomainUpdated")}}</v-flex>
-                            <v-flex xs5 class="itemstyleo_ahdu" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_ahdu">{{$t("AccountHomeDomainUpdated")}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs12 class="itemtime_ahdu">{{getlocaltime(item.time)}}</v-flex>
@@ -109,8 +99,8 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_inflation_destination_updated'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_aidu">{{$t("AccountInflationDestinationUpdated")}}</v-flex>
-                            <v-flex xs5 class="itemstyleo_aidu" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstyleo_aidu" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_aidu">{{$t("AccountInflationDestinationUpdated")}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs12 class="itemtime_aidu">{{getlocaltime(item.time)}}</v-flex>
@@ -120,8 +110,8 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_created'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_account_created">{{$t("AccountCreated")}}</v-flex>
-                            <v-flex xs5 class="itemstyleo_account_created" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs2 class="itemtype_account_created">{{$t("AccountCreated")}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
                             <v-flex xs12 class="itemtime_account_created">{{getlocaltime(item.time)}}</v-flex>
@@ -374,6 +364,7 @@ export default {
     font-size:16px
     word-break:break-all
     text-align:left
+    padding-left: 5px
 
 
 .itemtime_trustline_r
@@ -493,8 +484,9 @@ export default {
 .itemstylef_account_credited
     font-size:16px
     color:$secondarycolor.font
-    // padding-left:5px
+    padding-left:5px
     text-align:left
+    
 
 
 

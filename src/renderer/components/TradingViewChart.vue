@@ -15,7 +15,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 import { getAsset, isNativeAsset } from '@/api/assets'
 // import { widget } from '../charting_library/charting_library.min'
 // require('../udf/polyfills')
-import { UDFCompatibleDatafeed } from '../udf/bundle'
+import { UDFCompatibleDatafeed } from '../udf/dist/bundle'
 
 export default {
   data(){
@@ -53,11 +53,11 @@ export default {
     })
     this.initView()
   },
-  beforeDestory(){
+  beforeDestroy(){
     if(this.chartWidget){
-      this.chartWidget.unsubscribe()
-      this.chartWidget = undefined
       this.feed.clear()
+      // this.chartWidget.unsubscribe()
+      // this.chartWidget = undefined
       this.chartWidget.remove()
       document.getElementById(this.containerId).innerHTML = '';
     }
@@ -320,5 +320,5 @@ export default {
 <style lang="stylus" scoped>
 .trading-view
   width: 100%
-  height: 85vh
+  height: calc(100vh - 150px)
 </style>

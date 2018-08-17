@@ -123,9 +123,19 @@ var DataPulseProvider = /** @class */ (function () {
         this._interval = setInterval(this._updateData.bind(this), updateFrequency);
     }
     DataPulseProvider.prototype.clearInterval = function () {
+        var this$1 = this;
+
         this._lastStartTime = -1;
         if (this._interval) {
             clearInterval(this._interval);
+            this._interval = undefined;
+            var keys = [];
+            for (var key in this$1._subscribers) {
+                keys.push(key);
+            }
+            for (var k in keys) {
+                delete this$1._subscribers[k];
+            }
         }
     };
     DataPulseProvider.prototype.subscribeBars = function (symbolInfo, resolution, newDataCallback, listenerGuid) {
@@ -795,11 +805,10 @@ var FFWAPI = /** @class */ (function () {
         if ('history' === urlPath) {
             return this.history();
         }
-        return Promise.reject("no implements");
+        return Promise.reject("no emplements");
     };
     //获取config内容
     FFWAPI.prototype.config = function () {
-        var _this = this;
         return new Promise(function (resolve, reject) {
             var result = {
                 supports_search: true,
@@ -827,18 +836,18 @@ var FFWAPI = /** @class */ (function () {
                 name: _this._baseCode + '/' + _this._counterCode,
                 ticker: _this._baseCode + '/' + _this._counterCode,
                 description: '',
-                "exchange-traded":"firefly",
-                "exchange-listed":"firefly",
                 type: 'bitcoin',
                 exchange: 'firefly',
+                "exchange-traded": "firefly",
+                "exchange-listed": "firefly",
                 timezone: 'UTC',
                 minmov: 1,
                 // pricescale: 0.0000001,
+                "pricescale": 100,
                 minmov2: 0,
-                "pricescale":100,
                 // pointvalue: 1,
                 has_intraday: true,
-                "intraday_multipliers": ['1'], 
+                "intraday_multipliers": ['1'],
                 supported_resolutions: ["1", "5", "15", "60", "1D", "1W"],
                 has_seconds: false,
                 has_daily: true,
@@ -867,20 +876,18 @@ var FFWAPI = /** @class */ (function () {
                 return { s: 'no_data', t: [], o: [], h: [], l: [], c: [], v: [], v2: [] };
             }
             var t = [], o = [], h = [], l = [], c = [], v = [], v2 = [];
-            records = records.reverse();
-            for(let i=0,n=records.length;i<n;i++){
-                let item = records[i];
+            records.reverse().forEach(function (item) {
                 t.push(item.timestamp / 1000);
                 c.push(Number(item.close));
                 o.push(Number(item.open));
                 h.push(Number(item.high));
                 l.push(Number(item.low));
                 v.push(Number(item.base_volume));
-                // v2.push(Number(item.counter_volume));
-            }
+                v2.push(Number(item.counter_volume));
+            });
             console.log('----------data--------');
-            console.log('json--'+JSON.stringify({ s: 'ok', t: t, o: o, h: h, l: l, c: c, v: v }));
-            return { s: 'ok', t: t, o: o, h: h, l: l, c: c, v: v };
+            console.log({ s: 'ok', t: t, o: o, h: h, l: l, c: c, v: v, v2: v2 });
+            return { s: 'ok', t: t, o: o, h: h, l: l, c: c, v: v, v2: v2 };
         });
     };
     return FFWAPI;
@@ -968,7 +975,7 @@ var Requester = /** @class */ (function () {
         // 	if (paramKeys.length !== 0) {
         // 		urlPath += '?';
         // 	}
-        // 	urlPath += paramKeys.map((key) => {
+        // 	urlPath += paramKeys.map((key: string) => {
         // 		return `${encodeURIComponent(key)}=${encodeURIComponent(params[key].toString())}`;
         // 	}).join('&');
         // }
@@ -978,16 +985,15 @@ var Requester = /** @class */ (function () {
         console.log(urlPath);
         console.log(params);
         // Send user cookies if the URL is on the same origin as the calling script.
-        // const options = { credentials: 'same-origin' };
+        // const options: RequestInit = { credentials: 'same-origin' };
         // if (this._headers !== undefined) {
         // 	options.headers = this._headers;
         // }
-        //  return fetch(`${datafeedUrl}/${urlPath}`, options)
-        // 	.then((response) => response.text())
-        // 	.then((responseTest) => JSON.parse(responseTest));
         var service = new FFWAPI(datafeedUrl, params);
         return service.handle(urlPath);
-       
+        // return fetch(`${datafeedUrl}/${urlPath}`, options)
+        // 	.then((response: Response) => response.text())
+        // 	.then((responseTest: string) => JSON.parse(responseTest));
         //自定义业务
         /**
              /config返回配置信息，

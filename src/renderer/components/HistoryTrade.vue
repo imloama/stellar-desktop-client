@@ -3,7 +3,7 @@
 * 交易记录
 */
 <template>
-  <div class="content">
+  <div class="">
     
   <div class="search-wrapper pl-3">
     <date-range-picker :start="start" :end="end" @doSearch="doSearch" />

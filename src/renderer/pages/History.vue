@@ -10,28 +10,18 @@
     </v-btn>
    </toolbar> 
    <accounts-nav :show="showaccountsview" @close="closeView"/>
-
-    <swiper :options="swiperOptionTop" id="swiper1" class="swiper-container" ref="swiperTop">
-            <swiper-slide  class="swiper-slide">
-              <div @click="switchComponent('offer')">{{$t('History.Offer')}}</div>
-            </swiper-slide>
-            <swiper-slide class="swiper-slide">
-              <div @click="switchComponent('transaction')">{{$t('History.Transaction')}}</div>
-            </swiper-slide>
-            <swiper-slide class="swiper-slide">
-              <div @click="switchComponent('trade')">{{$t('History.Trade')}}</div>
-            </swiper-slide>
-            <swiper-slide class="swiper-slide">
-              <div @click="switchComponent('depositAndWithdraw')">{{$t('History.DepositAndWithdraw')}}</div>
-            </swiper-slide>
-            <swiper-slide class="swiper-slide">
-              <div @click="switchComponent('effects')">{{$t('History.Effects')}}</div>
-            </swiper-slide>
-            <swiper-slide class="swiper-slide">
-              <div @click="switchComponent('transactions')">{{$t('History.Transactions')}}</div>
-            </swiper-slide>
-        </swiper>
-        <m-layout>
+  
+  <m-layout>
+    <v-tabs  class="tabs-bg-dark" hide-slider color="transparent"
+      v-model="activeTab" dark @input="tabChange">
+       <v-tab :key="`offer`" ripple>{{$t('History.Offer')}}</v-tab>
+       <v-tab :key="`transaction`" ripple>{{$t('History.Transaction')}}</v-tab>
+       <v-tab :key="`trade`" ripple>{{$t('History.Trade')}}</v-tab>
+       <v-tab :key="`depositAndWithdraw`" ripple>{{$t('History.DepositAndWithdraw')}}</v-tab>
+       <v-tab :key="`effects`" ripple>{{$t('History.Effects')}}</v-tab>
+       <v-tab :key="`transactions`" ripple>{{$t('History.Transactions')}}</v-tab>
+    </v-tabs>
+        
           <component v-bind:is="show.component"></component>
         </m-layout>
      
@@ -55,6 +45,8 @@
       return {
         title: 'History.Title',
         loading: false,
+        activeTab: 0,
+        keys:['offer','transaction','trade','depositAndWithdraw','effects','transactions'],
         components: {
           offer: HistoryOffer,
           transaction: HistoryTransaction,
@@ -97,14 +89,18 @@
       },
     },
     mounted () {  
-      console.log("2222-------------")
-	    this.swiperTop.on('slideChange', this.showinfo)
-	    this.swiperTop.slideTo(this.getParams,0,true)
+      // console.log("2222-------------")
+	    // this.swiperTop.on('slideChange', this.showinfo)
+	    // this.swiperTop.slideTo(this.getParams,0,true)
     } ,
     methods: {
       ...mapActions([
         'changeCurrentHistoryComponent'
       ]),
+      tabChange(){
+        let name = this.keys[this.activeTab]
+        this.switchComponent(name)
+      },
       back(){
         this.$router.back()
       },

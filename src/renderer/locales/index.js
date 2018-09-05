@@ -24,21 +24,30 @@ export const ZH_HK = {
   img: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAPrSURBVHja7JdPaFxVFMZ/d+bNZCYmmbSlTRpTkGJoYtJNoVhDBV2IoBvFFqq0hRSroou0RBFLQXBf1IDSYjZaaFE3xY2iomjqn71aY7QxpknaZEIyncybN/Pevfe4mMlkMp00yWay6YXDfe9xzznfved8556nRITNHCE2edwDoIAwUFecazkMkHeApqnDz8+rcI39K0Xb5YtbHSChQiFiB3tr6t8fGQVIOECdGAO+j72dZomWSikAKmmqlFqxphqNK3Ur14USTeDnAeocALRBvBySy5cWrVYdZJVn7vL9jnW5PAQaAAdAjMbmcthcbkPHGNnVTrSnG+/HYaybXb9iNIKUA0AbJOsi3vqNxA72kjh2lOzwT5i5uQ0BFyeENeUAjMGm3XXvwtnZSuLYUbzhq9R1dZHWZkX41kagIO8vA7BBgHUzSNZbpVyFwNrSa/3jj2Hm57FBgGpqQjKLYAVicSSTWdO/RRDfLw+Bxi66yB05IICi4chzmKmbiO+TvzaCzbqI7xPfv59k/2liBw7QcOhZIm1t+KOjpC4M4V/7q6S/PBdZYixSfgKiNTaTQfL5UpFgiTZKEevsJHaiD5vJoCdusHDufer27SN5+g2iPd00v/YKNp1mfvADmvqOs+O9c0wfOoK+NVuxHwGlUFqDDpbvAtEacTOIly1IMSGXnm9f+hSA1IUhog91YbNZ5s6cxczNoW9MMts/gB4fp/nVl8HLMXvqdQiFCnbKZcm2m0G0XhkC7boQBFVj5n75FYuXP2PrwCmC8f/YMtBPavBDcmP/omJx7nvyCRbOD2FvpwgmJjHJ5Br8jRBubCxPQg3GlCVaZdyE5JmzLF75gvpHe9HTN/Gv/0O89xH8P/4k0rmHxIt9TD1zGDMzs0Kv+jVksJUhUFYKmWylAKQ0F8VYcr/8ivvNd4Tb20m8dJJt77yNs6udcGsL/tgYrZc+RkUiZXpSVZQVJDDlAIJCgpQ7rCLOju20XfmcaMeDxHsfxqZSqHiMWE83qfMf4TRvIdrVtaYdRJDAXwagtUFEEGtXFaJR6p9+CgXYhQWiHR2kP7mId/Vn3K+/pWXwXQgp9MzsXe2ItYgIWpuyHNAaHGeZetWubyeMs7OV4O/rRHbvZvqF43jf/wDArRMn2fbWm6j6evTExLp6AVNkgQL2/N72wEg8GkU8b23lcLiQsJXluf1+zMwssgqTVviPx8kGPnunxjsdAGNN4c5eVyNlqn7Wk1MbaIYUtsi4EIAtVqhatmNLAJxS56IUoYaGmmGwVkoAjBVYSKdr2hMWw20U0ALsBbbXuC1PAr+p4j9BY3Gu5cgDi+rez+lmA/h/ACnUZ/8+AhyUAAAAAElFTkSuQmCC'
 }
 
+
 export const ZH_TW = {
   key: 'zh_tw',
   label: '台灣正體'
 }
 
+export const TH = {
+  key: 'th',
+  label: 'ไทย',
+  img: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAACgSURBVHjaYvz//z/DQAImhgEGow4YdQDjWxmV/yM6BFj+ffw0sFHwrXfigEYB4/8BLgpHsyGjAIf9gEYBi7AIP9mav3x7yvD77zcGQV5V8h3AyMhItuY/f78xvPt4nUGIT418B1ASfIJ8agyCFFg+OErCgW4Rsbx983Fgs+FoSTjgifBb36SBTQOvecUGtihm4ucb4bXhaNds1AED7QDAAKLMLmi1JzEFAAAAAElFTkSuQmCC'
+}
+
 export const LANGUAGES = [
   EN,
   ZH_CN,
-  ZH_HK
+  ZH_HK,
+  TH
 ]
 
 export const MOMENT_LANGUAGES = {
   'zh_cn': 'zh-cn',
   'en': 'en',
   'zh_hk': 'zh-hk',
+  'th':'th'
   // 'zh_tw': 'zh-tw'
   
 }
@@ -53,7 +62,9 @@ export function getDeviceLanguage(){
           resolve(ZH_HK)
         }else if('zh-TW' === val){
           resolve(ZH_HK)
-        } else {
+        } else if('th' === val){
+          resolve(TH)
+        }else{
           resolve(EN)
         }
       },()=>{

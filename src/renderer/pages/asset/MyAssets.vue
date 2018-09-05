@@ -25,34 +25,33 @@
      <!--=======================================================-->
 <m-layout>
 
-
-
-<div class="accountandtotalasset flex-row  pt-2 pb-2 mt-4">
-    <div id="TotalSum" class="myassets_totalSum flex4" >
-      <span class="myassets_TotalSumWord" >{{$t('TotalAssets')}}≈</span>
-      <span>{{TotalSum.toFixed(7)}}</span><!-- 要改成资产数组数据的累加的和-->
-      <span>XCN</span>
-    </div>
-    <div class="textright flex1 pt-2 pr-3 primarycolor" style="cursor:pointer;"
-      @click="toAddAsset">
-     {{$t('AddAsset')}}
-    </div>
-    <div class="textcenter flex1 pt-2 primarycolor" style="cursor:pointer;"
-      @click="doRefresh" v-if="!reloading">
-      {{$t('refresh')}}
-    </div>
-    <div class="textcenter flex1 pt-2 primarycolor" v-else><v-progress-circular
-      indeterminate size=24
-      color="primary"
-    ></v-progress-circular></div>
-</div>
-
-
    
    <div class="assets-xcontent mt-2"> 
       <card padding="0px 0px" margin="0px 0px" class="myassets_infocard_thirdassets full-width">
         <div class="assets full-width" slot="card-content">
-          
+
+                
+      <div class="accountandtotalasset flex-row  pt-2 pb-2 mt-4">
+          <div id="TotalSum" class="myassets_totalSum flex6" >
+            <span class="myassets_TotalSumWord" >{{$t('Menu.MyAssets')}}≈</span>
+            <span>{{TotalSum.toFixed(7)}}</span><!-- 要改成资产数组数据的累加的和-->
+            <span>XCN</span>
+          </div>
+          <div class="textright flex1 pt-2 pr-3 primarycolor" style="cursor:pointer;"
+            @click="toAddAsset">
+            <v-icon>add</v-icon>
+          </div>
+          <div class="textcenter flex1 pt-2 primarycolor" style="cursor:pointer;"
+            @click="doRefresh" v-if="!reloading">
+            <v-icon>refresh</v-icon>
+          </div>
+          <div class="textcenter flex1 pt-2 primarycolor" v-else><v-progress-circular
+            indeterminate size=24
+            color="primary"
+          ></v-progress-circular></div>
+      </div>
+
+        <div class="assets-content">
           <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code" >
 
             <v-layout class="myassets-li third-li" row wrap >
@@ -71,44 +70,35 @@
                 <div class="myassets-issuer">{{item.issuer | shortaddress}}</div>
               </div>
             </v-flex>
-            <v-flex xs4 class="myassets-wrapper">
+            <v-flex xs5 class="myassets-wrapper">
               <div class="myassets-balance third">
                  
+                 <span v-if="nativeAsset(item)" class="pr-2">{{$t('Reserve')}}:{{reserve}}</span>
                  <span class="balance">{{item.balanceStr}}</span>
                  <span class="label">{{$t('Total')}}</span> 
-                 <span v-if="nativeAsset(item)" class="pl-2">({{$t('Reserve')}}:{{reserve}})</span>
                  <br/>
                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;XCN</span>
                  
                   
               </div>
             </v-flex>
-            <v-flex xs4 class="myassets-wrapper">
+            <v-flex xs3 class="myassets-wrapper">
               <div class="myassets-operate-box">
-                <div  v-if="nativeAsset(item)" class="del cursorpinter">&nbsp;</div>
-                <div v-else class="del cursorpinter" @click.stop="del(item)">{{$t('Delete')}}</div>
+                <span  v-if="nativeAsset(item)" class="del cursorpinter">&nbsp;</span>
+                <span v-else class="del cursorpinter" @click.stop="del(item)">{{$t('Delete')}}</span>
 
-                <div class="send cursorpinter" @click.stop="send(item)">{{$t('Send')}}</div>
-                <div class="receive cursorpinter" @click.stop="receive(item)">{{$t('Receive')}}</div>
+                <span class="receive cursorpinter" @click.stop="receive(item)">{{$t('Receive')}}</span>
+                <span class="send cursorpinter" @click.stop="send(item)">{{$t('Send')}}</span>
               </div>
             </v-flex>
           </v-layout>
           
           </div>
         </div>
+
+        </div>
       </card>
     </div>
-
-    <v-tabs v-model="activeHistory" dark>
-      <v-tab ripple @click="switchComponent('transaction')">{{$t('History.Transaction')}}</v-tab>
-      <v-tab ripple @click="switchComponent('trade')">{{$t('History.Trade')}}</v-tab>
-      <v-tab ripple @click="switchComponent('offer')">{{$t('History.Offer')}}</v-tab>
-      <v-tab ripple @click="switchComponent('depositAndWithdraw')">{{$t('History.DepositAndWithdraw')}}</v-tab>
-      <v-tab ripple @click="switchComponent('effects')">{{$t('History.Effects')}}</v-tab>
-      <v-tab ripple @click="switchComponent('transactions')">{{$t('History.Transactions')}}</v-tab>
-    </v-tabs>
-
-    <component v-bind:is="show.component"></component>
 
 
   </m-layout>

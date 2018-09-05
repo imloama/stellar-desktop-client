@@ -3,21 +3,24 @@
 .assets
   border-radius: 10px    
 
+.assets-content
+  background: $secondarycolor.gray
+  padding: .5rem 1rem
+
 .assets-row
   overflow: hidden
-  position: relative
-  
   background: $primarycolor.gray
-  
+  border-bottom: 1px solid $primarycolor.gray
+  &:last-child
+    border-bottom: 0px
 
   .myassets-li
-    position: relative
     z-index: 2
     padding: 5px 5px
-    border-radius: 5px 5px 5px 5px
+    // border-radius: 5px 5px 5px 5px
     background: $secondarycolor.gray
-    
     width: 100%
+    
     
     .myassets-wrapper
       
@@ -43,26 +46,23 @@
 .myassets-balance.third
   height: 100%
   padding-top: 5px
-.assets-row
-  border-bottom: 1px solid $secondarycolor.font
-.assets-row:last-child
-  border-bottom: 0px
+// .assets-row
+//   border-bottom: 1px solid $secondarycolor.font
+// .assets-row:last-child
+//   border-bottom: 0px
 .operate-box 
-  position: absolute
-  z-index: 1
-  height: 100%
-  right: 0
-  top: 0
   display: flex
   .send
   .receive
   .del
-    display: flex
+    // display: flex
     justify-content: center
     align-items: center
     background-color: $secondarycolor.green
     color: $primarycolor.font
     padding: 0 1px
+    padding-top: 10%
+
   .receive
     border-left: 1px solid $secondarycolor.gray
   .del
@@ -70,21 +70,19 @@
     border-right: 1px solid $secondarycolor.gray
 
 .myassets-operate-box 
-  position: absolute
   z-index: 1
   height: 100%
-  right: 0
-  top: 0
   display: flex
+  text-align: right
   .send
   .receive
   .del
+    flex: 1
+    // background-color: $secondarycolor.green
+    color: $primarycolor.font
     display: flex
     justify-content: center
     align-items: center
-    // background-color: $secondarycolor.green
-    color: $primarycolor.font
-    padding: 0 12px
   .receive
     // border-left: 1px solid $secondarycolor.gray
     color:$primarycolor.green
@@ -257,6 +255,9 @@
   border-radius:1px
   background-color:$secondarycolor.gray
   border-radius: 5px
+  border-bottom-left-radius: 0
+  border-bottom-right-radius: 0
+  border-bottom: 1px solid $primarycolor.gray
 .accountnameaddress
     z-index: 2
     padding-left:0px

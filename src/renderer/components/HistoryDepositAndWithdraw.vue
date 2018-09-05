@@ -3,7 +3,7 @@
 * 充提记录
 */
 <template>
-  <div class="content">
+  <div class="">
      
      <div class="select-wrapper">
        <v-select
@@ -62,8 +62,8 @@
               <div class="flex1">{{$t('Amount')}}</div>
             </div>
             <div class="flex-row textcenter" v-for="item in deposits" :key="item.tx">
-              <div class="flex1" @click="toTX(item)">{{item.tx | miniaddress}}</div>
-              <div class="flex1">{{item.datetime}}</div>
+              <div class="flex1" @click="toTX(item)">{{item.tx ||item.tx_hash | miniaddress}}</div>
+              <div class="flex1">{{new Date(Number(item.created_at +'000')).toLocaleString()}}</div>
               <div class="flex1">{{Number(item.amount)}}</div>
             </div>
           </div>

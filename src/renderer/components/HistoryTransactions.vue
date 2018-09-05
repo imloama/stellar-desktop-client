@@ -1,7 +1,7 @@
 <template>
   <div>
     <scroll :refresh="onRefresh">
-      <div class="content">
+      <div class="">
             <v-flex  v-for="item in transactions" :key="item.id" xs12 class="transactions_itemstyle">
               <v-flex @click="showmoreinformation(item.id)">
                 <v-layout>

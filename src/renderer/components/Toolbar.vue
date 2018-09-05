@@ -4,7 +4,7 @@
 <template>
   <div class="cp-toolbar">
 
-    <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true'>
+    <v-toolbar :height="`60px`" fixed dark :class="color + ' itoolbar'" :flat="!shadow" dense :clipped-left='true'>
       <v-btn icon v-if="showbackicon" @click="back" class="white--text">
             <v-icon class="back-icon font28">&#xE5CB;</v-icon>
       </v-btn>
@@ -17,14 +17,10 @@
       
       <v-spacer/>
       <div class="flex-row ml-4 mr-2">
-        <div :class="selectedMenuIndex ===0 ? 'flex1 mbtn mactive':'flex1 mbtn'" @click="toPage(0)"><v-icon>account_balance_wallet</v-icon>{{$t('Title.MyAssets')}}</div>
-        <div :class="selectedMenuIndex ===1 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(1)"><v-icon>history</v-icon>{{$t('History.Title')}}</div>
-        <div :class="selectedMenuIndex ===2 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(2)"><v-icon>trending_up</v-icon>{{$t('Menu.TradeCenter')}}</div>
-        <div :class="selectedMenuIndex ===3 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(3)"><v-icon>apps</v-icon>{{$t('Title.ThirdApp')}}</div>
-        <div :class="selectedMenuIndex ===4 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(4)"><v-icon>import_export</v-icon>{{$t('Menu.Funding')}}</div>
-        <div :class="selectedMenuIndex ===5 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(5)"><v-icon>account_circle</v-icon>{{$t('Menu.My')}}</div>
-        <div :class="selectedMenuIndex ===6 ? 'flex1 mbtn mactive':'flex1 mbtn'" flat @click="toPage(6)"><v-icon>settings</v-icon>{{$t('Menu.Settings')}}</div>
-        <div class="mbtn" flat @click="doLock"><v-icon>lock</v-icon></div>
+        <div class="account" @click="toMy">{{selectedAccount.name || account.name}}</div>
+        <div class="mbtn iconbtn" flat  @click="toMy"><v-icon>arrow_drop_down</v-icon></div>
+        <div>&nbsp;&nbsp;</div>
+        <div class="mbtn iconbtn" flat @click="doLock"><v-icon>lock</v-icon></div>
       </div>
 
 
@@ -121,7 +117,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'primary'
+      default: 'secondarygray'
     },
     shadow: {
       type: Boolean,
@@ -371,6 +367,11 @@ export default {
   cursor: pointer
   white-space: nowrap
   
-
-
+.itoolbar
+  height: 60px
+  line-height: 60px
+.iconbtn
+  padding-top: 5px!important
+.account
+  cursor: pointer
 </style>

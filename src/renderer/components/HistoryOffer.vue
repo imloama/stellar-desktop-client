@@ -3,7 +3,7 @@
 * 我的委单
 */
 <template>
-  <div class="content">
+  <div class="">
     <card class="offer-card" padding="10px 10px" v-if="!refreshing && !moreloading && offers.length ==0">
       {{$t("Error.ValueIsNull")}}
     </card>

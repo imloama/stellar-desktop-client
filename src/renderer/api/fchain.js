@@ -110,3 +110,21 @@ export function getFchainRss(){
         })
   })
 }
+
+
+//交易所地址
+const EXCHANGES_URL = 'https://update.fchain.io/config/exchanges.json'
+export function exchangeAddresses(){
+
+  return axios.get(EXCHANGES_URL).then(response => {
+    let data = response.data
+    let result = {}
+    data.forEach(element => {
+      element.accounts.forEach(ac => {
+        result[ac] = Object.assign({}, element)
+      })
+    });
+    return result;
+  });
+}
+

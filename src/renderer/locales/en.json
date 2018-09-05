@@ -97,7 +97,6 @@
   "Reserve":"Reserve",
   "Delete":"Delete",
   "Modify":"Modify",
-  "Open":"Open",
   "Export":"Export",
   "Available":"Available",
   "Amount":"Amount",
@@ -531,14 +530,20 @@
   "fund_free":"free funding",
   "fund_free_title":"funding summary",
   "fund_used_up":"there is no free funding, may ask for help from your friends",
-  "tickets":"tickets",
+  "tickets":"Support",
   "autofund_hint":"please wait, autofund is working...",
+  "manageOffer":"manage offer",
+  "createPassiveOffer":"create passive offer",
+  "accountMerge":"merge account",
+  "send_to_exchange":"sendint to exchange {0} with no memo, are you sure?",
   "Lock":"lock screen",
   "refresh":"refresh",
   "set_all_read":"read all",
   "lock_enable":"lock screen enabled",
   "lock_disable":"lock screeb disabled",
   "lock_pwd_wrong":"wrong unlock password!"
+
+
 
   
 

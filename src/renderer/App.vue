@@ -3,7 +3,10 @@
 
   <v-app :class="'app ' + (showFuzzyView?'fuzzy-app':'') " dark>
       <v-content class="contentx">
-        <router-view />
+        <left-menu> </left-menu>
+        <div class="main-contentx">
+          <router-view />
+        </div>
       </v-content>
       <v-footer class="footright pa-3">
         <div>v{{version}}</div>
@@ -41,6 +44,7 @@ import { PLATFORM_IS_IOS } from '@/store/modules/AppSettingStore'
 import { FCHAIN_HORIZON } from '@/api/horizon'
 import { LANGUAGES } from '@/locales'
 import { ipcRenderer } from 'electron'
+import LeftMenu from '@/components/LeftMenu'
 export default {
   data() {
     return {
@@ -204,6 +208,7 @@ export default {
   components: {
     PinCode,
     TabBar,
+    LeftMenu,
   }
 };
 </script>

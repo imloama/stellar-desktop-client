@@ -1,5 +1,6 @@
 <template>
-
+  <div class="mainlayout">
+  <!--
   <v-layout row wrap class="mlayout" v-if="mid">
     <v-flex xs3>&nbsp;</v-flex>
     <v-flex xs6>
@@ -17,6 +18,11 @@
     <v-flex xs1>&nbsp;</v-flex>
 
   </v-layout>
+  -->
+    <v-container>
+      <slot></slot>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -30,6 +36,7 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="stylus">
+.mainlayout
+  padding-left: 60px
 </style>

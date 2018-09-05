@@ -7,6 +7,7 @@
       @goback="back"
       />
     <div class="content">
+      <m-layout>
       <card>
         <div class="card-content" slot="card-content">
           <div class="label">{{$t('Account.AccountAddress')}}</div>
@@ -65,6 +66,7 @@
             </div>
         </div>
       </card>
+      </m-layout>
     </div>
 
     <!-- <div class="footer">

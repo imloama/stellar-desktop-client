@@ -22,7 +22,7 @@ export default {
         {icon: 'account_circle', label: 'Menu.My', name: 'MySettings'},
         {icon: 'settings', label: 'Menu.Settings', name: 'SettingsParent'}
       ],
-      menuNames:['MyAssets','History','TradeCenter','Apps','Funding','My','SettingsParent']
+      menuNames:['MyAssets','History','TradeCenter','Apps','Funding','My','SetPinCode']
     }
   },
   watch:{
@@ -58,6 +58,7 @@ export default {
   color: $secondarycolor.font
   padding-top: 1.2rem
   font-size: 14px
+  box-shadow: 2px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
   .menu-item
     padding: .6rem 0
     cursor pointer

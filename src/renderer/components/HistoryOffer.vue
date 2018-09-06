@@ -8,63 +8,51 @@
       {{$t("Error.ValueIsNull")}}
     </card>
     
-    <div v-for="(offer, index) in offers" :key="index" class="mt-1 mb-1">
+    <div class="mt-1 mb-1">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
-          <div class="flex-row">
-            <div class="flex3">
-              <div class="pair-show">
-                <div class="pair-to">
-                  <div class="code">{{offer.to.code}}</div>
-                  <div class="issuer" v-if="assethosts[offer.to.code]">{{assethosts[offer.to.code] | miniaddress}}</div>
-                  <div class="issuer" v-else-if="assethosts[offer.to.issuer]">{{assethosts[offer.to.issuer] | miniaddress}}
-                  </div>
-                  <div class="issuer" v-else>{{offer.to.issuer | miniaddress}}</div>
-                </div>
-                <div class="pair-icon">
-                  <i class="icons material-icons">&#xE8D4;</i>
-                </div>
-                <div class="pair-from">
-                  <div class="code">{{offer.from.code}}</div>
-                  <div class="issuer" v-if="assethosts[offer.from.code]">{{assethosts[offer.from.code] | miniaddress}}</div>
-                  <div class="issuer" v-else-if="assethosts[offer.from.issuer]">
-                    {{assethosts[offer.from.issuer] | miniaddress}}
-                  </div>
-                  <div class="issuer" v-else>{{offer.from.issuer | miniaddress}}</div>
-                </div>
+          <div class="textcenter ma-4" v-if="refreshing">
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
+          </div>
+          <div class="flex-row offerrow"  v-else v-for="(offer, index) in offers" :key="index">
+            <div class="flex1 pa-2">
+              <span class=" value down">+{{Number(offer.total)}}</span>
+              <span class="code">{{offer.to.code}}</span>
+              <span class="label" v-if="assethosts[offer.to.code]">{{assethosts[offer.to.code] | miniaddress}}</span>
+              <span class="label" v-else-if="assethosts[offer.to.issuer]">{{assethosts[offer.to.issuer] | miniaddress}}</span>
+              <span class="label" v-else>{{offer.to.issuer | miniaddress}}</span>
+            </div>
+            <div class="flex1 pa-2">
+              <span class=" value up">-{{Number(offer.amount)}}</span>
+              <span class="code">{{offer.from.code}}</span>
+              <span class="label" v-if="assethosts[offer.from.code]">{{assethosts[offer.from.code] | miniaddress}}</span>
+              <span class="label" v-else-if="assethosts[offer.from.issuer]">{{assethosts[offer.from.issuer] | miniaddress}}</span>
+              <span class="label" v-else>{{offer.from.issuer | miniaddress}}</span>
+            </div>
 
-              </div>
+            <div class="flex1 pa-2">
+              <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
+              <span class="value">{{Number(offer.price)}}{{offer.from.code}}</span>
             </div>
-            <div class="flex4 pl-1 textright">
-              <div>
-                <span class="value">{{Number(offer.price)}}{{offer.from.code}}</span>
-                <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
-              </div>
-              <div>
-                <span class="value down">+{{Number(offer.total)}}{{offer.to.code}}</span>
-                <span class="label">{{$t('AmountAbbreviation')}}</span>
-              </div>
-              <div>
-                <span class="value up">-{{Number(offer.amount)}}{{offer.from.code}}</span>
-                <span class="label">{{$t('TotalAbbreviation')}}</span>
-              </div>
-            </div>
-            <div class="flex1 textcenter pt-4">
-              <a href="javascript:void(0)" @click.stop="cancelMyOffer(offer,index)">{{$t('Trade.Cancel')}}</a>
+           
+
+            <div class="flex1 textright pa-2">
+              <a href="javascript:void(0)" @click="cancelMyOffer(offer,index)">{{$t('Trade.Cancel')}}</a>
             </div>
           </div>
           
+          <div class="textcenter mt-2" v-if="!refreshing && hasnomore">{{$t('NoMoreData')}}</div>
         </div>
       </card>
     </div>
-    <v-btn block flat color="primary" v-if="offers.length>0" 
-        :loading="moreloading" @click="loadmore">
+    <v-btn block flat color="primary" v-if="!refreshing && !hasnomore"  :loading="moreloading" @click="loadmore">
       {{$t('LoadMore')}}
     </v-btn>
 
    <loading :show="working" :loading="sending" :success="dealok" :fail='dealfail' 
       color="red" :title="loadingTitle" :msg="loadingMsg" :closeable="dealfail" @close="hiddenLoadingView"/>
 
+  <password-sheet v-if="showPasswordInput" @cancel="showPasswordInput=false" @ok="doCancel"/>
 
   </div>
 </template>
@@ -80,6 +68,7 @@ import {myofferConvert} from '@/api/offer'
 import Loading from './Loading'
 import { Decimal } from 'decimal.js'
 import { getXdrResultCode } from '@/api/xdr'
+import PasswordSheet from '@/components/PasswordSheet'
 
   export default {
     data() {
@@ -93,8 +82,13 @@ import { getXdrResultCode } from '@/api/xdr'
         loadingTitle: null,
         loadingMsg: null,
 
-        refreshing:true,
-        moreloading: false
+        refreshing:false,
+        moreloading: false,
+        hasnomore: false,
+        showPasswordInput: false,
+
+        cancelItem: null,
+        cancelIndex: null,
       
       }
     },
@@ -111,12 +105,7 @@ import { getXdrResultCode } from '@/api/xdr'
       }
     },
     mounted() {
-       this.refreshing = true
-       this.queryMyOffers().then(response=>{
-         this.refreshing = false
-       }).catch(err=>{
-         this.refreshing = false
-       })
+      this.reload();
     },
     methods: {
       ...mapActions({
@@ -130,7 +119,12 @@ import { getXdrResultCode } from '@/api/xdr'
       loadmore(){
         if(this.moreloading)return
         this.moreloading = true
+        let len = this.my.length
         this.queryMyNextPageOffers().then(response=>{
+          let nlen = this.my.length
+          if(len === nlen){
+            this.hasnomore = true
+          }
           this.moreloading = false
         })
         .catch(err=>{
@@ -146,22 +140,35 @@ import { getXdrResultCode } from '@/api/xdr'
           })
       },
       cancelMyOffer(item,index) {
+        this.cancelItem = item
+        this.cancelIndex = index
+        if (this.accountData.seed) {
+          this.doCancel();
+        }else{
+          this.showPasswordInput = true
+        }
+      },
+      doCancel(){
         if (this.working) return
-        if (!this.accountData.seed) return
         this.onWorking()
-        cancelOffer(this.accountData.seed, item.origin || this.my[i])
+        cancelOffer(this.accountData.seed, this.cancelItem.origin || this.my[this.cancelIndex])
           .then(data => {
+            this.cancelItem = null
+            this.cancelIndex = null
+            return this.setup()
+          }).then(()=>{
             this.onSuccess()
-            this.setup()
-          })
-          .catch(err => {
+          }).catch(err => {
             console.log(err)
+            this.cancelItem = null
+            this.cancelIndex = null
             this.onFail()
             this.setup()
           })
       },
 
       convertOffer(offer){
+        if(offer === null || typeof offer === 'undefined')return {}
         let data = {}
         if(offer.buying.asset_type === 'native'){
           data.to = { code: 'XLM', issuer: 'stellar.org'}  
@@ -217,13 +224,25 @@ import { getXdrResultCode } from '@/api/xdr'
         this.working = false
         this.loadingTitle = null
         this.loadingMsg = null
+      },
+      reload(){
+        if(this.refreshing)return;
+        this.refreshing = true
+        this.queryMyOffers().then(response=>{
+          this.refreshing = false
+          this.$emit('reloadok')
+        }).catch(err=>{
+          this.refreshing = false
+          this.$emit('reloadfail')
+        });
       }
 
     },
     components: {
       Card,
       Scroll,
-      Loading
+      Loading,
+      PasswordSheet,
     }
   }
 </script>
@@ -312,4 +331,9 @@ import { getXdrResultCode } from '@/api/xdr'
   font-size: 14px
 .label
   color: $secondarycolor.font
+.offerrow
+  border-bottom: 1px solid $primarycolor.gray
+  padding: .5rem 0
+  &:last-child
+    border-bottom: 0px
 </style>

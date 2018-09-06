@@ -3,7 +3,7 @@
 * 充提记录
 */
 <template>
-  <div class="">
+  <v-card class="pt-4 pb-4">
      
      <div class="select-wrapper">
        <v-select
@@ -33,7 +33,6 @@
       </v-select>
      </div>
     
-  <scroll :refresh="reload">
     <!-- 菜单： 充值/提现  -->
     <div class="menu-wrapper" v-if="selectedasset.code">
       <ul class="menu-ul">
@@ -43,8 +42,8 @@
     </div>
 
     <!-- 内容： 充值/提现 -->
-    <card class="dw-card" padding="10px 10px" margin="10px 0px" v-if="selectedasset.code">
-      <div class="dw-card-content" slot="card-content">
+    <div class="dw-card ma-2" v-if="selectedasset.code">
+      <div class="dw-card-content">
         
         <div class="progress-wrapper textcenter pa-4" v-if="working">
           <v-progress-circular indeterminate color="primary" ></v-progress-circular>
@@ -56,17 +55,21 @@
 
         <div class="dw" v-if="!working && selectedasset.code && active==='deposit'">
           <div class="dw-table" v-if="deposits.length > 0 ">
-            <div class="flex-row textcenter">
-              <div class="flex1">TX</div>
-              <div class="flex1">{{$t('DateTime')}}</div>
-              <div class="flex1">{{$t('Amount')}}</div>
-            </div>
-            <div class="flex-row textcenter" v-for="item in deposits" :key="item.tx">
-              <div class="flex1" @click="toTX(item)">{{item.tx ||item.tx_hash | miniaddress}}</div>
-              <div class="flex1">{{new Date(Number(item.created_at +'000')).toLocaleString()}}</div>
-              <div class="flex1">{{Number(item.amount)}}</div>
+            
+            <div class="flex-row dw-row"  v-for="(item,index) in deposits" :key="index">
+              <div class="flex4">
+                <span class="label">tx:{{item.tx ||item.tx_hash }}</span>
+                
+              </div>
+              <div class="flex2 pl-1 pr-1">
+                {{new Date(Number(item.created_at +'000')).toLocaleString()}}
+              </div>
+              <div class="flex1">
+                {{Number(item.amount)}}
+              </div>
             </div>
           </div>
+
           <div class="dw-table" v-else>
             {{$t('Error.ValueIsNull')}}
           </div>
@@ -74,16 +77,19 @@
 
         <div class="dw-table" v-if="!working && selectedasset.code &&  active==='withdraw'">
           <div class="dw-table" v-if="withdraws.length > 0 ">
-            <div class="flex-row textcenter">
-              <div class="flex1">TX</div>
-              <div class="flex1">{{$t('DateTime')}}</div>
-              <div class="flex1">{{$t('Amount')}}</div>
+            <div class="flex-row  dw-row"  v-for="(item,index) in withdraws" :key="index">
+              <div class="flex4">
+                <span class="label">tx:{{item.tx ||item.tx_hash }}</span>
+                
+              </div>
+              <div class="flex2 pl-1 pr-1">
+                {{new Date(Number(item.created_at +'000')).toLocaleString()}}
+              </div>
+              <div class="flex1">
+                {{Number(item.amount)}}
+              </div>
             </div>
-            <div class="flex-row textcenter" v-for="item in withdraws" :key="item.tx">
-              <div class="flex1"  @click="toTX(item)">{{item.tx | miniaddress}}</div>
-              <div class="flex1">{{item.datetime}}</div>
-              <div class="flex1">{{Number(item.amount)}}</div>
-            </div>
+            
           </div>
           <div class="dw-table" v-else>
             {{$t('Error.ValueIsNull')}}
@@ -91,11 +97,10 @@
         </div>
 
       </div>
-    </card>    
+    </div>    
    
-  </scroll>
 
-  </div>
+  </v-card>
 </template>
 
 
@@ -167,10 +172,7 @@ const TYPE_WITHDRAW = 'withdraw'
     },
     methods: {
       reload(){
-        return new Promise((resolve,reject)=>{
-          this.queryDW()
-          resolve()
-        })
+        this.queryDW()
       },
       queryDW(){
         if(!this.selectedasset.code)return;
@@ -181,7 +183,9 @@ const TYPE_WITHDRAW = 'withdraw'
           .then(response=>{
             this.records = response.data
             this.working = false
+            this.$emit('reloadok')
           }).catch(err=>{
+            this.$emit('reloadfail')
             this.working = false
             this.records = {}
             this.error = err.message
@@ -232,6 +236,7 @@ const TYPE_WITHDRAW = 'withdraw'
   .menu-ul
     display: flex;
     justify-content: center;
+    cursor: pointer
     .menu-li
       float: left
       color: $primarycolor.font
@@ -258,4 +263,14 @@ const TYPE_WITHDRAW = 'withdraw'
   padding-right: 10px
 .dw-card
   background: $secondarycolor.gray
+.label
+  color: $secondarycolor.font
+  cursor: pointer
+  // text-decoration: underline
+  // text-decoration-style: $primarycolor.green
+.dw-row
+  border-bottom: 1px solid $primarycolor.gray
+  font-size: 14px
+  &:last-child
+    border-bottom: 0px
 </style>

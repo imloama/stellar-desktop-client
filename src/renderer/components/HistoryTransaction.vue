@@ -1,6 +1,5 @@
 <template>
   <div>
-    <scroll :refresh="onRefresh">
       <div class="mt-2 mb-2">
         <card padding="10px 10px" class="infocard">
           <div class="history" slot="card-content">
@@ -19,17 +18,18 @@
                   <span class="amount">{{item.amount}}</span>
                   <span class="code" v-if="item.asset">{{item.asset.code}}</span>
                 </div>
-                <div class="textright tx">TX:{{item.origin.transaction_hash}}</div>
+                <div class="textright tx" >tx:{{item.origin.transaction_hash}}</div>
               </v-flex>
             </v-layout>
           </div>
         </card>
+
         <div class="loadmore textcenter" v-if="history.length > 0">
-          <v-progress-circular indeterminate color="primary" v-if="loadmore"></v-progress-circular>
-          <span v-if="!loadmore && hasmore " @click="loadmoreData">{{$t('LoadMore')}}</span>
+           <v-btn block flat color="primary" v-if="!loadmore && hasmore"  :loading="loadmore" @click="loadmoreData">
+            {{$t('LoadMore')}}
+            </v-btn>
         </div>
       </div>
-    </scroll>
   </div>
 </template>
 
@@ -117,6 +117,15 @@
         this.selectPayment(item)
         this.$router.push({name: 'Transaction'})
       },
+      reload(){
+        this.getPayments(this.account.address)
+          .then(()=>{
+             this.$emit('reloadok')
+          }).catch(err=>{
+            console.error(err);
+             this.$emit('reloadfail')
+          })
+      },
     },
     components: {
       Toolbar,
@@ -137,7 +146,7 @@
     padding-top: 5px
     padding-bottom: 5px
     font-size: 16px
-    border-bottom: 1px solid $secondarycolor.font
+    border-bottom: 1px solid $primarycolor.gray
     &:last-child
       border-bottom: 0px
   .history-amount

@@ -374,7 +374,11 @@ const actions = {
     if(typeof originData.next === 'function'){
       let newdata = originData.next()
       let newrecords = newdata.records
-      newdata.records = originData.records.concat(newrecords)
+      if(newrecords){
+        newdata.records = originData.records.concat(newrecords)
+      }else{
+        newdata.records = originData.records
+      }
       commit(QUERY_MY_OFFERS,newdata)
     }else{
       return this.queryMyOffers()

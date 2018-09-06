@@ -9,51 +9,40 @@
     <date-range-picker :start="start" :end="end" @doSearch="doSearch" />
   </div>
 
-  <scroll :refresh="reload">
-    <div v-for="(item, index) in deals" :key="index" class="mt-1 mb-1">
+    <div class="mt-1 mb-1">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
-          <div class="flex-row">
-            <div class="flex3 over-hide">
-              <div class="pair-show">
-                <div class="pair-from">
-                  <div class="code">{{item.bought_asset_code}}
-                    <span class="issuer" v-if="assethosts[item.bought_asset_code]">{{assethosts[item.bought_asset_code] | miniaddress}}</span>
-                    <span class="issuer" v-else-if="assethosts[item.bought_asset_issuer]">
-                      {{assethosts[item.bought_asset_issuer] | miniaddress}}
-                    </span>
-                    <span class="issuer" v-else>{{item.sold_asset_issuer | miniaddress}}</span>
-
-                  </div>
-                  
-                </div>
-                <div class="pair-icon">
-                  /
-                </div>
-                <div class="pair-to">
-                  <div class="code">{{item.sold_asset_code}}
-                    <span class="issuer" v-if="assethosts[item.sold_asset_code]">{{assethosts[item.sold_asset_code] | miniaddress}}</span>
-                  <span class="issuer" v-else-if="assethosts[item.sold_asset_issuer]">{{assethosts[item.sold_asset_issuer] | miniaddress}}
-                  </span>
-                  <span class="issuer" v-else>{{item.sold_asset_issuer| miniaddress}}</span>
-                  </div>
-                  
-                </div>
-              </div>
+           <div class="textcenter ma-4" v-if="working">
+              <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </div>
-            <div class="flex2 textleft pl-2  pt-1">
+          <div class="flex-row trade-li" v-else v-for="(item, index) in deals" :key="index">
+            
+            <div class="flex4 pa-2">
+              <span class="value up">+{{Number(item.bought_amount)}}</span>
+              <span class="value">{{item.bought_asset_code}}</span>
+              <span class="label" v-if="assethosts[item.bought_asset_code]">{{assethosts[item.bought_asset_code] | miniaddress}}</span>
+              <span class="label" v-else-if="assethosts[item.bought_asset_issuer]">
+                {{assethosts[item.bought_asset_issuer] | miniaddress}}
+              </span>
+              <span class="label" v-else>{{item.bought_asset_issuer | miniaddress}}</span>
+            </div>
+            <div class="flex4  pa-1">
+              <span class="value down">-{{Number(item.sold_amount)}}</span>
+              <span class="value">{{item.sold_asset_code}}</span>
+              <span class="label" v-if="assethosts[item.sold_asset_code]">{{assethosts[item.sold_asset_code] | miniaddress}}</span>
+              <span class="label" v-else-if="assethosts[item.sold_asset_issuer]">{{assethosts[item.sold_asset_issuer] | miniaddress}}</span>
+              <span class="label" v-else>{{item.sold_asset_issuer| miniaddress}}</span>
+            </div>
+            <div class="flex3 pa-1">
                 <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
                 <span class="value">{{Number(item.price)}}{{item.bought_asset_code}}</span>
             </div>
-            <div  class="flex2 textleft pl-2  pt-1">
-              <span class="label">{{$t('AmountAbbreviation')}}</span>
-              <span class="value down">-{{Number(item.sold_amount)}}{{item.sold_asset_code}}</span>
+            <!-- <div class="flex2 pa-1">
+              <span class="label">tx:{{item.tx | shortaddress}}</span>
+              <i class="material-icons trade-icon">copy</i>
             </div>
-            <div class="flex2 textleft pl-2  pt-1">
-              <span class="label">{{$t('TotalAbbreviation')}}</span>
-              <span class="value up">+{{Number(item.bought_amount)}}{{item.bought_asset_code}}</span>
-            </div>
-            <div class="flex1 textright pt-1">
+             -->
+            <div class="flex1 textright pt-2">
              <i class="material-icons trade-icon" v-if="item.type === 'canceled'">not_interested</i>
              <i class="material-icons trade-icon" v-else>done</i>
             </div>
@@ -62,7 +51,6 @@
         </div>
       </card>
     </div>
-  </scroll>
 
 
 
@@ -116,7 +104,7 @@ import { isNativeAsset } from '@/api/assets'
       ...mapActions({
         getAllOffers: 'getAllOffers',
       }),
-      reload(){
+      doReload(){
          let _address = this.account.address
          return this.getAllOffers({
            account: _address,
@@ -126,15 +114,24 @@ import { isNativeAsset } from '@/api/assets'
         //return getAllEffectOffers(_address, this.start, this.end)
       },
       queryAllOffers(){
-        //暂时只查询一周的委单数据
-        //let start_time = Number(moment().subtract(7,"days").format('x'))
-        //let end_time = Number(moment().format('x'))
-        //let start_time = moment(this.start)
-        //let end_time = moment(this.end)
-        //start_time = new Date(start_time.year(), start_time.month()+1, start_time.date()).getTime()
-        //end_time = new Date(end_time.year(), end_time.month()+1, end_time.date()).getTime()
-       
-        this.reload().then(response=>{}).catch(err=>{console.error(err)})
+        this.working = true
+        this.doReload().then(response=>{
+          this.working = false
+        }).catch(err=>{
+          console.error(err)
+          this.working = false
+        })
+      },
+      reload(){
+        this.working = true
+        this.doReload().then(response=>{
+          this.working = false
+          this.$emit('reloadok')
+        }).catch(err=>{
+          this.working = false
+          console.error(err)
+          this.$emit('reloadfail')
+        })
       },
       doSearch({start,end}){
         this.start =Number(moment(start + ' 00:00:00').format('x'))
@@ -256,7 +253,11 @@ import { isNativeAsset } from '@/api/assets'
   color: $secondarycolor.font
 .trade-icon
   color: $secondarycolor.font
-  font-size: 24px
+  font-size: 16px
 .over-hide
   overflow: hidden
+.trade-li
+  border-bottom: 1px solid $primarycolor.gray
+  &:last-child
+    border-bottom: 0
 </style>

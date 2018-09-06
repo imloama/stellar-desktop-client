@@ -1,65 +1,69 @@
 <template>
-    <div class="pt-2">
-        <scroll :refresh="onRefresh">
-            <div class="templatestyle">
-                <v-flex xs12 v-for="item in effectsData" :key="item.id+item.paging_token" >
-                    <v-flex xs12 v-if="item.type=='account_credited'" class="content_style">
+    <v-card class="pt-2">
+        <div class="textcenter ma-4" v-if="loading_flag">
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </div>
+            <div class="templatestyle" v-else>
+                <v-flex xs12 class="line" v-for="item in effectsData" :key="item.id+item.paging_token" >
+                    <v-flex xs12 v-if="item.type=='account_credited'" class="content_style pa-2">
                         <v-layout>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0" >TX:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_account_credited">Account Credited</v-flex>
-                        </v-layout>
-                        <v-layout>
-                            <v-flex xs4 class="itemstyleth_account_credited">+{{item.amount}}{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex>
-                            <v-flex xs4 class="itemstyleo_account_credited">
-                                <!-- {{$t("From")}}:{{getEffectsDataMiniAddress(item.account)}} -->
-                                </v-flex>
-                            <v-flex xs4 class="itemtime_account_credited" >{{getlocaltime(item.time)}}</v-flex>
-                        </v-layout>
-                    </v-flex>
-                    <v-flex v-if="item.type=='trade'" xs12 class="content_style">
-                        <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_trade">{{$t("Trade")}}</v-flex>
-                        </v-layout>
-                        <v-layout xs12>
-                            <v-flex xs8 class="itemstyleo_trade">+{{item.bought_amount}}{{item.bought_asset_type==='native'? 'XLM':item.bought_asset_code}}
-                                /-{{item.sold_amount}}{{item.sold_asset_type==="native"?"XLM":item.sold_asset_code}}
+                            <v-flex xs6 class="itemtype_account_credited">
+                                {{$t('Receive')}}&nbsp;&nbsp;+{{item.amount}}{{item.asset_type==="native"?"XLM":item.asset_code}}
                             </v-flex>
-                            <v-flex xs4 class="itemtime_trade">{{item.time}}</v-flex>
-                        </v-layout>
-                    </v-flex>
-                    <v-flex v-if="item.type=='trustline_created'" xs12 class="content_style">
-                        <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_trustline_c">{{$t("CreateTrustLine")}}</v-flex>
+                            <v-flex xs6 class="itemtime_account_credited" >{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                         <v-layout>
-                            <v-flex xs8 class="itemstyleth_trustline_c">{{$t("AssetCode")}}：{{item.asset_code}}({{getEffectsDataMiniAddress(item.asset_issuer)}})</v-flex>
-                            <v-flex xs4 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
+                            <v-flex xs12 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0" >TX:{{item.tx}}</v-flex>
                         </v-layout>
                     </v-flex>
-                    <v-flex v-if="item.type=='trustline_removed'" xs12 class="content_style">
+                    <v-flex v-if="item.type=='trade'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_trustline_r">{{$t("RemoveTrustLine")}}</v-flex>
+                             <v-flex xs6 class="itemtype_trade">{{$t("Trade")}}&nbsp;&nbsp;
+                                 +{{item.bought_amount}}{{item.bought_asset_type==='native'? 'XLM':item.bought_asset_code}}
+                                /-{{item.sold_amount}}{{item.sold_asset_type==="native"?"XLM":item.sold_asset_code}}
+                             </v-flex>
+                            <v-flex xs6 class="itemtime_trade">{{item.time}}</v-flex>
                         </v-layout>
-                        <v-layout xs12>
-                             <v-flex xs8 class="itemstyleth_trustline_c">{{$t("AssetCode")}}：{{item.asset_code}}({{getEffectsDataMiniAddress(item.asset_issuer)}})</v-flex>
-                            <v-flex xs4 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
+                         <v-layout xs12>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
+                           
                         </v-layout>
                     </v-flex>
-                    <v-flex v-if="item.type=='account_debited'" xs12 class="content_style">
-                        <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_account_debited">Account Debited</v-flex>
-                        </v-layout>
+                    <v-flex v-if="item.type=='trustline_created'" xs12 class="content_style  pa-2">
                         <v-layout>
-                            <v-flex xs4 class="itemstylet_account_debited">-{{item.amount}}{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex>
-                            <v-flex xs4></v-flex>
-                            <v-flex xs4 class="itemtime_account_debited">{{getlocaltime(item.time)}}</v-flex>
+                            <v-flex xs6 class="itemtype_trustline_c">{{$t("CreateTrustLine")}}&nbsp;&nbsp;
+                                {{item.asset_code}}({{getEffectsDataMiniAddress(item.asset_issuer)}})
+                            </v-flex>
+                            <v-flex xs6 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
+                        </v-layout>
+                        <v-layout xs12>
+                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                           
                         </v-layout>
                     </v-flex>
-                    <v-flex v-if="item.type=='signer_updated'" xs12 class="content_style">
+                    <v-flex v-if="item.type=='trustline_removed'" xs12 class="content_style  pa-2">
+                        <v-layout xs12>
+                            <v-flex xs6 class="itemtype_trustline_r">{{$t("RemoveTrustLine")}}&nbsp;&nbsp;
+                                {{item.asset_code}}({{getEffectsDataMiniAddress(item.asset_issuer)}})
+                            </v-flex>
+                            <v-flex xs6 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
+                        </v-layout>
+                        <v-layout xs12>
+                            <v-flex xs12 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex v-if="item.type=='account_debited'" xs12 class="content_style  pa-2">
+                        <v-layout>
+                            <v-flex xs6 class="itemtype_account_debited">{{$t('Send')}}&nbsp;&nbsp;
+                                -{{item.amount}}{{item.asset_type==="native"?"XLM":item.asset_code}}
+                            </v-flex>
+                            <v-flex xs6 class="itemtime_account_debited">{{getlocaltime(item.time)}}</v-flex>
+                        </v-layout>
+                         <v-layout xs12>
+                            <v-flex xs12 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex v-if="item.type=='signer_updated'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
                             <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0"> {{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype">{{$t("SignerUpdated")}}</v-flex>
@@ -75,7 +79,7 @@
                           <v-layout>
                         </v-layout>
                     </v-flex>
-                    <v-flex v-if="item.type=='signer_created'" xs12 class="content_style">
+                    <v-flex v-if="item.type=='signer_created'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
                             <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype_signer_created">{{$t("SignerCreated")}}</v-flex>
@@ -84,7 +88,7 @@
                             <v-flex xs12 class="itemtime_signer_created">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                     </v-flex>
-                    <v-flex v-if="item.type=='account_home_domain_updated'" xs12 class="content_style">
+                    <v-flex v-if="item.type=='account_home_domain_updated'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
                             <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype_ahdu">{{$t("AccountHomeDomainUpdated")}}</v-flex>
@@ -93,7 +97,7 @@
                             <v-flex xs12 class="itemtime_ahdu">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                     </v-flex>
-                    <v-flex v-if="item.type=='account_inflation_destination_updated'" xs12 class="content_style">
+                    <v-flex v-if="item.type=='account_inflation_destination_updated'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
                             <v-flex xs10 class="itemstyleo_aidu" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype_aidu">{{$t("AccountInflationDestinationUpdated")}}</v-flex>
@@ -104,7 +108,7 @@
                           <v-layout>
                         </v-layout>
                     </v-flex>
-                    <v-flex v-if="item.type=='account_created'" xs12 class="content_style">
+                    <v-flex v-if="item.type=='account_created'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
                             <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype_account_created">{{$t("AccountCreated")}}</v-flex>
@@ -116,15 +120,17 @@
                 </v-flex>
                     <v-flex xs12 class="loadmorestyle">
                         <v-layout xs12>
-                            <v-flex v-if="this.loading_flag" xs12>{{"loading..."}}</v-flex>
-                            <v-flex v-else-if="this.loadmore_isflag" @click="loadmore" xs12>{{$t("LoadMore")}}</v-flex>
-                            <v-flex v-else xs12>{{$t("NoMoreData")}}</v-flex>
+                            <v-flex v-if="!loading_flag && !hasnomore" xs12>
+                                <v-btn block flat color="primary" :loading="loadmore_isflag" @click="loadmore">
+            {{$t('LoadMore')}}
+            </v-btn>
+                             </v-flex>
+                            <v-flex v-if="hasnomore" xs12>{{$t("NoMoreData")}}</v-flex>
                         </v-layout>
                     </v-flex>
             </div>
         
-        </scroll>
-    </div>
+    </v-card>
 </template>
 
 <script>
@@ -141,9 +147,10 @@ export default {
             effectsData:[],
             effectsInstance: null,
             loadmore_count:0,
-            loadmore_isflag:true,
+            loadmore_isflag:false,
+            hasnomore: false,
             dataObj:[],
-            loading_flag:true
+            loading_flag:false
         }
     },
     mounted(){
@@ -167,6 +174,10 @@ export default {
         'selectPayment',
         'cleanAccount'
       ]),
+      reload(){
+        this.effectsInstance = null
+        this.getEffectsData()
+      },
       load() {
         let address = this.account.address
         return Promise.all([this.getAccountInfo(this.account.address)])
@@ -180,68 +191,57 @@ export default {
         this.$router.push({name: 'Transaction'})
       },
       getEffectsData(){
-          console.log('------------get')
           if(this.effectsInstance){
+              this.loadmore_isflag = true
               this.effectsInstance.next().then(response=>{
-                  console.log('----------effect instance --')
-                  console.log(response)
+                  this.loadmore_isflag = false
                   this.loadmore_count= this.effectsData.length
                   this.effectsData = this.effectsData.concat(response.records)
                   this.effectsData = this.effectsData.map(item=> Object.assign({time: '',tx: ''},item))
                   this.effectsInstance = response
                   console.log(this.effectsData.length)
                   if(this.loadmore_count == this.effectsData.length){
-                      this.loadmore_isflag = false
+                      this.hasnomore = true
                   }
-                   console.log(this.effectsData)
-                   console.log("1")
-                    this.effectsData.forEach((item)=>{
+                this.effectsData.forEach((item)=>{
                     item.operation().then((response)=>{
-                    console.log(item)
-                    console.log(response.created_at)
-                    item.time = response.created_at
-                    item.tx = response.transaction_hash
-                    console.log(item)
+                        console.log(item)
+                        console.log(response.created_at)
+                        item.time = response.created_at
+                        item.tx = response.transaction_hash
+                        console.log(item)
                     })
                     })
               }).catch(err=>{
+                  this.loadmore_isflag = false
                   console.error(err)
               })
           }else{
+              this.loading_flag = true
               fetchEffects(this.account.address).then(response=>{
-                  this.effectsInstance = response
+                this.loading_flag = false
+                this.effectsInstance = response
                 this.effectsData = this.effectsData.concat(response.records)
                 this.effectsData = this.effectsData.map(item=> Object.assign({time: '',tx: ''},item))
                 // console.log(this.effectsData)
-                console.log("2")
                   this.effectsData.forEach((item)=>{
-                  item.operation().then((response)=>{
-                  console.log(item)
-                //   console.log(response.created_at)
-                  console.log(response)
-                  item.time = response.created_at
-                  item.tx = response.transaction_hash
-                //   console.log(item)
-                //   console.log(this.dataObj)
-                  let tempObj = {}
-                  tempObj.id  = item.id
-                  tempObj.time =response.created_at
-                //   console.log(tempObj)
-                console.log('------------------' + item.id)
-                console.log(item)
-                console.log(this.effectsData)
-                  this.dataObj.push(tempObj)
+                    item.operation().then((response)=>{
+                    item.time = response.created_at
+                    item.tx = response.transaction_hash
+                    let tempObj = {}
+                    tempObj.id  = item.id
+                    tempObj.time =response.created_at
+                    this.dataObj.push(tempObj)
+                    })
                   })
-                  })
+                  this.$emit('reloadok')
                   this.loading_flag = false
               }).catch(err=>{
-                  console.error(err)
+                  this.$emit('reloadfail')
+                this.loading_flag = false
+                console.error(err)
               })
           }
-           setTimeout(() => {
-               // this.settimearray()
-            console.log(this.effectsData)
-        }, 5000);
       },
       loadmore(){
         this.getEffectsData()
@@ -275,89 +275,69 @@ export default {
 <style lang="stylus" scoped>
   @require '~@/stylus/color.styl'
 .templatestyle
-    font-size:10px
-    background:$primarycolor.gray
-    border-radius:5px
-    padding-left:3px
-    padding-right:3px
+    padding: 5px 5px
 
-.content_style
-    background-color:$secondarycolor.gray
-    border-radius:5px
-    border-bottom:5px solid $primarycolor.gray
-
+.line 
+    border-bottom: 1px solid $primarycolor.gray
+    font-size: 14px
+    &:last-child
+        border-bottom: 0
 .itemtime
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
 .itemtype
     color:$primarycolor.green
-    // padding-left:5px
-    font-size:16px
     text-align:center
     padding-top:3px
 .itemtx_signer_updated
     color:$secondarycolor.font
     text-align:left
-    font-size:16px
 .itemstyleo
     color:$secondarycolor.font
-    font-size:16px
     padding-left:5px
     padding-bottom:3px
 .itemstylet
     color:$secondarycolor.font
-    font-size:16px
-    text-align:center
     padding-bottom:3px
     word-break:break-all
 .itemstyleth
     color:$secondarycolor.font
-    font-size:16px
     text-align:center
     padding-bottom:3px
 
 
 .itemtype_account_created
-    font-size:16px
     color:$primarycolor.green
     padding-left:5px
 .itemtime_account_created
-    font-size:16px
     color:$secondarycolor.font
     padding-left:5px
 .itemstyleo_account_created
-    font-size:16px
     color:$secondarycolor.font
     text-align:left
 
 .itemtime_trustline_c
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
 .itemtype_trustline_c
     color:$primarycolor.green
     padding-left:5px
-    font-size:16px
     padding-top:3px
     // text-align:center
 .itemstylet_trustline_c
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
     word-break:break-all
     text-align:left
 .itemstyleth_trustline_c
     color:$secondarycolor.font
-    font-size:16px
     padding-top:3px
     text-align:left
 .itemstylef_trustline_c
     color:$secondarycolor.font
-    font-size:16px
     word-break:break-all
     text-align:left
     padding-left: 5px
@@ -366,42 +346,34 @@ export default {
 .itemtime_trustline_r
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
 .itemtype_trustline_r
     color:$primarycolor.red
     padding-left:5px
-    font-size:16px
     padding-top:3px
     // text-align:center
 .itemstylet_trustline_r
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
     word-break:break-all
     text-align:left
 .itemstyleth_trustline_r
     color:$secondarycolor.font
-    font-size:16px
     padding-top:3px
     text-align:left
 .itemstylef_trustline_r
-    font-size:16px
     color:$secondarycolor.font
     text-align:left
 
 .itemtype_signer_created
     color:$primarycolor.green
-    font-size:16px
     padding-left:5px
 .itemtime_signer_created
     color:$secondarycolor.font
-    font-size:16px
     padding-left:5px
 .itemstyleo_signer_created
     color:$secondarycolor.font
-    font-size:16px
     word-break:break-all
     text-align:left
 
@@ -411,35 +383,29 @@ export default {
 .itemtime_account_debited
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
 .itemtype_account_debited
     color:$primarycolor.red
     padding-left:5px
-    font-size:16px
     padding-top:3px
     // text-align:center
 .itemstyleo_account_debited
     color:$secondarycolor.font
-    font-size:16px
     padding-top:3px
     word-break:break-all
     text-align:left
     padding-left:5px
 .itemstylet_account_debited
     color:$secondarycolor.font
-    font-size:16px
     padding-top:3px
     word-break:break-all
     text-align:left
 
 .itemstyleth_account_debited
     color:$secondarycolor.font
-    font-size:16px
     padding-top:3px
     text-align:left
 .itemstylef_account_debited
-    font-size:16px
     color:$secondarycolor.font
     text-align:left
 
@@ -449,17 +415,14 @@ export default {
 .itemtime_account_credited
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
 .itemtype_account_credited
     color:$primarycolor.green
     padding-left:5px
-    font-size:16px
     padding-top:3px
     // text-align:center
 .itemstyleo_account_credited
     color:$secondarycolor.font
-    font-size:16px
     padding-top:3px
     word-break:break-all
     text-align:left
@@ -467,18 +430,15 @@ export default {
 .itemstylet_account_credited
     color:$secondarycolor.font
     // padding-left:5px
-    font-size:16px
     padding-top:3px
     word-break:break-all
     text-align:left
 
 .itemstyleth_account_credited
     color:$secondarycolor.font
-    font-size:16px
     padding-top:3px
     text-align:left
 .itemstylef_account_credited
-    font-size:16px
     color:$secondarycolor.font
     padding-left:5px
     text-align:left
@@ -490,92 +450,74 @@ export default {
 .itemtime_trade
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
     // text-align:right
 .itemtype_trade
     color:$primarycolor.green
     padding-left:5px
-    font-size:16px
     padding-top:3px
     text-align:left
 .itemstyleo_trade
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
     word-break:break-all
 .itemstylet_trade
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
     word-break:break-all
 .itemstyleth_trade
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
 .itemstylef_trade
     color:$secondarycolor.font
-    font-size:16px
     text-align:left
 
 
 .red_itemtime
     color:$secondarycolor.font
     padding-left:5px
-    font-size:16px
     padding-top:3px
 .red_itemtype
     color:$primarycolor.red
-    font-size:16px
-    // padding-left:5px
     text-align:center
     padding-top:3px
 .red_itemstyleo
     color:$secondarycolor.font
-    font-size:16px
     padding-left:5px
     padding-bottom:3px
 .red_itemstylet
     color:$secondarycolor.font
-    font-size:16px
     text-align:center
     padding-bottom:3px
 .red_itemstyleth
     color:$secondarycolor.font
-    font-size:16px
     text-align:center
     padding-bottom:3px
 
 .trade_styleo
     color:$primarycolor.green
     padding-left:5px
-    font-size:16px
     text-align:right
     padding-bottom:3px
 .trade_stylet
     color:$primarycolor.font
-    font-size:16px
     text-align:center
     padding-bottom:3px
 .trade_styleth
     color:$primarycolor.red
-    font-size:16px
     text-align:left
     padding-bottom:3px
 
 .itemtype_aidu
-    font-size:16px
     color:$primarycolor.green
     padding-left:5px 
 .itemtime_aidu
-    font-size:16px
     color:$secondarycolor.font
     padding-left:5px
 .itemstyleo_aidu
-    font-size:16px
     color:$secondarycolor.font
     word-break:break-all
     text-align:left
@@ -583,15 +525,12 @@ export default {
 
 
 .itemtype_ahdu
-    font-size:16px
     color:$primarycolor.green
     padding-left:5px
 .itemtime_ahdu
-    font-size:16px
     color:$secondarycolor.font
     padding-left:5px
 .itemstyleo_ahdu
-    font-size:16px
     color:$secondarycolor.font
     word-break:break-all
     text-align:left
@@ -603,7 +542,6 @@ export default {
 
 .loadmorestyle
     text-align:center
-    font-size:16px
 
 </style>
 

@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <scroll :refresh="onRefresh">
-      <div class="">
-            <v-flex  v-for="item in transactions" :key="item.id" xs12 class="transactions_itemstyle">
+  <v-card class="pa-2">
+    <div class="textcenter ma-4" v-if="loading_flag">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </div>
+      <div v-else>
+            <v-flex  v-for="item in transactions" :key="item.id" xs12 class="transactions_itemstyle pa-2">
               <v-flex @click="showmoreinformation(item.id)">
                 <v-layout>
                   <!-- <v-flex xs7 class="itemstyleo">{{item.temptype==='payment'?$t("Dispatcher"):item.temptype==='change_trust'?$t("ChangeTrust"):item.temptype==='manage_offer'?$t("Trade"):item.temptype==='set_options'?$t("Menu.Settings"):item.temptype==='create_account'?$t("AccountCreated"):item.temptype==='allow_trust'?$t("AllowTrust"):''}}</v-flex> -->
@@ -18,11 +20,11 @@
               </v-flex>
             </v-flex>
             <v-flex xs12 class="loadmorestyle">
-                <v-layout xs12>
-                    <v-flex v-if="this.loading_flag" xs12>{{"Loading..."}}</v-flex>
-                    <v-flex v-else-if="this.loadmore_isflag" @click="loadmore" xs12>{{$t("LoadMore")}}</v-flex>
-                    <v-flex v-else xs12>{{$t("NoMoreData")}}</v-flex>
-                </v-layout>
+                  <v-btn block flat color="primary" v-if="!loading_flag && !hasnomore"  
+                  :loading="loadmore_isflag" @click="loadmore">
+                    {{$t('LoadMore')}}
+                  </v-btn>
+                  <div v-if="hasnomore">{{$t("NoMoreData")}}</div>
             </v-flex>
 
             <v-dialog v-model="show_flag"  v-if="show_flag" max-width="460" >
@@ -279,8 +281,7 @@
               </v-card>
             </v-dialog>
       </div>
-    </scroll>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -297,8 +298,9 @@
         transactions:[],
         transactionsInstance:null,
         loadmore_count:0,
-        loadmore_isflag:true,
-        loading_flag:true,
+        loadmore_isflag:false,
+        loading_flag:false,
+        hasnomore: false,
         transactionsOperations:[],
         show_flag:false,
         type_again:true,
@@ -321,9 +323,6 @@
     mounted() {
       this.getTransactionsData()
     },
-
-    beforeDestroy() {
-    },
     methods: {
       ...mapActions([
         'getAccountInfo',
@@ -331,6 +330,9 @@
         'selectPayment',
         'cleanAccount'
       ]),
+      reload(){
+        this.getTransactionsData()
+      },
       load() {
         let address = this.account.address
         return Promise.all([this.getAccountInfo(this.account.address)])
@@ -342,16 +344,15 @@
       getTransactionsData(){
         console.log('------------get')
         if(this.transactionsInstance){
+          this.loadmore_isflag = true;
             this.transactionsInstance.next().then(response=>{
-                console.log('----------transactions instance --')
-                console.log(response)
+                this.loadmore_isflag = false;
                 this.loadmore_count = this.transactions.length
                 this.transactions = this.transactions.concat(response.records)
-                 this.transactions = this.transactions.map(item=> Object.assign({temptype: ''},item))
+                this.transactions = this.transactions.map(item=> Object.assign({temptype: ''},item))
                 this.transactionsInstance = response
-                console.log(this.transactions)
                 if(this.loadmore_count == this.transactions.length){
-                  this.loadmore_isflag = false
+                  this.hasnomore = true
                 }
                 this.transactions.forEach((ele)=>{
                   ele.operations().then((response)=>{
@@ -362,7 +363,10 @@
                 console.error(err)
             })
         }else{
+          this.loading_flag = true
             transactionsPage(this.account.address).then(response=>{
+              this.$emit('reloadok')
+              this.loading_flag = false
                 this.transactionsInstance = response
                 this.transactions = this.transactions.concat(response.records)
                 this.loading_flag  = false
@@ -374,6 +378,8 @@
                 })
                 console.log(this.transactions)
             }).catch(err=>{
+              this.$emit('reloadfail')
+              this.loading_flag = false
                 console.error(err)
             })
         }
@@ -475,27 +481,21 @@
   padding:3px 3px 3px 3px
 
 .transactions_itemstyle
-  border-bottom:3px solid $primarycolor.gray
-  border-radius:5px
-  background:$secondarycolor.gray
-  // margin-left:3px
-  padding:2px 0px 2px 0px
+  border-bottom:1px solid $primarycolor.gray
   cursor: pointer
+  font-size: 14px
 
 
 .itemtime
   color:$secondarycolor.font
   padding-left:5px
-  font-size:16px
   // text-align:center
 
 .itemstyleo
   color:$secondarycolor.font
-  font-size:16px
   padding-left:5px
 .itemstylet
   color:$primarycolor.green
-  font-size:16px
   text-align:left
 
 .itemstyleth
@@ -507,54 +507,44 @@
 
 .loadmorestyle
     text-align:center
-    font-size:16px
     color:$primarycolor.font
 
 .vcardstyle
   background:$secondarycolor.gray
   padding-top:8px
 .createdtimestyle
-  font-size:16px
   color:$secondarycolor.font
   padding-left:8px
 .closestyle
   color:$primarycolor.red
-  font-size:16px
   text-align:right
   padding-right:5px
 .sourceaccount_title
   color:$secondarycolor.font
-  font-size:16px
   padding:5px 0px 2px 8px
 
 .ptypestyle
   padding-left:8px
   color:$secondarycolor.font
-  font-size:16px
 .ptostyle
   color:$secondarycolor.font
-  font-size:16px
   padding-left:8px
   word-break:break-all
 
 .passettypestyle
   // border-top:1px solid $secondarycolor.font
   color:$secondarycolor.font
-  font-size:16px
   text-align:center
 
 .chcreated_at_style
   color:$secondarycolor.font
-  font-size:16px
   padding-left:8px
 .chclosestyle
   color:$primarycolor.red
-  font-size:16px
   text-align:right
   padding-right:5px
 .chsourceaccount_title
   color:$secondarycolor.font
-  font-size:16px
   padding:5px 0px 2px 8px
   border-top:1px solid $primarycolor.gray
   // border-bottom:1px solid $primarycolor.gray
@@ -563,43 +553,34 @@
   // border-top:1px solid $primarycolor.gray
   // border-bottom:1px solid $primarycolor.gray
   color:$secondarycolor.font
-  font-size:16px
   text-align:center
   word-break:break-all
 .itemtype_change_trust
-  font-size:16px
   color:$primarycolor.green
   text-align:center
 .chitemdatetime
-  font-size:16px
   color:$primarycolor.green
   padding-left:8px
 .chitemdatetimecontent
-  font-size:16px
   color:$primarycolor.font
   padding-left:8px
 
 .chitemtype
   padding-left:8px
   color:$secondarycolor.font
-  font-size:16px
 .chitemassetissurcontent
   color:$primarycolor.green
-  font-size:16px
   padding-left:8px
 .chitemassetissur
   color:$primarycolor.font
   padding-left:8px
-  font-size:16px
   // text-align:center
   word-break:break-all
 .chitemlimit
   color:$primarycolor.green
   padding-left:8px
-  font-size:16px
 .chitemlimitcontent
   color:$primarycolor.font
-  font-size:16px
   padding-left:8px
 .chitemassetcode 
   color:$primarycolor.green
@@ -609,15 +590,12 @@
 .chitemassetcodecontent
   color:$primarycolor.font
   padding-left:8px
-  font-size:16px
 .chitemtx
   color:$primarycolor.green
   padding-left:8px
-  font-size:16px
 .chitemtx_content
   color:$primarycolor.font
   padding-left:8px
-  font-size:16px
   padding-bottom:8px
   word-break:break-all
 
@@ -626,46 +604,36 @@
 .settimestyle
   color:$secondarycolor.font
   padding-left:8px
-  font-size:16px
 .setclosestyle
   color:$primarycolor.red
-  font-size:16px
   text-align:right
   padding-right:5px
 .setsourceaccount
-  font-size:16px
   text-align:center
   color:$secondarycolor.font
 .setdatetime
   color:$primarycolor.green
-  font-size:16px
   padding-left:8px
 .setdatetime_content
   color:$primarycolor.font
-  font-size:16px
   padding-left:8px
 .setinflation
-  font-size:16px
   color:$primarycolor.green
   padding-left:8px
 .setinflation_content
-  font-size:16px
   color:$primarycolor.font
   padding-left:8px
   word-break:break-all
 .settx
-  font-size:16px
   color:$primarycolor.green
   padding-left:8px
 .settx_content
-  font-size:16px
   color:$primarycolor.font
   padding-left:8px
   word-break:break-all
   padding-bottom:8px
 .setmesstyle
   color:$primarycolor.green
-  font-size:16px
   text-align:center
   // padding:5px 0px 5px 8px
   // border-top:1px solid $primarycolor.gray
@@ -677,24 +645,19 @@
   border-bottom:1px solid $primarycolor.gray
   border-bottom:1px solid $primarycolor.gray
   color:$secondarycolor.font
-  font-size:16px
   word-break:break-all
 .sethomedomainmsg
   padding-left:8px
   color:$secondarycolor.font
-  font-size:16px
   // text-align:center
 .sethomedomainmsgt
   color:$secondarycolor.font
-  font-size:16px
 
 .createaccounttime
   padding-left:8px
-  font-size:16px
   color:$secondarycolor.font
 .createaccountclose 
   color:$primarycolor.red
-  font-size:16px
   text-align:right
   padding-right:5px
 .createaccountsourcemsg
@@ -703,37 +666,31 @@
   // border-top:1px solid $primarycolor.gray
   // border-bottom:1px solid $primarycolor.gray
   // padding-left:8px
-  font-size:16px
 .createaccountsourcemsgads
   // border-top:1px solid $primarycolor.gray
   // border-bottom:1px solid $primarycolor.gray
   color:$secondarycolor.font
-  font-size:16px
   text-align:center
 .createaccountbalance
   color:$primarycolor.green
   padding-left:8px
-  font-size:16px
 .createaccountbalancemsg
   color:$secondarycolor.font
-  font-size:16px
 
 
   
 .transactionsOperationsItem
   padding-bottom:0px
-  border-top:2px solid $primarycolor.gray
+  border-top:1px solid $primarycolor.gray
 
 .memostyle
   word-break:break-all
   padding:5px 5px 0px 8px 
-  font-size:16px
   // border-top:1px solid $primarycolor.gray
   color:$secondarycolor.font
 
 .langstyle 
   color:$primarycolor.green
-  font-size:16px
   text-align:center
   // padding:5px 0px 5px 8px
   // border:1px solid $primarycolor.gray
@@ -743,16 +700,13 @@
   padding-left:8px
 .createaccount_datetime_content
   color:$primarycolor.font
-  font-size:16px
   padding-left:8px
   word-break:break-all
 .createaccount_tx
   color:$primarycolor.green
-  font-size:16px
   padding-left:8px
 .createaccount_tx_content
   color:$primarycolor.font
-  font-size:16px
   padding-left:8px
   padding-bottom:8px
   word-break:break-all
@@ -761,103 +715,80 @@
 //payment
 .sourceaccount_content_payment
   color:$secondarycolor.font
-  font-size:16px
   padding:2px 0px 2px 8px
   word-break:break-all
   text-align:center
 .operationtypestyle_payment
   text-align:center
-  font-size:16px
   color:$primarycolor.green
 .datetime_payment
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .datetimevalue_payment
   color:$primarycolor.font
-  font-size:16px
   padding-left:5px
 .ptostyle_payment
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .ptostyleissuer_payment
   color:$primarycolor.font
-  font-size:16px
   padding-left:5px
   word-break:break-all
 .amount_payment
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .pamountstyle_add
   color:$primarycolor.font
   padding-left:5px
-  font-size:16px
 .pamountstyle
   color:$primarycolor.font
   padding-left:5px
-  font-size:16px
 .assetcodestyle_payment
   color:$primarycolor.green
   padding-left:5px
-  font-size:16px
 .assetcodevaluestyle_payment
   color:$primarycolor.font
   padding-left:5px
-  font-size:16px
 .txstyle_payment
-  font-size:16px
   padding-left:5px
   color:$primarycolor.green
 .txcontentstyle_payment
-  font-size:16px
   padding-left:5px
   padding-bottom:8px
   color:$primarycolor.font
   word-break:break-all
 .memostyle_payment
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .memostyle_payment
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .memocontentstyle_payment
   color:$primarycolor.font
-  font-size:16px
   padding-left:5px
   work-break:break-all
 
 .manage_setclosestyle
-  font-size:16px
   color:$primarycolor.red
   text-align:right
   padding-right:5px
 .manage_sourceaccount
-  font-size:16px
   color:$secondarycolor.font
   text-align:center
 .manage_langstyle
-  font-size:16px
   color:$primarycolor.green
   text-align:center
 .manage_datetime
   color:$primarycolor.green
-  font-size:16px
   padding-left:8px
 .manage_datetimecontent
-  font-size:16px
   color:$primarycolor.font
   padding-left:8px
 .manage_price
   color:$primarycolor.green
   padding-left:8px
-  font-size:16px
 .manage_pricecontent
   color:$primarycolor.font
-  font-size:16px
   padding-left:8px
 .manage_amount
   color:$primarycolor.green
@@ -866,9 +797,7 @@
 .manage_amountvalue
   color:$primarycolor.font
   padding-left:8px
-  font-size:16px
 .manage_itemtype
-  font-size:16px
   color:$primarycolor.font
   padding:5px 0px 5px 8px
 .manage_itemassetissur
@@ -876,23 +805,18 @@
   color:$primarycolor.font
   padding:5px 0px 5px 0px
 .manage_itemlimit
-  font-size:16px
   color:$primarycolor.font
   padding-left:8px
 .manage_itemassetcode
-  font-size:16px
   color:$primarycolor.green
   padding-left:8px
 .manage_totalbuy
-  font-size:16px
   color:$primarycolor.font
   padding-left:8px
 .manage_tx
-  font-size:16px
   color:$primarycolor.green
   padding-left:8px
 .manage_tx_content
-  font-size:16px
   color:$primarycolor.font
   padding-left:8px
   padding-bottom:8px
@@ -900,52 +824,41 @@
 
 .allow_trust_sourceaccount
   color:$secondarycolor.font
-  font-size:16px
   text-align:center
 .allow_trustlangstyle
   color:$primarycolor.green
-  font-size:16px
   text-align:center
 .allow_trust_datetime
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .allow_trust_datetime_content
   color:$primarycolor.font
-  font-size:16px
   padding-left:5px
   word-break:break-all
 .allow_trust_assetissuer
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .allow_trust_assetissuercontent
   color:$primarycolor.font
-  font-size:16px
   padding-left:5px
   word-break:break-all
 .allow_trust_assetcode
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .allow_trust_assetcode_content
   color:$primarycolor.font
-  font-size:16px
   padding-left:5px
   word-break:break-all
 .allow_trust_tx
   color:$primarycolor.green
-  font-size:16px
   padding-left:5px
 .allow_trust_tx_content
   color:$primarycolor.font
-  font-size:16px
   padding-left:5px
   padding-bottom:8px
   word-break:break-all
 .allow_trust_loadmore
   color:$primarycolor.font
-  font-size:16px
   text-align:right
 
   

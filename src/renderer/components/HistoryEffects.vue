@@ -176,7 +176,9 @@ export default {
       ]),
       reload(){
         this.effectsInstance = null
-        this.getEffectsData()
+        return new Promise((resolve,reject)=>{
+          this.getEffectsData(resolve,reject)
+        });
       },
       load() {
         let address = this.account.address
@@ -190,7 +192,7 @@ export default {
         this.selectPayment(item)
         this.$router.push({name: 'Transaction'})
       },
-      getEffectsData(){
+      getEffectsData(resolve,reject){
           if(this.effectsInstance){
               this.loadmore_isflag = true
               this.effectsInstance.next().then(response=>{
@@ -234,12 +236,18 @@ export default {
                     this.dataObj.push(tempObj)
                     })
                   })
-                  this.$emit('reloadok')
+                  
                   this.loading_flag = false
+                  if(resolve){
+                      resolve()
+                  }
               }).catch(err=>{
                   this.$emit('reloadfail')
                 this.loading_flag = false
                 console.error(err)
+                if(reject){
+                    reject()
+                }
               })
           }
       },

@@ -226,15 +226,19 @@ import PasswordSheet from '@/components/PasswordSheet'
         this.loadingMsg = null
       },
       reload(){
-        if(this.refreshing)return;
-        this.refreshing = true
-        this.queryMyOffers().then(response=>{
-          this.refreshing = false
-          this.$emit('reloadok')
-        }).catch(err=>{
-          this.refreshing = false
-          this.$emit('reloadfail')
-        });
+        return new Promise((resolve,reject)=>{
+          if(this.refreshing){
+            reject()
+          };
+          this.refreshing = true
+          this.queryMyOffers().then(response=>{
+            this.refreshing = false
+            resolve()
+          }).catch(err=>{
+            this.refreshing = false
+            reject()
+          });
+        })
       }
 
     },

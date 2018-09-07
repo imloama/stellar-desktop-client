@@ -118,13 +118,7 @@
         this.$router.push({name: 'Transaction'})
       },
       reload(){
-        this.getPayments(this.account.address)
-          .then(()=>{
-             this.$emit('reloadok')
-          }).catch(err=>{
-            console.error(err);
-             this.$emit('reloadfail')
-          })
+        return this.getPayments(this.account.address)
       },
     },
     components: {

@@ -172,9 +172,11 @@ const TYPE_WITHDRAW = 'withdraw'
     },
     methods: {
       reload(){
-        this.queryDW()
+        return new Promise((resolve,reject)=>{
+          this.queryDW(resolve,reject)
+        });
       },
-      queryDW(){
+      queryDW(scb,fcb){
         if(!this.selectedasset.code)return;
         if(this.working)return
         this.working = true
@@ -183,12 +185,17 @@ const TYPE_WITHDRAW = 'withdraw'
           .then(response=>{
             this.records = response.data
             this.working = false
-            this.$emit('reloadok')
+            if(scb){
+              scb()
+            }
           }).catch(err=>{
-            this.$emit('reloadfail')
+            
             this.working = false
             this.records = {}
             this.error = err.message
+            if(fcb){
+              fcb()
+            }
           })
       },
       switchMenu(type){

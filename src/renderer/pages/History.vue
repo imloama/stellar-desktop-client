@@ -12,18 +12,32 @@
    <accounts-nav :show="showaccountsview" @close="closeView"/>
   
   <m-layout>
-    <v-tabs  class="tabs-bg-dark" hide-slider color="transparent"
-      v-model="activeTab" dark @input="tabChange">
-       <v-tab :key="`offer`" ripple>{{$t('History.Offer')}}</v-tab>
-       <v-tab :key="`transaction`" ripple>{{$t('History.Transaction')}}</v-tab>
-       <v-tab :key="`trade`" ripple>{{$t('History.Trade')}}</v-tab>
-       <v-tab :key="`depositAndWithdraw`" ripple>{{$t('History.DepositAndWithdraw')}}</v-tab>
-       <v-tab :key="`effects`" ripple>{{$t('History.Effects')}}</v-tab>
-       <v-tab :key="`transactions`" ripple>{{$t('History.Transactions')}}</v-tab>
-    </v-tabs>
+    <div class="flex-row mt-2 mb-2 tabsbar">
+      <div class="flex5">
+        <v-tabs  class="tabs-bg-sdark" hide-slider color="secondarygray"
+      v-model="activeTab" @input="tabChange">
+          <v-tab class="stabs" :key="`offer`" ripple>{{$t('History.Offer')}}</v-tab>
+          <v-tab class="stabs" :key="`transaction`" ripple>{{$t('History.Transaction')}}</v-tab>
+          <v-tab class="stabs" :key="`trade`" ripple>{{$t('History.Trade')}}</v-tab>
+          <v-tab class="stabs" :key="`depositAndWithdraw`" ripple>{{$t('History.DepositAndWithdraw')}}</v-tab>
+          <v-tab class="stabs" :key="`effects`" ripple>{{$t('History.Effects')}}</v-tab>
+          <v-tab class="stabs" :key="`transactions`" ripple>{{$t('History.Transactions')}}</v-tab>
+        </v-tabs>
+      </div>
+      <div class="flex1 pa-2 pr-4 textright"  v-if="!reloading">
+        <v-icon class="cursorpinter" @click="doReload">refresh</v-icon>
+      </div>
+      <div class="flex1 pa-2 pr-4 textright" v-else>
+        <v-progress-circular
+            indeterminate size=24
+            color="primary" 
+          ></v-progress-circular>
+      </div>
+      
+    </div>
         
-          <component v-bind:is="show.component"></component>
-        </m-layout>
+          <component v-bind:is="show.component" ref="compRef"></component>
+      </m-layout>
      
   </div>
 </template>
@@ -70,6 +84,7 @@
           },
         accountNotFundDlg: false,
         showaccountsview: false,
+        reloading: false,
       }
     },
     created() {
@@ -138,6 +153,14 @@
       closeView(){
           this.showaccountsview = false
       },
+      doReload(){
+        this.reloading = true
+        this.$refs.compRef.reload().then(()=>{
+          this.reloading = false
+        }).catch(err=>{
+          this.reloading = false
+        })
+      }
     },
     beforeDestroy() {
       this.changeCurrentHistoryComponent(this.show.name)
@@ -183,4 +206,7 @@
 .swiper-slide-active 
   opacity: 1;
   font-weight 600 
+
+.tabsbar
+  background: $secondarycolor.gray
 </style>

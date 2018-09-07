@@ -331,7 +331,9 @@
         'cleanAccount'
       ]),
       reload(){
-        this.getTransactionsData()
+        return new Promise((resolve,reject) => {
+          this.getTransactionsData(resolve,reject);
+        })
       },
       load() {
         let address = this.account.address
@@ -341,7 +343,7 @@
         console.log('-----on refresh---------')
         return this.load()
       },
-      getTransactionsData(){
+      getTransactionsData(resolve,reject){
         console.log('------------get')
         if(this.transactionsInstance){
           this.loadmore_isflag = true;
@@ -365,7 +367,6 @@
         }else{
           this.loading_flag = true
             transactionsPage(this.account.address).then(response=>{
-              this.$emit('reloadok')
               this.loading_flag = false
                 this.transactionsInstance = response
                 this.transactions = this.transactions.concat(response.records)
@@ -376,11 +377,16 @@
                     ele.temptype = response._embedded.records[0].type
                   })
                 })
-                console.log(this.transactions)
+                if(resolve){
+                  resolve()
+                }
             }).catch(err=>{
               this.$emit('reloadfail')
               this.loading_flag = false
-                console.error(err)
+              console.error(err)
+              if(reject){
+                reject()
+              }
             })
         }
       },

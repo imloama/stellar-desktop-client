@@ -123,15 +123,17 @@ import { isNativeAsset } from '@/api/assets'
         })
       },
       reload(){
-        this.working = true
-        this.doReload().then(response=>{
-          this.working = false
-          this.$emit('reloadok')
-        }).catch(err=>{
-          this.working = false
-          console.error(err)
-          this.$emit('reloadfail')
-        })
+        return new Promise((resolve,reject) => {
+          this.working = true
+          this.doReload().then(response=>{
+            this.working = false
+            resolve()
+          }).catch(err=>{
+            this.working = false
+            console.error(err)
+            reject()
+          })
+        });
       },
       doSearch({start,end}){
         this.start =Number(moment(start + ' 00:00:00').format('x'))

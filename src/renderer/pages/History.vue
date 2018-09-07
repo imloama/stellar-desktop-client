@@ -25,7 +25,7 @@
         </v-tabs>
       </div>
       <div class="flex1 pa-2 pr-4 textright"  v-if="!reloading">
-        <v-icon class="cursorpinter" @click="doReload">refresh</v-icon>
+        <v-icon class="cursorpointer" @click="doReload">refresh</v-icon>
       </div>
       <div class="flex1 pa-2 pr-4 textright" v-else>
         <v-progress-circular

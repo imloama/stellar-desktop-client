@@ -27,19 +27,25 @@
               :confirmTxt="$t('Confirm')"
       ></picker>
 
-      <card class="trade-card" padding="0px 0px">
-        <div class="card-content trade-card-content" slot="card-content">
-          <!-- <scroll :refresh="reloadTradePairs" :readLabelTxt="readLabelTxt"> -->
-            <div class="refresh pa-2">
-              <v-progress-circular v-if="refreshing" indeterminate size=24 color="primary"></v-progress-circular>
-              <span class="" @click="reloadTradePairs" v-else>{{$t('refresh')}}</span>
-              </div>
-            <v-tabs  v-model="tagIndex" class="tabs-bg-dark" hide-slider color="transparent">
-              <v-tab class="tab1" @click="doFilter(item)" 
-                v-for="(item,index) in allTags" :key="index">
-                  {{allTagsLabel[index]}}
-              </v-tab>
-            <v-tab-item v-for="(item,index) in allTags" :key="index">
+      <card class="secondarygray">
+
+        <!--底部工具条-->
+        <div class="tbar flex-row pa-2 pt-3 pb-3">
+          <div class="flex2 pl-2">{{$t('Menu.TradeCenter')}}</div>
+          <div class="flex4 textright">
+            <span v-for="(item,index) in allTags" :key="index" @click="tagIndex = index"
+              :class="'pt-1 pb-1 pl-4 pr-4 tag cursorpointer ' + (tagIndex === index ? 'active':'')" 
+              > {{allTagsLabel[index]}}</span>
+          </div>
+          <div class="flex1 textright flex-row" style="flex-direction:row-reverse;">
+              <v-progress-circular class="pr-2" indeterminate size=24 v-if="refreshing" color="primary"></v-progress-circular>
+              <v-icon class="cursorpointer pr-2" @click="reloadTradePairs" v-if="!refreshing">refresh</v-icon>
+              <v-icon class="cursorpointer pr-2"  @click="pickershow">add</v-icon>
+          </div>
+        </div>
+
+
+            <div class="pa-2" v-for="(item,index) in allTags" :key="index" v-show="tagIndex === index">
               <ul class="tradepairs-ul">
                 <li class="tradepair-li">
                   <v-layout class="pair-wrapper" row>
@@ -66,25 +72,13 @@
                         <div class="flex1 choose-icon-wrapper" v-else>
                           <v-icon color="primary" @click.stop="del(index,pair)">delete_forever</v-icon>
                         </div>
-                        
                         <div class="flex3 from-wrapper" @click="trade(index,pair)">
-                          <div class="code">{{pair.from.code}}</div>
+                          <div class="code">{{pair.from.code}}/{{pair.to.code}}</div>
                           <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
                           <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
                           <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
                         </div>
                         
-                        <div class="flex1 exchange-wrapper" @click="trade(index,pair)">
-                          <div class="exchange">
-                            <i class="icons material-icons">&#xE8D4;</i>
-                          </div>
-                        </div>
-                        <div class="flex3 to-wrapper" @click="trade(index,pair)">
-                          <div class="code">{{pair.to.code}}</div>
-                          <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
-                          <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
-                          <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
-                        </div>
                       </div>
                     </v-flex>
                     <v-flex xs9 @click="trade(index,pair)">
@@ -104,16 +98,10 @@
                     <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
                   </div>
                 </li>
-                <li class="tradepair-li mt-4" v-if="index===0">
-                  <v-btn block flat color="primary" @click="pickershow()">{{$t('Trade.AddTradePair')}}</v-btn>
-                </li>
+                
               </ul>
-            </v-tab-item>
-            
-            </v-tabs>
+            </div>
 
-          <!-- </scroll> -->
-        </div>
       </card>
     </div>
     </m-layout>
@@ -576,8 +564,10 @@ export default {
   padding: 5px 5px
   background: $primarycolor.gray
   border-radius: 5px
+  color: $secondarycolor.font
 .tradepairs-ul
   padding: 0px 0px
+  color: $secondarycolor.font
 .tradepair-li
   overflow: hidden
   position: relative
@@ -594,21 +584,21 @@ export default {
       width: 100%
       overflow: hidden
       .code
-        font-size: 16px
-        color: $primarycolor.font
-        text-align: center
+        font-size: 14px
+        color: $secondarycolor.font
+        text-align: left
         padding-top:2px
       .issuer
         color: $secondarycolor.font
-        text-align: center
-        font-size: 14px
+        text-align: left
+        font-size: 12px
         overflow: hidden
     .to-wrapper
       width: 100%
       overflow: hidden
       .code
         font-size: 16px
-        color: $primarycolor.font
+        color: $secondarycolor.font
         text-align: center
         padding-top:2px
       .issuer
@@ -628,8 +618,8 @@ export default {
       padding: 8px 5px
 
 .tradepair-li
-  border-bottom: 1px solid $secondarycolor.font
-  background: $primarycolor.gray
+  border-bottom: 1px solid $primarycolor.gray
+  // background: $primarycolor.gray
 .tradepair-li:last-child
   border-bottom: 0px
 .operate-box 
@@ -702,5 +692,15 @@ export default {
   color: $primarycolor.green
   cursor: pointer
   z-index: 9
+
+.tag
+  background: rgb(79,82,91)
+  border-radius: 20px
+  margin: auto 5px
+  font-size: 14px
+  &.active
+    color: $primarycolor.green
+.tbar
+  border-bottom: 1px solid $primarycolor.gray
 </style>
 

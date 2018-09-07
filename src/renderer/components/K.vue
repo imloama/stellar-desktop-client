@@ -3,25 +3,27 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-08-15 15:36:14
+ * @Last Modified time: 2018-09-07 17:29:09
  * @License: MIT 
  */
 <template>
-<card class="k-card info-card" padding="5px 0px">
+<card class="k-card info-card" padding="0px 0px">
   <div slot="card-content" class="k">
       <div class="atitle pa-2" v-if="showTitle && titleData && titleData.price !== null">
 
           <div class="flex-row">
-              <div class="flex1 font28 pt-1"><span>{{base.code}}</span>/<span>{{counter.code}}</span></div>
+              <div class="flex1 font24 pt-1">
+                  <v-icon @click="back" class="cursorpointer font28">keyboard_arrow_left</v-icon>
+                  <span>{{base.code}}</span>/<span>{{counter.code}}</span></div>
               <div :class="'flex1 pt-1 '  + ( (titleData.change >=0 ^ redUpGreenDown) ? 'up':'down') ">
-                <span class="price">{{titleData.price}}</span>
+                <span class="price font24">{{titleData.price}}</span>
                 <span v-if="titleData.rate>0"> +{{titleData.rate}}%</span>
                 <span v-else>{{titleData.rate}}%</span>
               </div>  
-              <div class="flex3">
+              <div class="flex2">
                     <div class="flex-row pt-1">
-                      <div class="flex1"><div v-if="titleData.open" class="label">24H {{$t('open_price')}}</div><div class="value" v-if="titleData.open">{{titleData.open}}</div></div>
-                      <div class="flex1"><div v-if="titleData.close" class="label">24H {{$t('close_price')}}</div><div class="value" v-if="titleData.close">{{titleData.close}}</div></div>
+                      <!-- <div class="flex1"><div v-if="titleData.open" class="label">24H {{$t('open_price')}}</div><div class="value" v-if="titleData.open">{{titleData.open}}</div></div>
+                      <div class="flex1"><div v-if="titleData.close" class="label">24H {{$t('close_price')}}</div><div class="value" v-if="titleData.close">{{titleData.close}}</div></div> -->
                       <div class="flex1"><div v-if="titleData.high" class="label">24H {{$t('high_price')}}</div><div class="value" v-if="titleData.high">{{titleData.high}}</div></div>
                       <div class="flex1"><div v-if="titleData.low" class="label">24H {{$t('low_price')}}</div><div class="value" v-if="titleData.low">{{titleData.low}}</div></div>
                       <div class="flex1"><div v-if="titleData.base_volume" class="label">24H {{$t('volumes')}}</div><div class="value" v-if="titleData.base_volume">{{titleData.base_volume}}</div></div>
@@ -250,6 +252,9 @@ export default {
         ...mapActions({
             getAccountInfo: 'getAccountInfo',
         }),
+        back(){
+            this.$router.back()
+        },
         reload(){
             this.cleanData()
             this.init();

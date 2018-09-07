@@ -14,7 +14,7 @@
       <div class="flex1 pl-1 pr-1 pt-3 textright">{{titleData.high}}</div>
       <div class="flex1 pl-1 pr-1 pt-3 textright">{{titleData.low}}</div>
 
-      <div class="flex1 pl-1 pr-1">
+      <div class="flex1 pl-1 pr-1 pt-3">
         <div :class="' price textright ' + ((titleData.change >=0 ^ redUpGreenDown)? 'up':'down') ">
             {{titleData.price >= 0 ? titleData.price:''}}
         </div>
@@ -128,10 +128,7 @@ export default {
 
         }),
         decimal(){
-            if(this.counter.code === 'BTC'){
-                return 7
-            }
-            return 4
+           return 7
         },
         // lineData(){
         //     return this.tradePairKLineData[this.tradepairIndex]
@@ -416,8 +413,7 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
-.price
-  font-size: 16px
+
 .price
 .change
 .rate
@@ -427,9 +423,6 @@ export default {
   &.down
     color: $primarycolor.red
 .price
-    line-height: 50px
-    height: 50px
-    font-size: 18px
     overflow: hidden
     width:100%
     display:block
@@ -439,7 +432,6 @@ export default {
 .rate
     line-height: 50px
     height: 50px
-    font-size: 16px
 .rate
     padding-top: 12px
     padding-bottom: 12px
@@ -448,6 +440,7 @@ export default {
     .rate-btn
         line-height: 26px
         height: 26px
+        border-radius: 20px
         font-size: 14px
         color: $primarycolor.font
         &.up

@@ -8,13 +8,13 @@
       :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
 
 
-    <div class="trade-content  ti-card f-card">
+    <div class=" ti-card f-card">
 
     <div class="input-content">
       <div class="mytrade-card" style="padding:0 10px;">
-        <div class="card-content" slot="card-content">
-          <div class="primarycolor textcenter pt-1 pb-1" v-if="isBuy">{{$t('Trade.Buy')}}</div>
-          <div class="primarycolor textcenter pt-1 pb-1" v-else>{{$t('Trade.Sell')}}</div>
+        <div class="card-content">
+          <!-- <div class="primarycolor textcenter pt-1 pb-1" v-if="isBuy">{{$t('Trade.Buy')}}</div>
+          <div class="primarycolor textcenter pt-1 pb-1" v-else>{{$t('Trade.Sell')}}</div> -->
           <v-text-field  dark required  clearable hide-details v-bind:style="'width: 100% !important'"
             :prefix="$t('Trade.UnitPrice')" 
             v-model='price'
@@ -1094,7 +1094,6 @@ export default {
 //   background: $primarycolor.gray
 
 .trade-content
-  background: $primarycolor.gray
   .input-content
     padding-top: 0px
 
@@ -1136,10 +1135,10 @@ export default {
 
 .ti-card
   background: $secondarycolor.gray
-  border-radius: 5px
-  -moz-box-shadow: 2px 2px 20px #212122
-  -webkit-box-shadow: 2px 2px 20px #212122
-  box-shadow: 2px 2px 20px #212122
+  // border-radius: 5px
+  // -moz-box-shadow: 2px 2px 20px #212122
+  // -webkit-box-shadow: 2px 2px 20px #212122
+  // box-shadow: 2px 2px 20px #212122
 
 
 

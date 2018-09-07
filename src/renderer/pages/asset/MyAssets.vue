@@ -84,11 +84,11 @@
             </v-flex>
             <v-flex xs3 class="myassets-wrapper">
               <div class="myassets-operate-box">
-                <span  v-if="nativeAsset(item)" class="del cursorpinter">&nbsp;</span>
-                <span v-else class="del cursorpinter" @click.stop="del(item)">{{$t('Delete')}}</span>
+                <span  v-if="nativeAsset(item)" class="del cursorpointer">&nbsp;</span>
+                <span v-else class="del cursorpointer" @click.stop="del(item)">{{$t('Delete')}}</span>
 
-                <span class="receive cursorpinter" @click.stop="receive(item)">{{$t('Receive')}}</span>
-                <span class="send cursorpinter" @click.stop="send(item)">{{$t('Send')}}</span>
+                <span class="receive cursorpointer" @click.stop="receive(item)">{{$t('Receive')}}</span>
+                <span class="send cursorpointer" @click.stop="send(item)">{{$t('Send')}}</span>
               </div>
             </v-flex>
           </v-layout>

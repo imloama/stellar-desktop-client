@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-08-15 15:35:06
+ * @Last Modified time: 2018-09-07 17:22:41
  * @License MIT 
  */
 <template>
@@ -11,46 +11,69 @@
     <!-- toolbar
     <trade-pair-tool-bar @choseTradePair="choseTradePair" @switchTradePair="switchTradePair"/>
   -->
-  <toolbar :showbackicon="true" menuName="TradeCenter" ref="toolbar"/>
+  <toolbar :showbackicon="false" menuName="TradeCenter" ref="toolbar">
+    <v-btn icon @click.native="showAccounts" slot="left-tool">
+          <i class="material-icons font28">menu</i>
+      </v-btn>
+    </toolbar>
+    <accounts-nav :show="showaccountsview" @close="closeView"/>
+
     <m-layout>
-    <div class="trade-content">
+      <div class="trade-content flex-row">
+        <div class="flex5">
+              
+          <!--K线图 -->
+          <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
+          <trading-view-chart 
+              :base="BaseAsset" :counter="CounterAsset"
+            />
+          <div class="flex-row mt-2" v-if="needTrust.length  === 0">
+            <div class="flex1 pb-2 pr-1">
+              <order-book  ref="orderbook" @choose="chooseOrderBook"/>
+            </div>
+            <div class="flex1 pt-4 pb-2 pl-1">
+              <v-card>
+                <div class="textcenter cursorpointer flex-row pa-2 ottitle">
+                <div :class="`flex1 ttitle` + (activeBuy === 0 ? ' primarycolor':' secondaryfont ')" @click="activeBuy=0">{{$t('Trade.Buy')}}</div>
+                <div :class="`flex1 ttitle` + (activeBuy === 1 ? ' primarycolor':' secondaryfont ')" @click="activeBuy=1">{{$t('Trade.Sell')}}</div>
+              </div>
+              <trade-input v-show="activeBuy" ref="tradeInputBuy" flag="buy" @afterOffer="reloadOrderBook"></trade-input>
+              <trade-input v-show="!activeBuy" ref="tradeInputSell" flag="sell" @afterOffer="reloadOrderBook"></trade-input>
+              </v-card>
+            </div>
+          </div>
+          <trade-trust v-else/>
+          <!---->
+         
+        </div>
+        <div class="flex2 pl-2">
+          <!--最近成交记录-->
+          <v-card class="trades-card">
+            <div class="card-title pa-2">{{$t('latest_trade')}}</div>
+            <div class="card-body pa-2 ">
+              <v-layout class="textcenter">
+                <v-flex xs4>{{$t('Trade.Price')}}</v-flex>
+                <v-flex xs4>{{BaseAsset.code}}</v-flex>
+                <v-flex xs2>{{$t('type')}}</v-flex>
+                <v-flex xs2>{{$t(`DateTime`)}}</v-flex>
+              </v-layout>
+             <div class="card-body-content">
+                <v-layout  v-for="(item,index) in trades" :key="index">
+                  <v-flex xs4 class="textleft">{{(item.price.d / item.price.n).toFixed(7)}}</v-flex>
+                  <v-flex xs4 class="pl-1 textleft">{{item.base_amount}}</v-flex>
+                  <v-flex xs2 class="pl-1 textcenter">{{item.base_is_seller ? $t('Trade.Buy'):$t('Trade.Sell')}}</v-flex>
+                  <v-flex xs2 class="pl-1 textright">{{item.ledger_close_time.substring(11,item.ledger_close_time.length-1)}}</v-flex>
+                </v-layout>
+             </div>
+            </div>
+          </v-card>
 
-     
+          <v-card class="mt-2">
+            <order-book-l ref="orderbookl" @choose="chooseOrderBook"/>
+          </v-card>
+        </div>
 
-      <!--K线图 -->
-      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
-      <trading-view-chart 
-          :base="BaseAsset" :counter="CounterAsset"
-        />
-      <div class="flex-row mt-2" v-if="needTrust.length  === 0">
-        <div class="flex1 pt-2 pb-2 pr-1">
-          <trade-input ref="tradeInputBuy" flag="buy" @afterOffer="reloadOrderBook"></trade-input>
-        </div>
-        <div class="flex1 pt-2 pb-2 pl-1">
-          <trade-input ref="tradeInputSell" flag="sell" @afterOffer="reloadOrderBook"></trade-input>
-        </div>
       </div>
-      <trade-trust v-else/>
-      <!---->
-      <order-book class="mt-2" ref="orderbook" @choose="chooseOrderBook"/>
-
-    </div>
-    <!-- 买卖按钮 
-    <div class="flex-row full-width footer-btns">
-      <div class="flex1 btn-flex">
-        <div class="full-width btn-buy" color="primary" @click="toBuy">
-          <div>{{$t('Trade.Buy')}}  {{BaseAsset.code}}</div>
-          <div class="available">{{$t('Available')}}{{CounterAsset.code}}:{{CounterBalance.balance|| 0 }}</div>
-        </div>
-      </div>
-      <div class="flex1 btn-flex">
-        <div class="full-width btn-sell" color="error" @click="toSell">
-          <div>{{$t('Trade.Sell')}}  {{BaseAsset.code}}</div>
-          <div class="available">{{$t('Available')}}{{BaseAsset.code}}:{{BaseBalance.balance||0}}</div>
-        </div>
-      </div>
-    </div>
-    -->
     
     </m-layout>
 
@@ -81,17 +104,21 @@ import PasswordSheet from '@/components/PasswordSheet'
 import TradeInput from '@/components/TradeInput'
 import TradeTrust from '@/components/TradeTrust'
 import TradingViewChart from '@/components/TradingViewChart'
-
+import AccountsNav from '@/components/AccountsNav'
+import OrderBookL from '@/components/OrderBookL'
 
 export default {
   data(){
     return {
       needpwd: false,
+      showaccountsview: false,
+      trades: [],
+      activeBuy: 0,
     }
   },
 
   beforeMount () {
-    
+    this.reloadTrades()
   },
   computed:{
     ...mapState({
@@ -205,6 +232,7 @@ export default {
       this.$nextTick(()=>{
         this.$refs.kgraph.reload()
         this.$refs.orderbook.reload()
+        this.$refs.orderbookr.reload()
       })
     },
     //交换了交易队
@@ -212,10 +240,12 @@ export default {
       this.$nextTick(()=>{
         this.$refs.kgraph.reload()
         this.$refs.orderbook.reload()
+        this.$refs.orderbookl.reload()
       })
     },
     reloadOrderBook(){
       this.$refs.orderbook.reload()
+      this.$refs.orderbookl.reload()
     },
     toBuy(){
       this.$router.push({name: 'TradeBuySell', params: {flag: 'buy'}})
@@ -235,6 +265,20 @@ export default {
       }else{
         this.$refs.tradeInputBuy.choose({type,data})
       }
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
+    reloadTrades(){
+      getTrades(this.BaseAsset, this.CounterAsset)
+        .then(response=>{
+          this.trades = response.records
+        }).catch(err=>{
+          console.error(err)
+        })
     }
 
 
@@ -252,6 +296,8 @@ export default {
     TradeInput,
     TradeTrust,
     TradingViewChart,
+    AccountsNav,
+    OrderBookL,
   }
   
 
@@ -261,4 +307,6 @@ export default {
 
 <style lang="stylus"  scoped>
 @require '~@/stylus/trade.styl'
+.ottitle
+  border-bottom: 1px solid $primarycolor.gray
 </style>

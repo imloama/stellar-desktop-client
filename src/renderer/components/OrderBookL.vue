@@ -8,67 +8,49 @@
   <div class="orderbook">
     
 
-
-    <!--我的委单  成交记录-->
-    <div class="flex-row mt-4 mb-1">
-      <div class="flex1 pl-1 pr-1">
-        <v-card>
-        <div class="textcenter cursorpointer flex-row pa-2 ottitle">
-          <div :class="`flex1 ttitle` + (activeTab === 0 ? ' primarycolor':' secondaryfont ')" @click="activeTab=0">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
-          <div :class="`flex1 ttitle` + (activeTab === 1 ? ' primarycolor':' secondaryfont ')" @click="activeTab=1">{{$t('History.Trade')}}</div>
-        </div>
-        <div class="buyoffer-table offer-table otable pl-1" v-if="activeTab === 0">
+    <!--盘面-->
+    <div class="pa-2">
+          <!-- <div class="textcenter primarycolor">{{$t('Trade.BuyOffer')}}</div> -->
           <div class="table-head font-13">
-            <div class="headcol">{{$t('Trade.Price')}}</div>
+            <div class="headcol price">{{$t('Trade.Price')}}</div>
             <div class="headcol">{{BaseAsset.code}}</div>
             <div class="headcol">{{CounterAsset.code}}</div>
-            <div class="headcol"></div>
+            <div class="headcol depth">{{$t('Trade.Depth')}}</div>
           </div>
-          <div class="table-row font-13" 
-            v-for="(item,index) in myoffers" :key="index" :class='item.type'>
-            <div class="b-row price" >{{item.price}}</div>
-            <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
-            <div class="b-row" v-else>-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
-            <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
-            <div class="b-row" v-else>+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
-            <div class="b-row depth">
-              <span class="working" v-if="working && delindex===index"></span>
-              <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex1 pl-1 pr-1 mb-2"  v-if="activeTab === 1">
-          <div class="buyoffer-table offer-table otable">
-            <div class="table-head font-13">
-              <div class="headcol">{{$t('deal_price')}}</div>
-              <div class="headcol">{{BaseAsset.code}}</div>
-              <div class="headcol">{{CounterAsset.code}}</div>    
-              <div class="headcol">{{$t('status')}}</div>      
-            </div>
+          <div class="selloffer-table offer-table" id="ot_ask">
             <div class="table-row font-13" 
-              v-for="(item,index) in deals" :key="index" :class='item.type'>
-              <div class="b-row price" >{{item.price}}</div>
-              <div class="b-row" v-if="assetEqBaseAsset(item)">-{{item.sold_amount}}&nbsp;</div>
-              <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
-              
-              <div class="b-row" v-if="assetEqCounterAsset(item)">-{{item.sold_amount}}&nbsp;</div>
-              <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
-
-              <div class="b-row">{{$t(item.type)}}</div>
+              v-for="(item,index) in asksdata" :key="index"
+              :style="'background: linear-gradient(to right,#303034 0%,#303034 '
+                +item.blank+'%,#733520 0%,#733520 ' + item.percent +'%);'"
+                @click.stop="chooseItem('sell',item)"
+              >
+              <div class="b-row price">{{item.price}}</div>
+              <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat}}</div>
+              <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
+              <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
             </div>
           </div>
+
+          <div class="hr"></div>
+          
+
+          <div class="buyoffer-table offer-table">
+            <div class="table-row font-13" 
+              v-for="(item,index) in bidsdata" :key="index"
+              :style="'background: linear-gradient(to right,#303034 0%,#303034 '
+                +item.blank+'%,#216549 0%,#216549 ' + item.percent +'%);'"
+              @click.stop="chooseItem('buy',item)"
+              >
+              <div class="b-row price">{{item.price}}</div>
+              <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat }}</div>
+              <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
+              <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
+            </div>
         </div>
-
-
-       </v-card> 
-
+        
+          <!-- <div class="primarycolor textcenter">{{$t('Trade.SellOffer')}}</div> -->
+          
       </div>
-      
-    </div>  
-
-
-     <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
 
 
   </div>
@@ -100,10 +82,13 @@ export default {
       timeInterval: null,
       // deals:[],
       needpwd: false,
-      activeTab: 0,//0或1
     }
   },
   props:{
+    activeTab:{
+      type:String,
+      default: 'buy'
+    },
   },
   computed:{
     ...mapState({
@@ -199,7 +184,7 @@ export default {
         ele.percent =  Number(new Decimal(ele.depth).times(100).dividedBy(dep).toFixed(2))
         ele.blank = 100 - ele.percent
       })
-      return newdata
+      return newdata.reverse()
     },
     deals(){
       return this.filterOffers()
@@ -235,6 +220,8 @@ export default {
     if(!this.timeInterval){
       this.setup()
     }
+    var div = document.getElementById('ot_ask');
+    div.scrollTop = div.scrollHeight;
   },
   methods: {
     ...mapActions({
@@ -278,7 +265,7 @@ export default {
         this.queryAllOffers()
         resolve()
       })
-      return Promise.all([ this.queryMyOffers(), queryOffersFn])
+      return Promise.all([this.queryOrderBook(), queryOffersFn])
     },
     //撤消委单
     cancelMyOffer(item,index){
@@ -487,7 +474,10 @@ export default {
 
 <style lang="stylus" scoped>
 @require './orderbook.styl'
-.ottitle
+.offer-table
+  height: 25vh
+  overflow-y: auto
+.hr
   border-bottom: 1px solid $primarycolor.gray
 </style>
  

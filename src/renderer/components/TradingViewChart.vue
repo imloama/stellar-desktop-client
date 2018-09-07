@@ -320,5 +320,5 @@ export default {
 <style lang="stylus" scoped>
 .trading-view
   width: 100%
-  height: calc(100vh - 150px)
+  height: 50vh
 </style>

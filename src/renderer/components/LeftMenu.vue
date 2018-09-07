@@ -16,7 +16,7 @@ export default {
       menus: [
         {icon: 'account_balance_wallet', label: 'Title.MyAssets', name: 'MyAssets'},
         {icon: 'history', label: 'History.Title', name: 'History'},
-        {icon: 'trending_up', label: 'Menu.TradeCenter', name: 'TradeCenter'},
+        {icon: 'trending_up', label: 'Trade.Trade', name: 'TradeCenter'},
         {icon: 'apps', label: 'Title.ThirdApp', name: 'Apps'},
         {icon: 'import_export', label: 'Menu.Funding', name: 'Funding'},
         {icon: 'account_circle', label: 'Menu.My', name: 'MySettings'},

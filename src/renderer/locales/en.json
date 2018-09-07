@@ -238,7 +238,7 @@
   "DW.Receive":"receive",
 
 
-  "Menu.TradeCenter":"Trade",
+  "Menu.TradeCenter":"Trade Center",
   "Trade.SelfSelection":"self selection",
   "Trade.Buy":"Buy",
   "Trade.Sell":"Sell",
@@ -541,7 +541,9 @@
   "set_all_read":"read all",
   "lock_enable":"lock screen enabled",
   "lock_disable":"lock screeb disabled",
-  "lock_pwd_wrong":"wrong unlock password!"
+  "lock_pwd_wrong":"wrong unlock password!",
+  "latest_trade":"Latest Trades",
+  "type":"类型"
 
 
 

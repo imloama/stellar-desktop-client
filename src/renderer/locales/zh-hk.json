@@ -233,7 +233,7 @@
   "DW.Fee":"費用",
   "DW.Receive":"實際收到",
 
-  "Menu.TradeCenter":"交易",
+  "Menu.TradeCenter":"交易中心",
   "Trade.SelfSelection":"自選交易",
   "Trade.Buy":"買入",
   "Trade.Sell":"賣出",
@@ -534,7 +534,9 @@
   "set_all_read":"全部已讀",
   "lock_enable":"開啟鎖屏",
   "lock_disable":"關閉鎖屏",
-  "lock_pwd_wrong":"鎖屏密碼錯誤！"
+  "lock_pwd_wrong":"鎖屏密碼錯誤！",
+  "latest_trade":"最近成交",
+  "type":"類型"
 
   
 

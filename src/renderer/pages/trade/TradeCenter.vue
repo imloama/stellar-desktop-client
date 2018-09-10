@@ -17,8 +17,97 @@
 
     
     <m-layout>
-    <div class="mt-2">
-      <picker @select="pairchosen" 
+    <v-layout class="mt-2">
+      <v-flex xs8>
+        <card class="secondarygray">
+
+          <!--底部工具条-->
+          <div class="tbar flex-row pa-2 pt-3 pb-3">
+            <div class="flex2 pl-2">{{$t('Menu.TradeCenter')}}</div>
+            <div class="flex4 textright">
+              <span v-for="(item,index) in allTags" :key="index" @click="tagIndex = index"
+                :class="'pt-1 pb-1 pl-4 pr-4 tag cursorpointer ' + (tagIndex === index ? 'active':'')" 
+                > {{allTagsLabel[index]}}</span>
+            </div>
+            <div class="flex1 textright flex-row" style="flex-direction:row-reverse;">
+                <v-progress-circular class="pr-2" indeterminate size=24 v-if="refreshing" color="primary"></v-progress-circular>
+                <v-icon class="cursorpointer pr-2" @click="reloadTradePairs" v-if="!refreshing">refresh</v-icon>
+                <v-icon class="cursorpointer pr-2"  @click="pickershow">add</v-icon>
+            </div>
+          </div>
+
+
+              <div class="pa-2" v-for="(item,index) in allTags" :key="index" v-show="tagIndex === index">
+                <ul class="tradepairs-ul">
+                  <li class="tradepair-li">
+                    <v-layout class="pair-wrapper" row>
+                      <v-flex xs2 class="pa1 pt-2 pb-2">{{$t('Asset')}}</v-flex>
+                      <v-flex xs9>
+                        <div class="flex-row">
+                          <div class="flex1 pa1 pt-2 pb-2">{{$t('open_price')}}</div>
+                          <div class="flex1 pa1 pt-2 pb-2">{{$t('high_price')}}</div>
+                          <div class="flex1 pa1 pt-2 pb-2">{{$t('low_price')}}</div>
+                          <div class="flex1 pa1 pt-2 pb-2">{{$t('Trade.Price')}}</div>
+                          <div class="flex1 pa1 pt-2 pb-2">{{$t('change_price')}}</div>
+                        </div>
+                      </v-flex>
+                      <v-flex xs1></v-flex>
+                    </v-layout>
+                  </li>
+                  <li class="tradepair-li" v-for="(pair,index) in pairItems[item]" :key="index">
+                    <v-layout class="pair-wrapper" row>
+                      <v-flex xs2>
+                        <div class="flex-row">
+                          <div class="choose-icon-wrapper pr-2" v-if="!pair.custom">
+                            <v-icon color="primary" @click.stop="delPairFromCustom(pair)" v-if="pair.isChoosed">star</v-icon>
+                            <v-icon color="primary" @click.stop="choosePairToCustom(pair)" v-else>star_border</v-icon>
+                          </div>
+                          <div class="choose-icon-wrapper pr-2" v-else>
+                            <v-icon color="primary" @click.stop="del(index,pair)">delete_forever</v-icon>
+                          </div>
+                          <div class="from-wrapper" @click="trade(index,pair)">
+                            <div class="code">{{pair.from.code}}/{{pair.to.code}}</div>
+                            <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
+                            <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
+                            <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
+                          </div>
+                        </div>
+                      </v-flex>
+                      <v-flex xs9 @click="showChart(index,pair)">
+                        <k-line 
+                          :base="pair.from" :counter="pair.to" 
+                          :height="56" :timeout="10*index"
+                          :tradepairIndex="pair.tradepairIndex"
+                          :ref="'kline'+pair.tradepairIndex"
+                          ></k-line>
+                      </v-flex>
+                      <v-flex xs1>
+                        <v-btn color="primary" block flat @click="trade(index,pair)">{{$t('Trade')}}</v-btn>
+                      </v-flex>
+                    </v-layout>
+                    <div class="operate-box" v-if="pair.custom">
+                      <div class="del" @click="del(index,pair)">
+                        <div class="refreshimg" v-if="delworking"></div>
+                        <div v-else>{{$t('Delete')}}</div>
+                      </div>
+                      <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
+                    </div>
+                  </li>
+                  
+                </ul>
+              </div>
+
+        </card>
+      </v-flex>
+      <v-flex xs4 class="pl-2">
+        <trade-pair-details v-if="selectedTradePair" :base="selectedBase" :counter="selectedCounter" />
+      </v-flex>
+
+
+      </v-layout>
+    </m-layout>
+
+       <picker @select="pairchosen" 
               :data="items" 
               :selected-index="[itemsInitOrder,itemsInitOrder]"
               ref="picker1"
@@ -26,85 +115,6 @@
               :cancelTxt="$t('Cancel')"
               :confirmTxt="$t('Confirm')"
       ></picker>
-
-      <card class="secondarygray">
-
-        <!--底部工具条-->
-        <div class="tbar flex-row pa-2 pt-3 pb-3">
-          <div class="flex2 pl-2">{{$t('Menu.TradeCenter')}}</div>
-          <div class="flex4 textright">
-            <span v-for="(item,index) in allTags" :key="index" @click="tagIndex = index"
-              :class="'pt-1 pb-1 pl-4 pr-4 tag cursorpointer ' + (tagIndex === index ? 'active':'')" 
-              > {{allTagsLabel[index]}}</span>
-          </div>
-          <div class="flex1 textright flex-row" style="flex-direction:row-reverse;">
-              <v-progress-circular class="pr-2" indeterminate size=24 v-if="refreshing" color="primary"></v-progress-circular>
-              <v-icon class="cursorpointer pr-2" @click="reloadTradePairs" v-if="!refreshing">refresh</v-icon>
-              <v-icon class="cursorpointer pr-2"  @click="pickershow">add</v-icon>
-          </div>
-        </div>
-
-
-            <div class="pa-2" v-for="(item,index) in allTags" :key="index" v-show="tagIndex === index">
-              <ul class="tradepairs-ul">
-                <li class="tradepair-li">
-                  <v-layout class="pair-wrapper" row>
-                     <v-flex xs3 class="pa1 pt-2 pb-2 textcenter">{{$t('Asset')}}</v-flex>
-                     <v-flex xs9>
-                       <div class="flex-row">
-                         <div class="flex1 pa1 pt-2 pb-2 textcenter">{{$t('open_price')}}</div>
-                         <div class="flex1 pa1 pt-2 pb-2 textcenter">{{$t('high_price')}}</div>
-                         <div class="flex1 pa1 pt-2 pb-2 textcenter">{{$t('low_price')}}</div>
-                         <div class="flex1 pa1 pt-2 pb-2 textcenter">{{$t('Trade.Price')}}</div>
-                         <div class="flex1 pa1 pt-2 pb-2 textcenter">{{$t('change_price')}}</div>
-                       </div>
-                     </v-flex>
-                  </v-layout>
-                </li>
-                <li class="tradepair-li" v-for="(pair,index) in pairItems[item]" :key="index">
-                  <v-layout class="pair-wrapper" row>
-                    <v-flex xs3>
-                      <div class="flex-row">
-                        <div class="flex1 choose-icon-wrapper" v-if="!pair.custom">
-                          <v-icon color="primary" @click.stop="delPairFromCustom(pair)" v-if="pair.isChoosed">star</v-icon>
-                          <v-icon color="primary" @click.stop="choosePairToCustom(pair)" v-else>star_border</v-icon>
-                        </div>
-                        <div class="flex1 choose-icon-wrapper" v-else>
-                          <v-icon color="primary" @click.stop="del(index,pair)">delete_forever</v-icon>
-                        </div>
-                        <div class="flex3 from-wrapper" @click="trade(index,pair)">
-                          <div class="code">{{pair.from.code}}/{{pair.to.code}}</div>
-                          <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
-                          <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
-                          <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
-                        </div>
-                        
-                      </div>
-                    </v-flex>
-                    <v-flex xs9 @click="trade(index,pair)">
-                      <k-line 
-                        :base="pair.from" :counter="pair.to" 
-                        :height="56" :timeout="10*index"
-                        :tradepairIndex="pair.tradepairIndex"
-                        :ref="'kline'+pair.tradepairIndex"
-                        ></k-line>
-                    </v-flex>
-                  </v-layout>
-                  <div class="operate-box" v-if="pair.custom">
-                    <div class="del" @click="del(index,pair)">
-                      <div class="refreshimg" v-if="delworking"></div>
-                      <div v-else>{{$t('Delete')}}</div>
-                    </div>
-                    <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
-                  </div>
-                </li>
-                
-              </ul>
-            </div>
-
-      </card>
-    </div>
-    </m-layout>
 
      <v-snackbar
       :timeout="5000"
@@ -125,7 +135,6 @@ import draggable from 'vuedraggable'
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Picker from "@/components/picker"
-import TradePairPicker from '@/components/TradePairPicker'
 import AccountsNav from '@/components/AccountsNav'
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
@@ -140,6 +149,7 @@ import {Decimal} from 'decimal.js'
 import Scroll from '@/components/Scroll'
 import { REMOVE_TRADEPAIR_KLINE_DATA } from '@/store/modules/AccountsStore' 
 import { ZH_CN } from '@/locales/index'
+import TradePairDetails from '@/components/TradePairDetails'
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM', TAG_XFF = 'XFF'
 
@@ -168,6 +178,8 @@ export default {
       allTagsLabel: [],
 
       refreshing: false,
+
+      selectedTradePair:null,
 
     }
   },
@@ -252,23 +264,24 @@ export default {
     },
     items(){
       if(!this.balances)return []
-      let values = []
-      let hosts = []
+      let values = [], hosts = [], issuers = []
       this.balances.forEach((element) => {
         values.push(element.code)
         if(isNativeAsset(element)){
           hosts.push(this.assethosts[element.code])
+          issuers.push(undefined);
         }else{
           if(this.assethosts[element.issuer]){
             hosts.push(this.assethosts[element.issuer])
           }else{
             hosts.push(miniAddress(element.issuer))
           }
+          issuers.push(element.issuer);
         }
       })
       var x = []
       this.balances.forEach((element,i)=>{
-        let y = {'value':i,text:{'code':element.code,host:hosts[i]}}
+        let y = {'value':i,text:{'code':element.code,host:hosts[i], issuer: issuers[i]}}
         x.push(y)
       })     
       return x
@@ -283,15 +296,27 @@ export default {
   watch:{
   },
   beforeMount(){
+    this.selectedTradePair = this.pairItems[TAG_CUSTOM][0]
     let locale = this.app.locale
     if(locale && locale.key !== ZH_CN.key){
       this.allTags = TAGS_OTHER
       this.allTagsLabel = [this.$t('custom'),TAG_BTC, TAG_XLM, TAG_XCN]
+      if(!this.selectedTradePair){
+        this.selectedTradePair = this.pairItems[TAGS_OTHER[1]][0]
+      }
     }else{
       this.allTags = TAGS_ZH_CN
       this.allTagsLabel = [this.$t('custom'),TAG_XCN, TAG_BTC, TAG_XLM]
+      if(!this.selectedTradePair){
+        this.selectedTradePair = this.pairItems[TAGS_ZH_CN[1]][0]
+      }
     }
+    this.selectedBase = this.selectedTradePair.from
+    this.selectedCounter = this.selectedTradePair.to
+    
     this.filterTag = TAGS_OTHER[0]
+
+   
     
     //保存默认的交易对
     // this.saveDefaultTradePairs()
@@ -536,6 +561,11 @@ export default {
         tradepair = Object.assign({}, tradepair, {index, custom: true})
         this.del(index,tradepair);
       }
+    },
+    showChart(index,pair){
+      this.selectTradePair = pair
+      this.selectedBase = pair.from
+      this.selectedCounter = pair.to
     }
 
    
@@ -544,12 +574,11 @@ export default {
     Toolbar,
     Card,
     Picker,
-    TradePairPicker,
     KLine,
     TabBar,
     //draggable,
     AccountsNav,
-    Scroll
+    TradePairDetails,
   }
 }
 </script>

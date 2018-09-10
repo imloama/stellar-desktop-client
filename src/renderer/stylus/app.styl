@@ -105,6 +105,27 @@
   padding-bottom: env(safe-area-inset-bottom)
 
 
+/***滚动条优化*/
+::-webkit-scrollbar 
+  width: 6px;
+  height: 6px;
+
+/*滑块*/
+::-webkit-scrollbar-thumb
+  background-color: $secondarycolor.font
+  border-radius: 4px
+
+::-webkit-scrollbar-thumb:hover 
+  background-color: $secondarycolor.font
+
+
+
+/*滑道*/
+::-webkit-scrollbar-track
+  box-shadow: inset 0 0 4px $primarycolor.gray
+
+
+
 @css {
   a:hover {
     text-decoration: none;
@@ -149,6 +170,10 @@ ul
 .secondarygray
   background-color: $secondarycolor.gray!important
   border-color: $secondarycolor.gray!important
+.primarygraybg
+  background-color: $primarycolor.gray!important
+  border-color: $primarycolor.gray!important
+
 
 .icon18
   font-size: 18px!important

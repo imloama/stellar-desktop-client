@@ -2,8 +2,8 @@
  * 导入钱包界面
  */
 <template>
-<m-layout mid>
 <div class="page" v-bind:class="{hidebackground: showScanner}">
+<m-layout :left='false'>
     <!-- <toolbar :title="$t(title)" :showbackicon="showbackicon">
       <v-btn icon style="visibility: hidden;" slot="left-tool">
           <v-icon class="back-icon"/>
@@ -20,9 +20,9 @@
 
 
     <div class="content" v-if="!showScanner">
-      <div class="tabs pt-1 pb-1">
-        <span :class="'tab ma-1 pa-1 ' + ( importFlag===0 ? 'active':'' )" @click="changeImportFlag(0)">{{$t('importByMnemonic')}}</span>
-        <span :class="'tab ma-1 pa-1 ' + ( importFlag===1 ? 'active':'' )" @click="changeImportFlag(1)">{{$t('importBySeed')}}</span>
+      <div class="tabs pt-1 pb-1 ">
+        <span :class="'tab ma-1 pa-1 cursorpointer ' + ( importFlag===0 ? 'active':'' )" @click="changeImportFlag(0)">{{$t('importByMnemonic')}}</span>
+        <span :class="'tab ma-1 pa-1 cursorpointer ' + ( importFlag===1 ? 'active':'' )" @click="changeImportFlag(1)">{{$t('importBySeed')}}</span>
       </div>
       <div v-if="importFlag===1 ">
         <secret-key-input :enablePaste="true" :seed="scanSeed" ref="secretkeyRef"></secret-key-input>
@@ -39,7 +39,7 @@
             rows=3
             ></v-text-field>
         <!--显示语言，用户可以选择-->
-        <div class="lang-tabs pt-1 pb-1">
+        <div class="lang-tabs pt-1 pb-1 cursorpointer">
           <span :class="'tab pa-1 ma-1' + ( lang ==='english' ? ' active':'' )" @click="changeLang(english.lang)">{{english.label}}</span>
           <span :class="'tab pa-1 ma-1' + ( lang ==='chinese_simplified' ? ' active':'' )" @click="changeLang(chinese_simplified.lang)">{{chinese_simplified.label}}</span>
           <span :class="'tab pa-1 ma-1' + ( lang ==='chinese_traditional' ? ' active':'' )" @click="changeLang(chinese_traditional.lang)">{{chinese_traditional.label}}</span>
@@ -53,15 +53,15 @@
     <div class="footer" v-if="!showScanner">
       <v-layout row wrap>
         <v-flex xs6 @click="goback">
-          <span>{{$t('Return')}}</span>
+          <span class="cursorpointer">{{$t('Return')}}</span>
         </v-flex>
         <v-flex xs6 @click="nextStep">
-          <span :class="nextStepClass">{{$t('NextStep')}}</span>
+          <span :class="'cursorpointer ' + nextStepClass">{{$t('NextStep')}}</span>
         </v-flex>
        </v-layout>  
     </div>
-</div>
 </m-layout>
+</div>
 </template>
 
 <script>
@@ -285,4 +285,11 @@ export default {
 .seed-span
   word-wrap:break-word
   color: $secondarycolor.font
+
+.page
+  position: fixed
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
 </style>

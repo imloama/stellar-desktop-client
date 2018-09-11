@@ -2,8 +2,9 @@
  * 服务条款界面
  */
 <template>
-<m-layout>
+
   <div class="terms-service-page">
+    <m-layout>
     <!-- <v-toolbar class="tbar primary" dark  :flat="false" dense :clipped-left='true' app>
       <v-btn icon v-show="showbackicon" @click="goback" class="white--text">
             <i class="material-icons font28">&#xE5CB;</i>
@@ -24,8 +25,8 @@
         </v-flex>
        </v-layout>  
     </div>  
-  </div>
   </m-layout>
+  </div>
 </template>
 
 <script>
@@ -77,13 +78,20 @@ export default {
 @require '~@/stylus/color.styl'
 .terms-service-page
   background: $primarycolor.gray
+  position: fixed
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
+  z-index:999
+  overflow-y:auto
 .tbar
   z-index: 99
 .page-content
   color: $secondarycolor.font
-  overflow-y:auto
   font-size: 14px
   padding: 20px 20px
+  height: 100%
 .page-content-showback
   bottom: 10px
 .title

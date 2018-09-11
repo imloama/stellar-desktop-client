@@ -1,5 +1,5 @@
 <template>
-  <div class="mainlayout">
+  <div :class="'mainlayout ' + (left ? 'hasLeft':'')" >
   <!--
   <v-layout row wrap class="mlayout" v-if="mid">
     <v-flex xs3>&nbsp;</v-flex>
@@ -28,15 +28,15 @@
 <script>
 export default {
   props:{
-    mid:{
+    left:{
       type: Boolean,
-      default: false
+      default: true
     }
   }
 }
 </script>
 
 <style lang="stylus">
-.mainlayout
+.hasLeft
   padding-left: 60px
 </style>

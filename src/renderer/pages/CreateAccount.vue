@@ -3,13 +3,13 @@
  */
 <template>
 <div class="page">
-  <div class="create-account-page">
+  <div class="create-account-page page-a">
     <toolbar :title="$t(title)" :showbackicon="showbackicon">
       <v-btn icon style="visibility: hidden;" slot="left-tool">
-          <v-icon class="back-icon"/>
-        </v-btn>
+        <v-icon class="back-icon"/>
+      </v-btn>
     </toolbar>
-    <m-layout mid>
+    <m-layout :left='false'>
     <div class="">
       <v-text-field
               dark
@@ -127,20 +127,14 @@ export default {
 
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
-.content
+.create-account-page
   position: fixed
-  top: 48px
-  top: calc(48px + constant(safe-area-inset-top))
-  top: calc(48px + env(safe-area-inset-top))
+  top: 0
   left: 0
   right: 0
   bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
-  padding: 20px 20px
   background: $secondarycolor.gray
-  border-radius:5px
-  margin:5px 5px 50px 5px
+  z-index:999
 .footer
   position:fixed
   bottom:0

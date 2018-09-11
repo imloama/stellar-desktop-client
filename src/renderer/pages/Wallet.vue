@@ -66,6 +66,12 @@ export default {
   color: $primarycolor.font
   padding-top: 20%
   height: 100vh
+  z-index: 999
+  position: fixed
+  left: 0
+  right: 0
+  bottom: 0
+  top: 0
   .logo
     display: block
     text-align: center

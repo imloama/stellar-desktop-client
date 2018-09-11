@@ -2,8 +2,7 @@
  * 准备创建钱包
  */
 <template>
-<m-layout>
-<div class="page">
+<div class="page readypage">
 
     <!-- <toolbar :title="$t(title)" :showbackicon="showbackicon"  v-if="!seedInputDlgShow">
       <v-btn icon style="visibility: hidden;" slot="left-tool">
@@ -12,7 +11,7 @@
     </toolbar> -->
     <div class="headline mt-5 textcenter primarycolor" v-if="!seedInputDlgShow">{{$t(title)}}</div>
     
-    <m-layout mid>
+    <m-layout :left='false'>
     <div class="content"  v-if="!seedInputDlgShow">
       <div class="label">{{$t('Account.AccountName')}}</div>
       <div class="value" >{{name}}</div>
@@ -153,7 +152,6 @@
       :title="loadingTitle" :msg="loadingMsg" :closeable="dealfail" @close="hiddenLoadingView"/>
 
 </div>
-</m-layout>
 </template>
 
 <script>
@@ -428,6 +426,13 @@ export default {
 
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
+.readypage
+  position: fixed
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
+  z-index: 999
 .content
   overflow-y: auto
   padding: 20px 20px

@@ -5,11 +5,10 @@
 
 
 
-<m-layout>
 <div class="page">
   <div class="create-account-page">
+    <m-layout :left='false'>
     <div class="headline mt-5 textcenter primarycolor">{{$t(title)}}</div>
-    <m-layout mid>
     <div class="content mt-4">
       <v-text-field
               dark
@@ -60,7 +59,6 @@
     </m-layout>
   </div>
 </div>
-</m-layout>
 </template>
 
 <script>
@@ -161,7 +159,6 @@ export default {
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
 .content
-  padding: 20px 20px
   background: $secondarycolor.gray
   border-radius:5px
 .footer
@@ -185,6 +182,13 @@ export default {
 .hint
   color:$primarycolor.green
   font-size: 14px
-  
+.create-account-page
+  position: fixed
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
+  z-index: 999
+  background: $secondarycolor.gray
 </style>
 

@@ -78,10 +78,7 @@ export default {
     this.init()
   },
   mounted(){
-    this.initChart()
-  },
-  updated(){
-    console.log('updated-----' + this.base.code + ',' + this.counter.code)
+    // this.initChart()
   },
   methods:{
     init(){
@@ -91,8 +88,8 @@ export default {
     },
     //最新成交数据
     initTrade(){
-      let counterasset = getAsset(this.counter.code,this.counter.issuer)
-      let baseasset = getAsset(this.base.code,this.base.issuer)
+      let counterasset = getAsset(this.counter)
+      let baseasset = getAsset(this.base)
       getTrades(baseasset,counterasset,"desc",50)
           .then(data=>{
             this.trades = data.records
@@ -120,6 +117,8 @@ export default {
                   this.opt.xAxis.data = this.days
                   this.opt.series[0].data = this.prices
                   this.ele.setOption(this.opt, true)
+                }else{
+                  this.initChart()
                 }
                 // this.initChart()
                 
@@ -191,6 +190,20 @@ export default {
       }
       this.ele.setOption(this.opt, true)
       
+    },
+    reload(){
+      console.log('reload------')
+      this.trades = []
+      this.days = []
+      this.prices = []
+      if(this.ele){
+        this.ele.dispose()
+        this.ele = null
+        this.opt = null
+      }
+      this.$nextTick(()=>{
+        this.init()
+      })
     }
   }
 }

@@ -273,7 +273,7 @@ export default {
         this.showaccountsview = false
     },
     reloadTrades(){
-      getTrades(this.BaseAsset, this.CounterAsset)
+      getTrades(this.BaseAsset, this.CounterAsset,"desc",50)
         .then(response=>{
           this.trades = response.records
         }).catch(err=>{

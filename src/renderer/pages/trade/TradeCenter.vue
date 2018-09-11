@@ -100,7 +100,7 @@
         </card>
       </v-flex>
       <v-flex xs4 class="pl-2">
-        <trade-pair-details v-if="selectedTradePair" :base="selectedBase" :counter="selectedCounter" />
+        <trade-pair-details ref="tpdInstance" v-if="selectTradePair" :base="selectedBase" :counter="selectedCounter" />
       </v-flex>
 
 
@@ -180,6 +180,8 @@ export default {
       refreshing: false,
 
       selectedTradePair:null,
+      selectedBase: null,
+      selectedCounter: null,
 
     }
   },
@@ -563,9 +565,27 @@ export default {
       }
     },
     showChart(index,pair){
-      this.selectTradePair = pair
+
+      this.selectedTradePair = pair
       this.selectedBase = pair.from
       this.selectedCounter = pair.to
+      this.$refs.tpdInstance.reload()
+
+
+      // this.selectedTradePair = null
+      // this.selectedBase = null
+      // this.selectedCounter = null
+      // this.$nextTick(()=>{
+      //   this.selectedTradePair = pair
+      //   this.selectedBase = pair.from
+      //   this.selectedCounter = pair.to
+      //   console.log('-------------show chart------')
+      //   console.log( this.selectTradePair)
+      //   console.log(this.selectedBase)
+      //   console.log(this.selectedCounter)
+      //   this.$refs.tpdInstance.reload()
+      // })
+
     }
 
    

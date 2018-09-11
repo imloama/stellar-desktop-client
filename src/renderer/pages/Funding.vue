@@ -10,53 +10,50 @@
     </v-btn>
    </toolbar> 
    <accounts-nav :show="showaccountsview" @close="closeView"/>
-      
-    <div class="menu-wrapper" v-if="!scannerView">
-      <ul class="menu-ul">
-        <li :class="'menu-li ' + (active==='deposit'?'active':'')" @click="switchMenu('deposit')">{{$t('DW.Deposit')}}</li>
-        <li :class="'menu-li ' + (active==='withdraw'? 'active':'')" @click="switchMenu('withdraw')">{{$t('DW.Withdraw')}}</li>
-      </ul>
-    </div>
+   
 
-  <m-layout>
-    <div class="">
-      <div class="pa-2">
-        <div class="card-content" slot="card-content">
-          <v-select
-              v-bind:items="assets"
-              v-model="selectedasset"
-              :label="$t('Asset')"
-              class="selectasset"
-              item-value="id"
-              item-text="code"
-              dark
-              :return-object="assetChoseReturnObject"
-              @change="changeAsset"
-               v-show="!scannerView"
-            >
-            <template slot="selection" slot-scope="data">
-              <span class="asset-select-code show">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
+  <m-layout class="mt-2">
 
-            </template>
-            <template slot="item" slot-scope="data">
-              <span class="asset-select-code">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
-            </template>
-          </v-select>
-
-          <div class="dwinfo" v-if="active==='deposit'">
+    <v-layout row nowrap>
+      <!--左侧资产列表-->
+      <v-flex xs4 class="pt-2">
+        <v-card class="pa-2">
+          <div class="textcenter flex-row cursorpointer menu mb-2 pa-2 mt-1">
+            <div :class="'flex1 menu-item left-menu-item ' + (active==='deposit'?'primarycolor':'secondaryfont')" @click="switchMenu('deposit')">{{$t('DW.Deposit')}}</div>
+            <div :class="'flex1 menu-item ' + (active==='withdraw'? 'primarycolor':'secondaryfont')" @click="switchMenu('withdraw')">{{$t('DW.Withdraw')}}</div>
+          </div>
+          <div :class="'item cursorpointer flex-row pa-2 ma-2 ' +  (activeItem && activeItem.value === item.value ? 'active':'')"
+               v-for="(item,index) in items" :key="index" @click="selectItem(item)">
+            <div class="pr-2 pl-2">
+              <i :class="'iconfont primarycolor font28 ' + assetIcon(item.code,item.issuer)"></i>
+            </div>
+            <div>
+              <div>
+                {{item.code}}<small class="secondaryfont pl-1">{{item.issuer | miniaddress}}</small>
+              </div>
+              <div class="secondaryfont">{{item.host}}</div>
+            </div>
+            
+          </div>
+        </v-card>
+      </v-flex>
+      <!--右侧充值或提现界面-->
+      <v-flex xs8 class="pt-2  pl-2">
+        <v-card class="pa-2 textcenter  mb-2" v-if="working">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </v-card>
+        
+        <div class="dwinfo" v-if="active==='deposit'">
+           
             <div></div>
             <div class="deposit_error" v-if="error">
+              <v-card class="pa-2  mb-2">
               <div v-if="error_msg">{{error_msg}}</div>
               <div v-else>{{$t('DW.Error.NoDepositServiceDesc')}}</div>
+              </v-card>
             </div>
             <div class="data" v-else>
-
+              <v-card class="pa-2 mb-2" v-if="activeItem && !working">
               <div v-if="standardDepositData">
                 <div class="label">{{$t('DW.DepositInfo')}}</div>
                 <div v-if="Array.isArray(standardDepositData.how)">
@@ -82,41 +79,32 @@
                 <div class="extra_info">{{depositData.extra_info}}</div>
                 <div class="extra_info">{{depositData.extra_info_cn}}</div>
               </div>
+              </v-card>
 
             </div>
           </div>
 
           <div class="dwinfo" v-if="active==='withdraw'">
-            <withdraw-standard v-if="selectedasset && assetAccounts[selectedasset.issuer]"
-              :homedomain="assetAccounts[selectedasset.issuer].home_domain"
-              :asset="selectedasset"
-              @showScanner="showScanner"
-              @closeScanner="closeScanner"
-              ref="withdraw"
-            ></withdraw-standard>
-            
+            <v-card class="pa-2 mb-2" v-if="activeItem && !working">
+              <withdraw-standard v-if="selectedasset && assetAccounts[selectedasset.issuer]"
+                :homedomain="assetAccounts[selectedasset.issuer].home_domain"
+                :asset="selectedasset"
+                @showScanner="showScanner"
+                @closeScanner="closeScanner"
+                ref="withdraw"
+              ></withdraw-standard>
+            </v-card>
           </div>
 
-         
-        </div>
+        <v-card class="withdraw_form_card pa-2"  v-if="!scannerView">
+          <div class="working fundinginfo">
+            {{$t('FundingInfo')}}
+          </div>
+        </v-card>
+      
+      </v-flex>
+    </v-layout>
 
-      </div>
-
-      <card margin="20px 0px" padding="10px 10px" class="withdraw_form_card" v-if="working">
-        <div class="working" slot="card-content">
-          <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        </div>
-      </card>
-
-      <card margin="20px 0px" padding="0 0" class="withdraw_form_card"  v-if="!scannerView">
-        <div class="working fundinginfo" slot="card-content">
-          {{$t('FundingInfo')}}
-        </div>
-      </card>
-
-
-
-    </div>
   </m-layout>
 <!--   
     <tab-bar /> -->
@@ -145,6 +133,8 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 import { NO_FUNDINS } from '@/api/gateways'
 import UnFundNotice from '@/components/UnFundNotice'
 import AccountsNav from '@/components/AccountsNav'
+import { COINS_ICON, FF_ICON, DEFAULT_ICON, WORD_ICON} from '@/api/gateways'
+import { miniAddress } from '@/api/account'
 export default {
   data(){
     return {
@@ -170,6 +160,7 @@ export default {
       scannerView: false,
       accountNotFundDlg: false,
       showaccountsview: false,
+      activeItem:null,
     }
   },
   computed:{
@@ -195,6 +186,34 @@ export default {
       })
       return data
     },
+    items(){
+      if(!this.balances)return []
+      let values = [], hosts = [], issuers = []
+      this.balances.forEach((element) => {
+        values.push(element.code)
+        if(isNativeAsset(element)){
+          hosts.push(this.assethosts[element.code])
+          issuers.push(undefined);
+        }else{
+          if(this.assethosts[element.issuer]){
+            hosts.push(this.assethosts[element.issuer])
+          }else{
+            hosts.push(miniAddress(element.issuer))
+          }
+          issuers.push(element.issuer);
+        }
+      })
+      var x = []
+      this.balances.forEach((element,i)=>{
+        let id = element.code+"-"+element.issuer
+        if( !isNativeAsset(element) && NO_FUNDINS.indexOf(id) < 0 ){
+          let y = {value: i, 'code':element.code,host:hosts[i], issuer: issuers[i]}
+          x.push(y)
+        }
+      })     
+      return x
+      // return [{values,hosts},{values,hosts}]
+    },
 
   
   },
@@ -216,6 +235,15 @@ export default {
     ...mapActions({
       getAssetsAccount:'assetsAccount'
     }),
+    assetIcon(code,issuer){
+      return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
+    },
+    selectItem( item){
+      this.activeItem = item 
+      this.selectedasset = item  
+      this.changeAsset(item)   
+    },
+
     copy(value){
       if(cordova.plugins.clipboard){
         cordova.plugins.clipboard.copy(value)
@@ -539,5 +567,16 @@ export default {
 
 .hidebackground
   background: none
+
+.item
+  border: 1px solid $primarycolor.gray
+  border-radius: 5px
+  &.active
+    border: 1px solid $primarycolor.green
+.menu
+  border-bottom: 1px solid $primarycolor.gray
+.left-menu-item
+  border-right: 1px solid $secondarycolor.font
+
 </style>
 

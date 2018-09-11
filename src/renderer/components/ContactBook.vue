@@ -11,20 +11,20 @@
     <div class="bookbar" >
       <div class="bar-blank">&nbsp;</div>
       <div class="bar-title">{{$t(title)}}</div>
-      <div class="bar-close"  @click.stop="close">
+      <div class="bar-close cursorpointer"  @click.stop="close">
         <i class="material-icons">&#xE5CD;</i>
       </div>
     </div>
     <div class="book-content">
       
-        <div class="mt-2">
+        <div class="mt-2 cursorpointer">
             <span @click="content_contact" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isA }]">{{$t("Menu.Contacts")}}</span>
             <span @click="content_myaccount" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isB }]">{{$t("MyAccount")}}</span>
             <span @click="content_myaddress" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isC }]">{{$t("MemoBook.MyAddress")}}</span>
         </div>
         
         <div v-if="isA && contacts.length>0" class="contracts-list mt-2">
-               <div class="contacts-row" v-for="contact in contacts" :key="contact.id">
+               <div class="contacts-row cursorpointer" v-for="contact in contacts" :key="contact.id">
                 <v-layout class="mycontacts-li" row wrap  @click="chose('contact',contact)" >
                   <v-flex xs6 class="mycontacts-wrapper">
                     <div class="contact-name grey--text text--lighten-1">{{contact.name}}</div>
@@ -36,7 +36,7 @@
                </div>
         </div>
         <div v-else-if="isB && accounts.length>0" class="contracts-list mt-2">
-               <div class="contacts-row" v-for="contact in accounts" :key="contact.id">
+               <div class="contacts-row cursorpointer" v-for="contact in accounts" :key="contact.id">
                 <v-layout class="mycontacts-li" row wrap @click="chose('account',contact)">
                   <v-flex xs6 class="mycontacts-wrapper">
                     <div class="contact-name grey--text text--lighten-1">{{contact.name}}</div>
@@ -48,7 +48,7 @@
                </div>
         </div>
         <div v-else-if="isC && myaddresses.length>0" class="contracts-list mt-2">
-               <div class="contacts-row" v-for="contact in myaddresses" :key="contact.id">
+               <div class="contacts-row cursorpointer" v-for="contact in myaddresses" :key="contact.id">
                 <v-layout class="mycontacts-li" row wrap @click="chose('myaddress',contact)">
                   <v-flex xs6 class="mycontacts-wrapper">
                     <div class="contact-name grey--text text--lighten-1">{{contact.name}}</div>
@@ -176,7 +176,7 @@ export default {
   background: $primarycolor.gray
   font-size: 16px
   z-index: 99
-  position: absolute
+  position: fixed
   top: 0
   left: 0
   bottom: 0

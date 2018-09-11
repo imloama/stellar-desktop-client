@@ -11,9 +11,9 @@
 
 <accounts-nav :show="showaccountsview" @close="closeView"/>
     <m-layout class="mt-4">
-      <card padding="10px 10px" class="mycard">
-        <div class="card-content" slot="card-content">
-          <ul class="settings-ul">
+      <card padding="10px 10px" class="mycard primarygraybg">
+        <div class="card-content primarygraybg" slot="card-content">
+          <ul class="settings-ul primarygraybg">
             
             <li class="settings-li">
               <span>{{$t('redUpGreenDown') }}</span>

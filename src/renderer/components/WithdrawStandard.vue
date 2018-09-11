@@ -121,10 +121,10 @@
 
     <!--第3步，用户确认界面-->
     <div class="confirm-wrapper"  v-if="step === 3  && !showScanner">
-      <div class="confirm-blank"></div>
-      <div  class="confirm-dlg">
-      <v-bottom-sheet v-model="confirmSheetView" persistent dark >
-        <div class="confirm-title">{{$t('Trade.Confirm')}}{{$t('Send')}}</div>
+      
+      <v-dialog v-model="confirmSheetView" persistent dark max-width="460px" class="primarygraybg">
+       <div class="primarygraybg pa-2">
+          <div class="confirm-title">{{$t('Trade.Confirm')}}{{$t('Send')}}</div>
         <div class="confirm-content">
           <div class="confirm-row flex-row">
             <span class="label flex1">{{$t('DestinationAddress')}}</span>
@@ -158,8 +158,8 @@
           <div class="confirm-btn flex1" @click="send">{{$t('Button.OK')}}</div>
           <div class="confirm-btn flex1" @click="()=>{ step = 2; confirmSheetView=false;}">{{$t('Button.Cancel')}}</div>
         </div>
-      </v-bottom-sheet>
-      </div>
+       </div>
+      </v-dialog>
     </div>
 
   

@@ -14,7 +14,7 @@
   <v-layout row class="mt-4">
 
     <v-flex xs3 class="pa-2">
-      <v-list dark>
+      <v-list class="secondarygray">
         <v-list-tile v-for="(item,index) in items" :key="index" @click="toPage(item,index)" :class="index === selected ? 'mactive':''">
           <v-list-tile-action>
             <v-icon :color="index === selected ? 'primary' : 'grey'">{{item.icon}}</v-icon>
@@ -27,7 +27,9 @@
       </v-list>
     </v-flex>
     <v-flex xs9 class="pa-2">
-      <router-view></router-view>
+      <v-card>
+        <router-view></router-view>
+      </v-card>
     </v-flex>
   </v-layout>
   </m-layout>
@@ -172,5 +174,5 @@ export default {
 @require '~@/stylus/color.styl'
 .mactive
   color: $primarycolor.green
-  background: #666666
+  background: #34353A
 </style>

@@ -59,6 +59,7 @@ export default {
       this.$router.back()
     },
     openApp(){
+      window.TDAPP.onEvent ('E_OPEN_TICKETS',"打开工单系统");
       // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
       this.appInstance = this.$refs.dappWebView
       

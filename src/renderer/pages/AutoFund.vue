@@ -111,6 +111,7 @@ export default {
       let config = this.fund_config
       // alert('config=----' + JSON.stringify(config))
       if(config === null)return;
+      window.TDAPP.onEvent ('E_OPEN_AUTOFUND',"打开自动激活");
       // alert(JSON.stringify(config))
       if(cordova.platformId === 'browser'){
         this.appInstance = cordova.InAppBrowser.open(config.site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');

@@ -61,6 +61,8 @@ export default {
       // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
       this.title = this.$t('kyc')
       this.appInstance = this.$refs.dappWebView
+
+      window.TDAPP.onEvent ('E_OPEN_KYC',"打开KYC");
       
       this.appInstance.addEventListener('did-start-loading', ()=>{
         this.dAppLoading = true

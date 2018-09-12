@@ -219,7 +219,7 @@ import { trustAll } from '@/api/operations'
 import AccountsNav from '@/components/AccountsNav'
 const os = require('os')
 const COLOR_GREEN = '#21CE90'
-
+import {EVENT_OPEN_DAPP} from '@/api/talkingdata'
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
 // export const FFW_EVENT_TYPE_SIGN = 'sign'
@@ -327,6 +327,8 @@ export default {
       if(color){
         this.dappBgColor = color
       }
+      
+      window.TDAPP.onEvent (EVENT_OPEN_DAPP+'_'+this.choosed.title, this.choosed.title); 
 
       this.dAppShow = true
       this.$nextTick(()=>{

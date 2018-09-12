@@ -1,8 +1,8 @@
 <template>
 <div>
-      <card class="mycard" padding="20px 10px 20px 10px">
+      <card class="mycard secondarygray" padding="20px 10px 20px 10px">
 
-        <div class="card-content" slot="card-content">
+        <div class="card-content secondarygray" slot="card-content">
         <v-text-field
               name="address"
               :label="$t('Account.AccountAddress')"
@@ -39,11 +39,17 @@
             </div>
           </div>
         </div>
+
+      <div class="pa-2">
+        <div class="primarycolor textcenter pa-1">{{$t('StellarAddressBarCode')}}</div>
+        <div><qrcode :text="qrtext"/></div>
+      </div>
+
         
-      </card>
       <div class="btn-group">
          <v-btn class="primary btn-save" primary @click.stop="save">{{$t('Save')}}</v-btn>
       </div>
+      </card>
 
     </div>
 
@@ -56,6 +62,7 @@ import Card from '@/components/Card'
 import { INFLATION_POOL } from '@/api/gateways'
 import { setOptions } from '@/api/operations'
 import  defaultsDeep  from 'lodash/defaultsDeep'
+import QRCode from "@/components/QRCode";
 export default {
   data(){
     return {
@@ -83,6 +90,9 @@ export default {
       selected: state => state.accounts.selected,
       password: state => state.accounts.password
     }),
+    qrtext(){
+      return  this.account.address
+    }
   },
   beforeMount(){
       let address = this.account.address
@@ -148,6 +158,7 @@ export default {
 
     },
     saveInflationAndFed(){
+      this.seed = this.accountData.seed
       //保存通胀  联邦地址
       let values = {}
       let hasdata = false
@@ -184,6 +195,7 @@ export default {
   components: {
     Toolbar,
     Card,
+    qrcode: QRCode,
   }
 }
 </script>

@@ -27,7 +27,7 @@ export default {
         }
       },
       {
-        path: '/account/info',
+        path: '/account/info/:id',
         name: 'AccountInfo',
         component: resolve => require(['../pages/account/Info.vue'], resolve),
         meta: {

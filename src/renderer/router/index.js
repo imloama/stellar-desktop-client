@@ -20,6 +20,7 @@ import Guidepage from '../pages/Guidepage'
 import Funding from '@/pages/Funding.vue'
 import PinLock from '@/pages/PinLock'
 import dapp from './dapp';
+import Explorer from '@/pages/explorer.vue'
 
 Vue.use(Router)
 
@@ -41,7 +42,12 @@ const router = new Router({
         keepAlive: false
       }
     },
-
+    
+    {
+      path: '/explorer',
+      name: 'Explorer',
+      component: Explorer
+    },
     {
       path: '/wallet',
       name: 'Wallet',

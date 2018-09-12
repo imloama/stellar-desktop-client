@@ -6,7 +6,8 @@
             <v-layout class="history-li" row wrap v-for="item in history" :key="item.id">
               <v-flex xs4 class="history-wrapper">
                 <div class="history">
-                  <div class="history-flag">{{$t(item.flag)}} &nbsp;<span class="tx">{{item.counterparty|miniaddress}}</span></div>
+                  <div class="history-flag">{{$t(item.flag)}} &nbsp;
+                    <span class="tx cursorpointer underline" @click="showDetails(1,item.origin.transaction_hash)">{{item.counterparty|miniaddress}}</span></div>
                   <div class="history-time tx">{{item.origin.created_at}}</div>
                 </div>
               </v-flex>
@@ -18,11 +19,13 @@
                   <span class="amount">{{item.amount}}</span>
                   <span class="code" v-if="item.asset">{{item.asset.code}}</span>
                 </div>
-                <div class="textright tx" >tx:{{item.origin.transaction_hash}}</div>
+                <div class="textright tx cursorpointer underline" @click="showDetails(1,item.origin.transaction_hash)">tx:{{item.origin.transaction_hash}}</div>
               </v-flex>
             </v-layout>
           </div>
         </card>
+
+        <steexp-dlg v-if="detailsView" :i="detailsI" :v="detailsV" @close="detailsView = false" />
 
         <div class="loadmore textcenter" v-if="history.length > 0">
            <v-btn block flat color="primary" v-if="!loadmore && hasmore"  :loading="loadmore" @click="loadmoreData">
@@ -39,15 +42,18 @@
   import Card from '@/components/Card'
   import * as accountapi from '@/api/account'
   import {getAddressByAccountId} from '@/api/federation'
-  import Scroll from '@/components/Scroll'
   import paymentsMixin from '@/mixins/payments'
   import debounce from 'lodash/debounce'
+  import SteexpDlg from '@/components/SteexpDlg'
 
   export default {
     data() {
       return {
         loadmore: false,
         hasmore: true,
+        detailsI: 0,//1表示tx值0表示account
+        detailsV: null,
+        detailsView: false
       }
     },
     mixins: [paymentsMixin],
@@ -120,11 +126,17 @@
       reload(){
         return this.getPayments(this.account.address)
       },
+      showDetails(i,v){
+        this.detailsI = i
+        this.detailsV = v
+        this.detailsView = true
+        console.log(this)
+      },
     },
     components: {
       Toolbar,
       Card,
-      Scroll,
+      SteexpDlg,
     }
   }
 </script>
@@ -156,4 +168,5 @@
   .tx
     color: $secondarycolor.font
     font-size: 14px
+  
 </style>

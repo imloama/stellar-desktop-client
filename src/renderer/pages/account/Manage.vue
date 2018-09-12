@@ -146,7 +146,8 @@ export default {
       this.showPwdSheet = true
     },
     modify(address){
-      this.$router.push({name: 'AccountInfo', query: {address: address}});
+      this.$router.push({name: 'AccountInfo', params: {id: address}});
+      // this.$router.push({name: 'ModifyContact', params: {id: contactid}})
     },
     back(){
       this.$router.back()
@@ -155,7 +156,7 @@ export default {
       this.$router.push({name: 'Wallet'})
     },
     info(account){
-      this.$router.push({name: 'AccountInfo', query: {address: account.address}});
+      this.$router.push({name: 'AccountInfo', params: {id: account.address}});
     },
     del(account,index){
       this.workindex = index
@@ -335,17 +336,16 @@ export default {
     font-size: 36px
 .card-content
   overflow: hidden
-  background: $primarycolor.gray
+  margin-bottom: 1rem
+  // border-bottom: 1px solid $primarycolor.gray
   
 .account-row
   overflow: hidden
   position: relative
-  border-bottom: 1px solid $secondarycolor.font
-  border-radius:5px
+  border-bottom: 1px solid $primarycolor.gray
+  // border-radius:5px
   
   
-.account-row:last-child
-  border-bottom: 0px
 .account-wrapper
   position: relative
   z-index: 2

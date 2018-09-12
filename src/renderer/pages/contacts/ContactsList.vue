@@ -164,11 +164,8 @@ export default {
   .contacts-row
     overflow: hidden
     position: relative
-    border-bottom: 1px solid $secondarycolor.font
+    border-bottom: 1px solid $primarycolor.gray
     background-color:$primarycolor.gray
-    // border-radius:5px
-    &:last-child
-      border-bottom: 0px
     .mycontacts-li
       position: relative
       z-index: 2

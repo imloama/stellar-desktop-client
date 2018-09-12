@@ -463,7 +463,7 @@
   "Pin":"Pin",
   "HorizonVersion":"HorizonVersion",
   "LoadMore":"Load More",
-  "Title.ThirdApp":"dapps",
+  "Title.ThirdApp":"Dapps",
   "Error.AjaxTimeout":"connection server timed out, please try again later",
   "Third.OpenAppHint":"will open DApp {0}",
   "Third.SendTo":"pay to {0}",
@@ -543,7 +543,8 @@
   "lock_disable":"lock screeb disabled",
   "lock_pwd_wrong":"wrong unlock password!",
   "latest_trade":"Latest Trades",
-  "type":"类型"
+  "type":"类型",
+  "explorer":"Explorer"
 
 
 

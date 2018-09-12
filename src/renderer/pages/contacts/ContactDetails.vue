@@ -9,20 +9,24 @@
       @goback="back"
       ref="toolbar"
     /> -->
-    <v-breadcrumbs divider="/">
-        <v-breadcrumbs-item to="/mycontacts/list">{{ $t('Menu.Contacts') }}</v-breadcrumbs-item>
-        <v-breadcrumbs-item disabled>{{contact.name}}</v-breadcrumbs-item>
-      </v-breadcrumbs>
+    
      <div class="content">
         <div class="contactdetails_card">
-            <card  class="mycard ">
-              <div class="card-content contactDetails_contactName_position" slot="card-content">
+            <card  class="mycard secondarygray pa-2">
+                <v-breadcrumbs class="breadpath" divider="/">
+                  <v-breadcrumbs-item to="/mycontacts/list">{{ $t('Menu.Contacts') }}</v-breadcrumbs-item>
+                  <v-breadcrumbs-item disabled>{{contact.name}}</v-breadcrumbs-item>
+                </v-breadcrumbs>
+
+                <div class="line"></div>
+                
+              <div class="card-content contactDetails_contactName_position mt-4">
                     <span class="contactdetails_contactname">{{$t("ContactAdd.name")}}</span><!--名称  -->
                     <p class="contactdetails_contactnamevalue">{{contact.name}}</p><!--名称value  -->
               </div>
             <!-- </card> -->
             <!-- <card padding="0px" class="mycard"> -->
-              <div class="card-content contact-info grey--text text--lighten-1" slot="card-content">
+              <div class="card-content contact-info grey--text text--lighten-1">
                     <span class="contactdetails_addresslabel">{{$t(addressLabel)}}</span>
                     <!-- </v-subheader> -->
                     <!-- 地址 -->
@@ -37,10 +41,8 @@
                       <div class="contactdetails_stellaraddressbarcode_img"><qrcode :text="qrtext" :callback="qrcodecallback"/></div><!--恒星地址二维码图片 -->
                   </div>
               </div>
-            </card>
-            <div style="flex: 1;"></div>
-            <v-footer class="contactdetails_vfooter">        
-              <!-- <v-layout row  wrap> -->
+
+              <v-layout row  wrap>
                   <v-flex xs4>
                     <v-btn class='moddel' block flat dark :to="{name: 'ModifyContact', params:{id:contact.id}}" >
                       {{$t('Modify')}}
@@ -51,8 +53,10 @@
                       {{$t(sendLabel)}}
                       </v-btn><!--发送按钮 -->
                   </v-flex>
-              <!-- </v-layout>   -->
-            </v-footer>
+              </v-layout>  
+
+            </card>
+            
         </div> 
       </div>
    
@@ -269,5 +273,12 @@ export default {
 .contactDetails_contactName_position
   height:65px
   padding-top:10px
+
+.line
+  border-bottom: 1px solid $primarycolor.gray
+.breadpath
+  padding-top: 5px!important
+  padding-bottom: 5px!important
+  padding-left: 0!important
 </style>
 

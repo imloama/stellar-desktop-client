@@ -148,7 +148,7 @@
           <div class="flex1">&nbsp;</div>
         </div>
       </div>
-      <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="info" v-if="dAppLoading"></v-progress-linear>
+      <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="primary" v-if="dAppLoading"></v-progress-linear>
       <webview ref="dappWebView" id="dappWebView" :src="choosed.site" class="webView" disablewebsecurity></webview>
     </div>
 

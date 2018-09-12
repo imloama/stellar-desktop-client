@@ -167,6 +167,7 @@ export default {
   .myaddress-row
     overflow: hidden
     position: relative
+    border-bottom: 1px solid $primarycolor.gray
     .myaddress-li
       position: relative
       z-index: 2
@@ -191,8 +192,7 @@ export default {
         .myaddress-address
           font-weight: lighter
           font-size: 14px
-.assets-row:last-child
-  border-bottom: 0px
+
 .operate-box 
   position: absolute
   z-index: 1

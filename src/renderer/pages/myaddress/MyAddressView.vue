@@ -9,14 +9,22 @@
       @goback="back"
     />
     <div class="content">
-      <card padding="10px 10px" class="mycard">
-        <div class="card-content  myaddress-name grey--text text--lighten-1" slot="card-content">
+      <card padding="10px 10px" class="mycard secondarygray">
+
+        <v-breadcrumbs class="breadpath" divider="/">
+          <v-breadcrumbs-item to="/myaddress/list">{{ $t('Menu.MyAddress') }}</v-breadcrumbs-item>
+          <v-breadcrumbs-item disabled>{{myaddress.name}}</v-breadcrumbs-item>
+        </v-breadcrumbs>
+
+        <div class="line"></div>
+
+        <div class="card-content mt-4 myaddress-name grey--text text--lighten-1">
               {{myaddress.name}}
         </div>
-      </card>
+      
       <v-subheader dark class="grey--text text--lighten-1">{{$t(detailLabel)}}</v-subheader>
-      <card padding="10px" class="mycard">
-        <div class="card-content myaddress-info grey--text text--lighten-1" slot="card-content">
+      
+        <div class="card-content myaddress-info grey--text text--lighten-1" >
           <v-subheader dark class='grey--text text--lighten-1'>{{$t(addressLabel)}}</v-subheader>
            <p @click="copy(myaddress.address)">   {{myaddress.address}}</p>
           <div v-if='myaddress.memo'>
@@ -26,13 +34,13 @@
               </p>
           </div>
         </div>
-      </card>
       
 
-      <div class="btn-footer">         
+      <div class="mt-2">         
         <v-btn class='btn-del error' :loading="working" block dark @click="del" >{{$t('Delete')}}</v-btn>
       </div>
 
+      </card>
     </div>
   </div>
 </template>
@@ -152,6 +160,13 @@ export default {
 .btn-del
   padding: 0px 0px
   margin: 0px 0px
+
+.line
+  border-bottom: 1px solid $primarycolor.gray
+.breadpath
+  padding-top: 5px!important
+  padding-bottom: 5px!important
+  padding-left: 0!important
 
 </style>
 

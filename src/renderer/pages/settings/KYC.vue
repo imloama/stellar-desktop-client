@@ -7,7 +7,7 @@
           <div class="flex6 textcenter">{{title}}</div>
         </div>
       </div>
-      <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="info" v-if="dAppLoading"></v-progress-linear>
+      <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="primary" v-if="dAppLoading"></v-progress-linear>
       <webview ref="dappWebView" id="dappWebView" class="webView" :src="site" disablewebsecurity></webview>
     </div>
 

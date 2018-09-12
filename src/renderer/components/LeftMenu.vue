@@ -2,7 +2,8 @@
 <template>
   <div class="left-menu">
     <div :class="'menu-item ' + (menuIndex === index ? 'active':'')" v-for="(item,index) in menus" :key="index" @click="toPage(item,index)">
-      <div class="menu-item-icon"><v-icon class="icons">{{item.icon}}</v-icon></div>
+      <div class="menu-item-icon textcenter">
+        <v-icon class="icons textcenter">{{item.icon}}</v-icon></div>
       <div class="menu-item-text">{{$t(item.label)}}</div>
     </div>
   </div>
@@ -17,12 +18,13 @@ export default {
         {icon: 'account_balance_wallet', label: 'Title.MyAssets', name: 'MyAssets'},
         {icon: 'history', label: 'History.Title', name: 'History'},
         {icon: 'trending_up', label: 'Trade.Trade', name: 'TradeCenter'},
+        {icon: 'explore', label: 'explorer', name:'Explorer'},
         {icon: 'apps', label: 'Title.ThirdApp', name: 'Apps'},
         {icon: 'import_export', label: 'Menu.Funding', name: 'Funding'},
         {icon: 'account_circle', label: 'Menu.My', name: 'MySettings'},
         {icon: 'settings', label: 'Menu.Settings', name: 'SettingsParent'}
       ],
-      menuNames:['MyAssets','History','TradeCenter','Apps','Funding','My','SetPinCode']
+      menuNames:['MyAssets','History','TradeCenter','Explorer','Apps','Funding','My','SetPinCode']
     }
   },
   watch:{

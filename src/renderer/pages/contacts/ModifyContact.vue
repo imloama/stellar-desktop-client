@@ -13,13 +13,17 @@
       :validator="qrvalidator" 
       v-if="showScanner"
     ></q-r-scan>-->
-    <v-breadcrumbs divider="/">
-        <v-breadcrumbs-item to="/mycontacts/list">{{ $t('Menu.Contacts') }}</v-breadcrumbs-item>
-        <v-breadcrumbs-item disabled>{{contact.name}}</v-breadcrumbs-item>
-      </v-breadcrumbs>
+   
     <div class="content">
-      <card padding="10px 10px" class="mycard">
-        <div class="card-content" slot="card-content">
+      <card padding="10px 10px" class="mycard secondarygray">
+        <v-breadcrumbs class="breadpath" divider="/">
+          <v-breadcrumbs-item to="/mycontacts/list">{{ $t('Menu.Contacts') }}</v-breadcrumbs-item>
+          <v-breadcrumbs-item disabled>{{contact.name}}</v-breadcrumbs-item>
+        </v-breadcrumbs>
+
+        <div class="line"></div>
+
+        <div class="card-content mt-4 mb-2">
           <ul class="settings-ul">
             <li>
                <v-text-field name="input-name" required dark
@@ -50,15 +54,10 @@
             </li>
           </ul>
         </div>
-      </card>
-      <div style="flex: 1;"></div>
-    <v-footer>        
-      <v-layout row  wrap>
-        <v-flex xs12>
+        <div class="">
           <v-btn class='modify'  block dark large @click="modifyContact">{{$t('Modify')}}</v-btn>
-        </v-flex>
-      </v-layout>  
-    </v-footer>
+        </div>
+      </card>
     </div>
   </div>
 </template>
@@ -192,4 +191,10 @@ export default {
   padding: 15px 15px!important
   box-shadow 0
   -webkit-box-shadow 0
+.line
+  border-bottom: 1px solid $primarycolor.gray
+.breadpath
+  padding-top: 5px!important
+  padding-bottom: 5px!important
+  padding-left: 0!important
 </style>

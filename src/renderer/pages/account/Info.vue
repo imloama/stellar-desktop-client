@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page infopage">
     <!-- <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
@@ -8,14 +8,18 @@
       /> -->
 
     <div class="">
-      <v-breadcrumbs divider="/">
+     
+      
+      <card :class="[{ Info_mycard: isB, Info_mycardB:isC }]" padding="10px 10px 20px 10px">
+
+       <v-breadcrumbs class="breadpath" divider="/">
         <v-breadcrumbs-item to="/account/manage">{{ $t('ManageAccount') }}</v-breadcrumbs-item>
         <v-breadcrumbs-item disabled>{{showaccount.name}}</v-breadcrumbs-item>
       </v-breadcrumbs>
-      
-      <card :class="[{ Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
+      <div class="line"></div>
 
-        <div class="card-content" slot="card-content">
+
+        <div class="card-content mt-4">
           <div class="avatar-wrapper">{{$t("Account.AccountName")}}
             <!-- <span class="avatar">
               <i class="iconfont icon-erweima"></i>
@@ -59,20 +63,33 @@
           </div> -->
         </div>
 
-      </card>
-      
-      
-      <div :class="'footer' + (canModify ? ' active':' unactive') ">
-        <v-tabs class="tabs-bg-dark" grow centered hide-slider color="primary">
-          <v-tab class="tab2" @click.stop="modify">{{$t('Modify')}}</v-tab>
-          <v-tab class="tab2" @click.stop="resetpwd">{{$t('ResetPassword')}}</v-tab>
-          <v-tab class="tab2" @click.stop="toViewKey">{{$t('ViewKey')}}</v-tab>
-          <v-tab class="tab2" @click.stop="toViewMnemonic">{{$t('viewMnemonic')}}</v-tab>
-        </v-tabs>
+      <div class="pa-2">
+        <div class="primarycolor textcenter pa-1">{{$t('StellarAddressBarCode')}}</div>
+        <div><qrcode  :text="showaccount.address"/></div>
+        
       </div>
 
 
-      <div class="pwdSheetWrapper" v-if="showPwdSheet">
+    
+      
+      
+      <div :class="'flex-row primarycolor pt-4' + (canModify ? ' active':' unactive') ">
+          <div class="flex1 textcenter sheet-btn" @click.stop="modify">
+            <v-btn flat block color="primary">{{$t('Modify')}}</v-btn>  
+          </div>
+          <div class="flex1 textcenter sheet-btn" @click.stop="resetpwd">
+            <v-btn flat block color="primary">{{$t('ResetPassword')}}</v-btn>  
+          </div>
+          <div class="flex1 textcenter sheet-btn" @click.stop="toViewKey">
+            <v-btn flat block color="primary">{{$t('ViewKey')}}</v-btn></div>
+          <div class="flex1 textcenter sheet-btn" @click.stop="toViewMnemonic">
+            <v-btn flat block color="primary">{{$t('viewMnemonic')}}</v-btn></div>
+      </div>
+
+      </card>
+
+
+      <div class="" v-if="showPwdSheet">
         <v-dialog v-model="showPwdSheet"  dark max-width="460">
           <div class="sheet-content">
             <div class="sheet-input">
@@ -322,7 +339,9 @@ export default {
 
   },
   beforeMount(){
-      let address = this.$route.query.address || this.account.address
+      let address = this.$route.params.id || this.account.address
+      console.log('--xxxxxxxx---------address-' + address)
+      console.log(this.$route)
       // federationAddress&inflationAddress
       // let federationAddress = this.$route.query.federationAddress || this.account.federationAddress
       // let inflationAddress = this.$route.query.inflationAddress || this.account.inflationAddress
@@ -698,7 +717,6 @@ export default {
 
 .Info_mycard
   background-color:$secondarycolor.gray  
-  height:550px
 .Info_mycardB
   background-color:$secondarycolor.black
   opacity:0.3
@@ -746,5 +764,12 @@ export default {
   padding-bottom: 0px
   padding-bottom: constant(safe-area-inset-bottom)
   padding-bottom: env(safe-area-inset-bottom)
+
+.line
+  border-bottom: 1px solid $primarycolor.gray
+.breadpath
+  padding-top: 5px!important
+  padding-bottom: 5px!important
+  padding-left: 0!important
 </style>
 

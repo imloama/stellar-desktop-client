@@ -26,10 +26,8 @@
         </v-list-tile>
       </v-list>
     </v-flex>
-    <v-flex xs9 class="pa-2">
-      <v-card>
-        <router-view></router-view>
-      </v-card>
+    <v-flex xs9 class="pa-2 22">
+      <router-view></router-view>
     </v-flex>
   </v-layout>
   </m-layout>

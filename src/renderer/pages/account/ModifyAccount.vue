@@ -5,14 +5,17 @@
       :showbackicon="showbackicon"
       @goback="back"
       /> -->
-    <v-breadcrumbs divider="/">
+    
+    <div class="">
+      <card class="mycard secondarygray" padding="10px 10px 10px 10px">
+        <v-breadcrumbs class="breadpath" divider="/">
         <v-breadcrumbs-item to="/account/manage">{{ $t('ManageAccount') }}</v-breadcrumbs-item>
         <v-breadcrumbs-item disabled>{{name}}</v-breadcrumbs-item>
       </v-breadcrumbs>
-    <div class="">
-      <card class="mycard" padding="20px 10px 20px 10px">
 
-        <div class="card-content" slot="card-content">
+      <div class="line"></div>
+
+        <div class="card-content mt-4">
           <v-text-field
               name="name"
               :label="$t('Account.AccountName')"
@@ -43,11 +46,11 @@
           </div>
         </div>
         
-      </card>
+     
       <div class="btn-group">
          <v-btn class="primary btn-save" primary @click.stop="save">{{$t('Save')}}</v-btn>
       </div>
-
+      </card>
     </div>
   </div>
 </template>
@@ -209,6 +212,11 @@ export default {
     margin: 0px 0px
     padding: 0px 0px
     height: 36px
-
+.line
+  border-bottom: 1px solid $primarycolor.gray
+.breadpath
+  padding-top: 5px!important
+  padding-bottom: 5px!important
+  padding-left: 0!important
 </style>
 

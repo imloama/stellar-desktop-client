@@ -536,7 +536,8 @@
   "lock_disable":"關閉鎖屏",
   "lock_pwd_wrong":"鎖屏密碼錯誤！",
   "latest_trade":"最近成交",
-  "type":"類型"
+  "type":"類型",
+  "explorer":"瀏覽"
 
   
 

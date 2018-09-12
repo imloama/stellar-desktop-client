@@ -13,7 +13,7 @@
                             <v-flex xs6 class="itemtime_account_credited" >{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                         <v-layout>
-                            <v-flex xs12 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0" >TX:{{item.tx}}</v-flex>
+                            <v-flex xs12 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0" >TX:{{item.tx}}</v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='trade'" xs12 class="content_style  pa-2">
@@ -25,7 +25,7 @@
                             <v-flex xs6 class="itemtime_trade">{{item.time}}</v-flex>
                         </v-layout>
                          <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
                            
                         </v-layout>
                     </v-flex>
@@ -37,7 +37,7 @@
                             <v-flex xs6 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                            
                         </v-layout>
                     </v-flex>
@@ -49,7 +49,7 @@
                             <v-flex xs6 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
-                            <v-flex xs12 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs12 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='account_debited'" xs12 class="content_style  pa-2">
@@ -60,7 +60,7 @@
                             <v-flex xs6 class="itemtime_account_debited">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                          <v-layout xs12>
-                            <v-flex xs12 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs12 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='signer_updated'" xs12 class="content_style  pa-2">
@@ -90,7 +90,7 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_home_domain_updated'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype_ahdu">{{$t("AccountHomeDomainUpdated")}}</v-flex>
                         </v-layout>
                         <v-layout>
@@ -99,7 +99,7 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_inflation_destination_updated'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstyleo_aidu" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs10 class="itemstyleo_aidu underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype_aidu">{{$t("AccountInflationDestinationUpdated")}}</v-flex>
                         </v-layout>
                         <v-layout>
@@ -110,7 +110,7 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_created'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
+                            <v-flex xs10 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                             <v-flex xs2 class="itemtype_account_created">{{$t("AccountCreated")}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
@@ -129,7 +129,7 @@
                         </v-layout>
                     </v-flex>
             </div>
-        
+        <steexp-dlg v-if="detailsView" :i="detailsI" :v="detailsV" @close="detailsView = false" />
     </v-card>
 </template>
 
@@ -139,8 +139,8 @@ import {mapState, mapActions, mapGetters} from 'vuex'
 import Card from '@/components/Card'
 import * as accountapi from '@/api/account'
 import {getAddressByAccountId} from '@/api/federation'
-import Scroll from '@/components/Scroll'
 import { fetchEffects } from '@/api/effects'
+import SteexpDlg from '@/components/SteexpDlg'
 export default {
     data () {
         return {
@@ -150,7 +150,10 @@ export default {
             loadmore_isflag:false,
             hasnomore: false,
             dataObj:[],
-            loading_flag:false
+            loading_flag:false,
+            detailsI: 1,//1表示tx值0表示account
+            detailsV: null,
+            detailsView: false
         }
     },
     mounted(){
@@ -266,13 +269,19 @@ export default {
           }else{
                 return ''
           }
-      }
+      },
+      showDetails(i,v){
+        this.detailsI = i
+        this.detailsV = v
+        this.detailsView = true
+        console.log(this)
+      },
 
     },
     components: {       
       Toolbar,
       Card,
-      Scroll,
+      SteexpDlg,
     }
 
 

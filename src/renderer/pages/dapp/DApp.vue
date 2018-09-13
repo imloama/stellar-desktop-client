@@ -262,6 +262,9 @@ export default {
       dappBgColor:"#21CE90",
       ismydapp: false,
 
+      dappStartTime:null,
+      dappEndTime:null,
+
     }
   },
    computed:{
@@ -329,6 +332,7 @@ export default {
       }
       
       window.TDAPP.onEvent (EVENT_OPEN_DAPP+'_'+this.choosed.title, this.choosed.title); 
+      this.dappStartTime = new Date().getTime() 
 
       this.dAppShow = true
       this.$nextTick(()=>{
@@ -679,6 +683,14 @@ export default {
     },
 
     closeDappContainer(){
+      //发送请求，获取关闭dapp的时间
+      this.dappEndTime = new Date().getTime()
+      let used = this.dappEndTime - this.dappStartTime
+      window.TDAPP.onEvent (EVENT_OPEN_DAPP+'_'+this.choosed.title, this.choosed.title,{
+        start: this.dappStartTime,
+        end: this.dappEndTime,
+        used
+        }); 
       this.choosed = {}
       this.dAppShow = false
     },

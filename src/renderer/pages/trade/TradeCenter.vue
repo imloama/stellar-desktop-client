@@ -40,7 +40,7 @@
               <div class="pa-2" v-for="(item,index) in allTags" :key="index" v-show="tagIndex === index">
                 <ul class="tradepairs-ul">
                   <li class="tradepair-li">
-                    <v-layout class="pair-wrapper" row>
+                    <v-layout class="pair-wrapper textcenter" row>
                       <v-flex xs2 class="pa1 pt-2 pb-2">{{$t('Asset')}}</v-flex>
                       <v-flex xs9>
                         <div class="flex-row">
@@ -81,7 +81,7 @@
                           :ref="'kline'+pair.tradepairIndex"
                           ></k-line>
                       </v-flex>
-                      <v-flex xs1>
+                      <v-flex xs1 class="textcenter">
                         <v-btn color="primary" block flat @click="trade(index,pair)">{{$t('Trade')}}</v-btn>
                       </v-flex>
                     </v-layout>

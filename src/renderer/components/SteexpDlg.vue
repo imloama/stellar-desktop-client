@@ -9,7 +9,7 @@
       </div>
     </div>
     <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="primary" v-if="loadingWebView"></v-progress-linear>
-    <webview ref="webView" id="webView" :src="site" :class="'webView ' + (loadingWebView ? 'hide':'')"></webview>
+    <webview ref="webView" id="webView" :src="site" :class="'webView ' + (loadingWebView ? 'hide':'')" disablewebsecurity></webview>
     </div>
   </v-dialog>
 </template>

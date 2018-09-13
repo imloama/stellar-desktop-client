@@ -10,7 +10,7 @@
       
     <div class="webview-container mt-4">
       <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="primary" v-if="loadingWebView"></v-progress-linear>
-      <webview ref="webView" id="webView" :src="site" :class="'webView ' + (loadingWebView ? 'hide':'')"></webview>
+      <webview ref="webView" id="webView" :src="site" :class="'webView ' + (loadingWebView ? 'hide':'')" disablewebsecurity></webview>
     </div>
 
       <!--输入框，接收回车或点击后边的查询按钮-->

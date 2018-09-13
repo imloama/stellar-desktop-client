@@ -64,12 +64,13 @@
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='signer_updated'" xs12 class="content_style  pa-2">
-                        <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0"> {{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype">{{$t("SignerUpdated")}}</v-flex>
-                        </v-layout>
                         <v-layout>
-                            <v-flex xs12 class="itemtime">{{getlocaltime(item.time)}}</v-flex>
+                            <v-flex xs6 class="itemtype">{{$t("SignerUpdated")}}</v-flex>
+                            <v-flex xs6 class="itemtime">{{getlocaltime(item.time)}}</v-flex>
+                        </v-layout>
+
+                        <v-layout xs12>
+                            <v-flex xs12 class="itemstylef_trustline_c underline cursorpointer"  @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0"> {{item.tx}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
                             <v-flex xs5 class="itemstyleo">{{getEffectsDataMiniAddress(item.account)}}1</v-flex>
@@ -81,40 +82,40 @@
                     </v-flex>
                     <v-flex v-if="item.type=='signer_created'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_signer_created">{{$t("SignerCreated")}}</v-flex>
+                            <v-flex xs6 class="itemtype_signer_created">{{$t("SignerCreated")}}</v-flex>
+                            <v-flex xs6 class="itemtime_signer_created">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
-                            <v-flex xs12 class="itemtime_signer_created">{{getlocaltime(item.time)}}</v-flex>
+                            <v-flex xs12 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">Tx:{{item.tx}}</v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='account_home_domain_updated'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_ahdu">{{$t("AccountHomeDomainUpdated")}}</v-flex>
+                            <v-flex xs6 class="itemtype_ahdu">{{$t("AccountHomeDomainUpdated")}}</v-flex>
+                            <v-flex xs6 class="itemtime_ahdu">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                         <v-layout>
-                            <v-flex xs12 class="itemtime_ahdu">{{getlocaltime(item.time)}}</v-flex>
+                            <v-flex xs12 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='account_inflation_destination_updated'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstyleo_aidu underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_aidu">{{$t("AccountInflationDestinationUpdated")}}</v-flex>
+                            <v-flex xs6 class="itemtype_aidu">{{$t("AccountInflationDestinationUpdated")}}</v-flex>
+                            <v-flex xs6 class="itemtime_aidu">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                         <v-layout>
-                            <v-flex xs12 class="itemtime_aidu">{{getlocaltime(item.time)}}</v-flex>
+                            <v-flex xs10 class="itemstyleo_aidu underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                         </v-layout>
                           <v-layout>
                         </v-layout>
                     </v-flex>
                     <v-flex v-if="item.type=='account_created'" xs12 class="content_style  pa-2">
                         <v-layout xs12>
-                            <v-flex xs10 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
-                            <v-flex xs2 class="itemtype_account_created">{{$t("AccountCreated")}}</v-flex>
+                            <v-flex xs6 class="itemtype_account_created">{{$t("AccountCreated")}}</v-flex>
+                            <v-flex xs6 class="itemtime_account_created">{{getlocaltime(item.time)}}</v-flex>
                         </v-layout>
                         <v-layout xs12>
-                            <v-flex xs12 class="itemtime_account_created">{{getlocaltime(item.time)}}</v-flex>
+                            <v-flex xs12 class="itemstylef_trustline_c underline cursorpointer" @click="showDetails(1,item.tx)" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{item.tx}}</v-flex>
                         </v-layout>
                     </v-flex>
                 </v-flex>

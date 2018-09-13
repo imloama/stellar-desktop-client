@@ -22,7 +22,7 @@
             <img src="../../assets/img/logox.png" alt="firefly" class="logo-img"/>
           </div>
           <div class="textcenter appname">
-            FireFly Desktop
+            FireFly
           </div>
           <div class="textcenter appversion">
             {{platform}}

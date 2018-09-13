@@ -58,7 +58,7 @@
             
             <div class="flex-row dw-row"  v-for="(item,index) in deposits" :key="index">
               <div class="flex4">
-                <span class="label">tx:{{item.tx ||item.tx_hash }}</span>
+                <span class="label underline" @click="showDetails(1,item.tx ||item.tx_hash)">tx:{{item.tx ||item.tx_hash }}</span>
                 
               </div>
               <div class="flex2 pl-1 pr-1">
@@ -79,7 +79,7 @@
           <div class="dw-table" v-if="withdraws.length > 0 ">
             <div class="flex-row  dw-row"  v-for="(item,index) in withdraws" :key="index">
               <div class="flex4">
-                <span class="label">tx:{{item.tx ||item.tx_hash }}</span>
+                <span class="label underline" @click="showDetails(1,item.tx ||item.tx_hash)">tx:{{item.tx ||item.tx_hash }}</span>
                 
               </div>
               <div class="flex2 pl-1 pr-1">
@@ -99,6 +99,7 @@
       </div>
     </div>    
    
+   <steexp-dlg v-if="detailsView" :i="detailsI" :v="detailsV" @close="detailsView = false" />
 
   </v-card>
 </template>
@@ -118,6 +119,7 @@ import { getXdrResultCode } from '@/api/xdr'
 import { getDepositAndWithdrawRecordsV2 } from '@/api/fchain'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 var moment = require('moment')
+  import SteexpDlg from '@/components/SteexpDlg'
 
 const TYPE_DEPOSIT = 'deposit'
 const TYPE_WITHDRAW = 'withdraw'
@@ -131,6 +133,10 @@ const TYPE_WITHDRAW = 'withdraw'
         records:{deposit:[],withdraw:[]},
         active: TYPE_DEPOSIT,
         error: null,
+
+        detailsI: 1,//1表示tx值0表示account
+        detailsV: null,
+        detailsView: false
 
       
       }
@@ -223,12 +229,19 @@ const TYPE_WITHDRAW = 'withdraw'
           }
         })
       },
+      showDetails(i,v){
+        this.detailsI = i
+        this.detailsV = v
+        this.detailsView = true
+        console.log(this)
+      },
 
     },
     components: {
       Card,
       Scroll,
-      Loading
+      Loading,
+      SteexpDlg,
     }
   }
 </script>

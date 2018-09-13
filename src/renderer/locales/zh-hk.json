@@ -48,7 +48,7 @@
   "Title.Scan": "掃描二維碼",
   "Title.MyWallet":"我的錢包",
   "Title.Account":"賬戶信息",
-  "Title.MyAssets":"我的資產",
+  "Title.MyAssets":"資產",
   "CopySuccess":"複製成功",
 
   "Error.ScannerPrepareFail": "掃描二維碼配置失敗",

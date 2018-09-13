@@ -13,7 +13,7 @@
           <v-icon class="back-icon"></v-icon>
         </v-btn>
       </slot>
-      <v-toolbar-title>stellar desktop client</v-toolbar-title>
+      <v-toolbar-title>{{$t('AppName')}}</v-toolbar-title>
       
       <v-spacer/>
       <div class="flex-row ml-4 mr-2">

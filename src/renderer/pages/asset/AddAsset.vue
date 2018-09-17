@@ -12,16 +12,16 @@
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
     <m-layout>
-    <div class="mt-2">
-      <div class="flex-row textcenter menurow">
-        <div class="flex1" @click="activeFedAddType">
+    <v-card class="mt-2 pb-4">
+      <div class="flex-row pt-2 pb-2 textcenter menurow ">
+        <div class="flex1 cursorpointer" @click="activeFedAddType">
           <span :class="'menu ' + ( addTypeFed ? 'active':'unactive' )" >{{$t('FederationUrl')}}</span></div>
-        <div class="flex1" @click="activeManullyAddType">
+        <div class="flex1 cursorpointer" @click="activeManullyAddType">
           <span :class="'menu ' + ( addTypeManully ? 'active':'unactive' )" >{{$t('ManullayAddTrust')}}</span></div>
         <div class="flex2"></div>
       </div>
-      <card class="icard" padding="2px 8px" v-if="addTypeFed">
-        <div class="card-content" slot="card-content">
+      <div class="icard pa-2" v-if="addTypeFed">
+        <div class="card-content">
          <v-text-field
               dark
               name="url"
@@ -31,8 +31,9 @@
               type="text"
               placeholder='fchain.io or stellar.org'
               primary
+              @keyup.enter.native="search"
             ></v-text-field>
-        <div @click="addallasset(currencies)" class="addallasset">{{$t("AddAll")}}</div>
+        <div @click="addallasset(currencies)" class="addallasset" v-if="currencies && currencies.length > 0">{{$t("AddAll")}}</div>
         <ul class="currency-ul">
           <li class="currency-li" v-for="currency in currencies" :key="currency.code">
             <div class="currency">
@@ -59,10 +60,10 @@
           </li>
         </ul>
         </div>
-      </card>
+      </div>
 
-       <card class="icard" padding="8px 8px" v-if="addTypeManully">
-        <div class="card-content" slot="card-content">
+       <div class="icard pa-2" v-if="addTypeManully">
+        <div class="card-content">
            <v-text-field
               dark
               :label="$t('AssetCode')"
@@ -83,10 +84,10 @@
               <v-btn class='btn_trust'  block dark large @click="doManuallyTrust">{{$t('Button.OK')}}</v-btn>
             </div>
         </div>
-       </card>
+       </div>
 
 
-    </div>
+    </v-card>
     </m-layout>
   </div>
 </template>
@@ -497,6 +498,7 @@ export default {
       color: $primarycolor.green !important
 .menurow
   margin-bottom: 5px
+  border-bottom: 1px solid $primarycolor.gray
 .menu
   padding-left: 5px
   padding-right: 5px

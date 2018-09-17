@@ -9,7 +9,7 @@
       </div>
     </div>
     <v-progress-linear class="dapp__progress" :indeterminate="true" height="5" color="primary" v-if="loadingWebView"></v-progress-linear>
-    <webview ref="webView" id="webView" :src="site" :class="'webView ' + (loadingWebView ? 'hide':'')" disablewebsecurity></webview>
+    <webview ref="webView" id="webView" :src="site" class="webView"></webview>
     </div>
   </v-dialog>
 </template>
@@ -81,6 +81,7 @@ export default {
   width: 100%
   height: 80vh
   overflow: auto
+  background: #3c4452;
   &.hide
     visibility: hidden
 </style>

@@ -37,8 +37,8 @@
                 <div :class="`flex1 ttitle` + (activeBuy === 0 ? ' primarycolor':' secondaryfont ')" @click="activeBuy=0">{{$t('Trade.Buy')}}</div>
                 <div :class="`flex1 ttitle` + (activeBuy === 1 ? ' primarycolor':' secondaryfont ')" @click="activeBuy=1">{{$t('Trade.Sell')}}</div>
               </div>
-              <trade-input v-show="activeBuy" ref="tradeInputBuy" flag="buy" @afterOffer="reloadOrderBook"></trade-input>
-              <trade-input v-show="!activeBuy" ref="tradeInputSell" flag="sell" @afterOffer="reloadOrderBook"></trade-input>
+              <trade-input v-show="activeBuy === 0" ref="tradeInputBuy" flag="buy" @afterOffer="reloadOrderBook"></trade-input>
+              <trade-input v-show="activeBuy === 1" ref="tradeInputSell" flag="sell" @afterOffer="reloadOrderBook"></trade-input>
               </v-card>
             </div>
           </div>

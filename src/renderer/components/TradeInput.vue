@@ -78,10 +78,10 @@
         <div class="flex2 btn-flex">
           <v-btn class="full-width btn-buy" color="primary" 
             :disabled="!(CounterBalance.balance>0 && total> 0 && CounterBalance.balance >= total)" 
-            v-if="isBuy" @click="showConfirmSheet = true">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
+            v-if="flag === 'buy'" @click="showConfirmSheet = true">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
           <v-btn class="full-width btn-sell" color="error" 
             :disabled="!(BaseBalance.balance>0 && amount> 0 && BaseBalance.balance >= amount)" 
-            v-if="isSell" @click="showConfirmSheet = true">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
+            v-if="flag !== 'buy'" @click="showConfirmSheet = true">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
         </div>
       </div>
 
@@ -147,8 +147,8 @@
             </div>
           </div>
           <div class="confirm-btns flex-row textcenter">
-            <div class="confirm-btn flex1" @click="doTrade">{{$t('Button.OK')}}</div>
-            <div class="confirm-btn flex1" @click="showConfirmSheet = false">{{$t('Button.Cancel')}}</div>
+            <div class="confirm-btn flex1 cursorpointer" @click="doTrade">{{$t('Button.OK')}}</div>
+            <div class="confirm-btn flex1 cursorpointer" @click="showConfirmSheet = false">{{$t('Button.Cancel')}}</div>
           </div>
           </v-card>
       </v-dialog>

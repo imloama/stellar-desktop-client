@@ -97,14 +97,11 @@ function pack (config) {
   })
 }
 function bundleApp () {
-  packager(buildConfig).then((err, appPaths) => {
-    if (err) {
-      console.log(`\n${errorLog}${chalk.yellow('`electron-packager`')} says...\n`)
-      console.log(err + '\n')
-    } else {
+  packager(buildConfig).then(( appPaths) => {
       console.log(`\n${doneLog}\n`)
-    }
-  })
+  }).catch(err=>{
+    console.error(`\n${err}\n`);
+  });
 }
 
 function web () {

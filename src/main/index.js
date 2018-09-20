@@ -62,7 +62,7 @@ function createWindow () {
 function createTray(){
  // tray = new Tray('./icon.png');//系统托盘图标
   // tray = new Tray(path.join(__dirname, '../build/icons/icon.png'))
-  tray = new Tray(path.join(__static, 'icon.png'));
+  tray = new Tray(path.join(__static, 'icon.ico'));
     const contextMenu = Menu.buildFromTemplate([ // 菜单项
       {label: 'Show', type: 'radio', click: () => {mainWindow.show()}},
       {label: 'Hide', type: 'radio', click: () => {mainWindow.hide()}},

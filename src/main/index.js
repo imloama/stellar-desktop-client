@@ -1,5 +1,6 @@
 import { app, BrowserWindow,ipcMain, Tray,Menu  } from 'electron'
-const path = require('path')
+const path = require('path');
+const nativeImage = require('electron').nativeImage
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -60,7 +61,8 @@ function createWindow () {
 function createTray(){
  // tray = new Tray('./icon.png');//系统托盘图标
   // tray = new Tray(path.join(__dirname, '../build/icons/icon.png'))
-  tray = new Tray(path.join(__static, 'icon.png'));
+  let image = nativeImage.createFromPath(path.join(__static, 'tray.png'))
+  tray = new Tray(image);
     const contextMenu = Menu.buildFromTemplate([ // 菜单项
       {label: 'Show', type: 'radio', click: () => {mainWindow.show()}},
       {label: 'Hide', type: 'radio', click: () => {mainWindow.hide()}},

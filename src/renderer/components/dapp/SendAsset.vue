@@ -322,8 +322,12 @@ export default {
       sendAsset(params.seed, params.address, params.target, params.asset, params.amount, 
         params.memo_type, params.memo_value, this.base_reserve)
         .then(response=>{
-          this.getAccountInfo().then(()=>{}).catch(err=>{console.error(err)})
           this.sendSuccess(response)
+          try{
+            this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
+          }catch(err){
+            console.error(err);
+          }
         })
         .catch(err=>{
           this.sendFail(err)
@@ -341,7 +345,11 @@ export default {
       sendByPathPayment(seed, destination, record, memo_type, memo)
           .then(response=>{
             this.sendSuccess(response)
-            this.getAccountInfo().then(()=>{}).catch(err=>{console.error(err)})
+            try{
+              this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
+            }catch(err){
+              console.error(err);
+            }
           })
           .catch(err=>{
             this.sendFail(err)

@@ -7,7 +7,7 @@
               <v-flex xs4 class="history-wrapper">
                 <div class="history">
                   <div class="history-flag">{{$t(item.flag)}} &nbsp;
-                    <span class="tx cursorpointer underline" @click="showDetails(1,item.origin.transaction_hash)">{{item.counterparty|miniaddress}}</span></div>
+                    <span class="tx cursorpointer underline" @click="showDetails(0,item.counterparty)">{{item.counterparty|miniaddress}}</span></div>
                   <div class="history-time tx">{{item.origin.created_at}}</div>
                 </div>
               </v-flex>
@@ -130,7 +130,6 @@
         this.detailsI = i
         this.detailsV = v
         this.detailsView = true
-        console.log(this)
       },
     },
     components: {

@@ -24,8 +24,8 @@
             ></v-text-field>
         </div>
         <div  class="sheet-btns">
-          <div class="sheet-btn" @click="exit">{{$t('Button.Cancel')}}</div>
-          <div class="sheet-btn" @click="ok">{{$t('Button.OK')}}</div>
+          <div class="sheet-btn  cursorpointer" @click="exit">{{$t('Button.Cancel')}}</div>
+          <div class="sheet-btn  cursorpointer" @click="ok">{{$t('Button.OK')}}</div>
         </div>
       </div>
     </v-bottom-sheet>

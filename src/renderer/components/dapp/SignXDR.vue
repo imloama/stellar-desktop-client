@@ -52,8 +52,8 @@
           </div>
 
           <div class="confirm-btns flex-row textcenter">
-            <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-            <div class="confirm-btn flex1" @click="doSign">{{$t('Button.OK')}}</div>
+            <div class="confirm-btn cursorpointer flex1" @click="exit">{{$t('Button.Cancel')}}</div>
+            <div class="confirm-btn cursorpointer flex1" @click="doSign">{{$t('Button.OK')}}</div>
           </div>
         </div>
       </v-dialog>

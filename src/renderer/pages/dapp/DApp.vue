@@ -40,7 +40,7 @@
           @click="choose(app)"
           class="app-card-wrapper"
         >
-          <v-card flat tile class="pa-2 textcenter app-card" >
+          <v-card flat tile class="pa-2 textcenter app-card cursorpointer" >
              <div class="pa-3">
                 <v-avatar class="grey darken-4 app-avatar" :size="`100%`">
                  <img :src="app.image">
@@ -63,7 +63,7 @@
           :key="index"
           class="app-card-wrapper"
         >
-          <v-card dark flat tile class="pa-2 textcenter app-card" >
+          <v-card dark flat tile class="pa-2 textcenter app-card cursorpointer" >
             <div class="pa-3" @click="choose(app,true)">
               <v-avatar class="grey darken-4 app-avatar" :size="`62px`">
                <span class="white--text headline">{{app.title.substring(0,1)}}</span> 
@@ -81,7 +81,7 @@
           @click="addDapp"
           class="app-card-wrapper"
         >
-          <v-card dark flat tile class="pa-2 textcenter app-card mt-3" >
+          <v-card dark flat tile class="pa-2 textcenter app-card mt-3 cursorpointer" >
             <div class="pa-3">
               <v-avatar class="grey darken-4 app-avatar add-app-avatar" :size="`62px`">
                <v-icon :size="`38px`" color="primary">add</v-icon>
@@ -103,8 +103,8 @@
           </div>
           <div class="t2 skip-white pt-2 pb-4">{{$t('Third.OpenAppHint',[choosed.title])}}</div>
           <div class="btns flex-row">
-            <div class="flex1 skip-red textcenter" @click="openApp">{{$t('Button.OK')}}</div>
-            <div class="flex1 skip-red textcenter" @click="showConfirmDlg = false">{{$t('Button.Cancel')}}</div>
+            <div class="flex1 skip-red cursorpointer textcenter" @click="openApp">{{$t('Button.OK')}}</div>
+            <div class="flex1 skip-red cursorpointer textcenter" @click="showConfirmDlg = false">{{$t('Button.Cancel')}}</div>
           </div>
         </div>
       </div>
@@ -492,15 +492,15 @@ export default {
     exitSendAsset(){
       this.showSendAsset = false
       this.$nextTick(()=>{
-        this.appInstance.show()
+        //this.appInstance.show()
         this.doCallbackEvent(this.callbackData('fail','cancel payment'))
       });
     },
-    sendAssetSuccess(){
+    sendAssetSuccess(hash){
       this.showSendAsset = false
       this.$nextTick(()=>{
-        this.appInstance.show()
-        this.doCallbackEvent(this.callbackData('success','success'))
+        //this.appInstance.show()
+        this.doCallbackEvent(this.callbackData('success','success', hash))
       });
     },
     shareCB(url){
@@ -617,7 +617,7 @@ export default {
     },
     doQRScanEvent(e){
       try{
-        this.appInstance.hide()
+        //this.appInstance.hide()
         this.showScanner = true
         //隐藏底部tab
         this.$store.commit('HIDE_TABBAR')

@@ -54,8 +54,8 @@
           </div>
 
           <div class="confirm-btns flex-row textcenter">
-            <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-            <div :class="'confirm-btn flex1 ' + (choosedIndex >=0 ? '':'disable-btn')" @click="showPwdDlg">{{$t('Button.OK')}}</div>
+            <div class="confirm-btn flex1 cursorpointer" @click="exit">{{$t('Button.Cancel')}}</div>
+            <div :class="'confirm-btn flex1  cursorpointer ' + (choosedIndex >=0 ? '':'disable-btn')" @click="showPwdDlg">{{$t('Button.OK')}}</div>
           </div>
         </div>
       </v-dialog>
@@ -102,7 +102,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import  defaultsDeep  from 'lodash/defaultsDeep'
-import { shortAddress,canSend,sendByPathPayment, send } from '@/api/account'
+import { shortAddress,canSend,send as sendAsset,sendByPathPayment } from '@/api/account'
 import { COINS_ICON, FF_ICON, DEFAULT_ICON, WORD_ICON} from '@/api/gateways'
 import { pathAssets } from '@/api/path'
 import { isNativeAsset } from '@/api/assets'
@@ -182,7 +182,7 @@ export default {
       assethosts: state => state.asset.assethosts,
       notfunding: state => state.account.account_not_funding
     }),
-    ...mapGetters(["balances", "reserve", "native", "base_fee"]),
+    ...mapGetters(['base_reserve',"balances", "reserve", "native", "base_fee"]),
     target(){
       let result = undefined
       if(this.appname){
@@ -231,8 +231,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      sendAsset: 'sendAsset',
-      sendPathPayment: 'sendPathPayment',
+      //sendAsset: 'sendAsset',
+      //sendPathPayment: 'sendPathPayment',
       getAccountInfo: 'getAccountInfo',
     }),
     slideChange(){
@@ -318,10 +318,12 @@ export default {
         memo_value: this.memo
       }
       // alert('send no path:'+ JSON.stringify(params))
-
-      this.sendAsset(params)
+      // seed,address,target,asset,amount,memo_type,memo_value,rootGetters.base_reserve
+      sendAsset(params.seed, params.address, params.target, params.asset, params.amount, 
+        params.memo_type, params.memo_value, this.base_reserve)
         .then(response=>{
-          this.sendSuccess()
+          this.getAccountInfo().then(()=>{}).catch(err=>{console.error(err)})
+          this.sendSuccess(response)
         })
         .catch(err=>{
           this.sendFail(err)
@@ -333,17 +335,19 @@ export default {
       let record = this.choosed.origin
       let memo_type =  this.memo_type
       let memo = this.memo
-      let params = {seed,address: this.account.address, destination,record,memo_type,memo}
+      // let params = {seed,address: this.account.address, destination,record,memo_type,memo}
       // alert('Send By Path: ' + JSON.stringify(params))
-      this.sendPathPayment(params)
+      //seed,destination,record,memo_type,memo)
+      sendByPathPayment(seed, destination, record, memo_type, memo)
           .then(response=>{
-            this.sendSuccess()
+            this.sendSuccess(response)
+            this.getAccountInfo().then(()=>{}).catch(err=>{console.error(err)})
           })
           .catch(err=>{
             this.sendFail(err)
           })
     },
-    sendSuccess(){
+    sendSuccess(d){
       this.sending = false
       this.sendsuccess = true
       this.loadingTitle = this.$t('SendAssetSuccess')
@@ -351,7 +355,7 @@ export default {
       setTimeout(()=>{
         this.working =false
         this.sendsuccess = false //
-        this.$emit('sendsuccess')
+        this.$emit('sendsuccess', d ? d.hash:null)
       },3000)
     },
     sendFail(err){

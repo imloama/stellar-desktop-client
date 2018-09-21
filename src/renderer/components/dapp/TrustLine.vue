@@ -29,8 +29,8 @@
           </div>
 
           <div class="confirm-btns flex-row textcenter">
-            <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-            <div class="confirm-btn flex1" @click="showPwdDlg">{{$t('Button.OK')}}</div>
+            <div class="confirm-btn cursorpointer flex1" @click="exit">{{$t('Button.Cancel')}}</div>
+            <div class="confirm-btn cursorpointer flex1" @click="showPwdDlg">{{$t('Button.OK')}}</div>
           </div>
         </div>
       </v-dialog>
@@ -60,8 +60,8 @@
               ></v-text-field>
         </div>
         <div  class="sheet-btns">
-          <div class="sheet-btn" @click="resetState">{{$t('Button.Cancel')}}</div>
-          <div class="sheet-btn" @click="doTrust">{{$t('Button.OK')}}</div>
+          <div class="sheet-btn cursorpointer" @click="resetState">{{$t('Button.Cancel')}}</div>
+          <div class="sheet-btn cursorpointer" @click="doTrust">{{$t('Button.OK')}}</div>
         </div>
       </div>
     </v-dialog>

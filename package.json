@@ -142,7 +142,7 @@
     "json-loader": ">=0.5.4",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "npm": ">=5.5.1",
+    "npm": ">=6.14.6",
     "opn": ">=5.1.0",
     "optimize-css-assets-webpack-plugin": "^2.0.0",
     "ora": ">=1.2.0",

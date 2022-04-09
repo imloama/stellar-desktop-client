@@ -72,7 +72,7 @@
     "js-nacl": "^1.2.2",
     "localforage": "^1.7.2",
     "lodash": ">=4.17.4",
-    "moment": ">=2.20.1",
+    "moment": ">=2.29.2",
     "nedb": "^1.8.0",
     "nprogress": ">=0.2.0",
     "number-precision": ">=1.2.0",
